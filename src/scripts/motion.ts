@@ -73,96 +73,44 @@ function setupAnchors() {
 }
 
 /* ---- Facade de SoundCloud: el iframe se carga recién al hacer clic -------- */
+// El disco sigue visible (y girando, ver disc.ts) hasta que el reproductor respondió o pasó el tope:
+// el clic tiene respuesta inmediata y el cambio por el iframe es un solo corte, sin vacío.
+const SPIN_UP_MS = 900;
+const SWAP_MAX_MS = 4500;
 function setupFacades() {
   document.querySelectorAll<HTMLAnchorElement>('[data-facade]').forEach((a) => {
-    setupDisc(a);
     a.addEventListener('click', (e) => {
       if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const src = a.dataset.embed;
       if (!src) return;
       e.preventDefault();
-      // En teléfono el alto del escenario es fijo (CSS): el iframe ocupa el lugar de la fachada sin salto de layout
-      // El disco del sello pasa a girar rápido: el reproductor está en marcha
-      a.closest('[data-zt-scope]')?.setAttribute('data-zt-state', 'live');
+      if (a.dataset.loading) return;
+      a.dataset.loading = '1';
+      // En teléfono el alto del escenario es fijo (CSS): el iframe ocupa el lugar de la fachada sin salto de layout.
+      // Reproduciendo: el plato pasa a girar a 33 rpm y el sello y el mini del dock lo siguen.
+      a.closest('[data-disc-scope]')?.setAttribute('data-disc-state', 'live');
       document.dispatchEvent(new CustomEvent('player:live'));
       const iframe = document.createElement('iframe');
       iframe.src = src;
       iframe.title = a.dataset.title ?? '';
       iframe.allow = 'autoplay';
-      iframe.loading = 'lazy';
-      iframe.className = 'facade__frame';
+      iframe.className = 'facade__frame facade__frame--wait'; // superpuesto e invisible: no mueve el layout
       iframe.setAttribute('scrolling', 'no');
       iframe.setAttribute('frameborder', '0');
-      a.replaceWith(iframe);
-      iframe.focus({ preventScroll: true });
+      (a.closest('[data-stage]') ?? a.parentElement)?.append(iframe);
+      const t0 = performance.now();
+      let done = false;
+      const swap = () => {
+        if (done) return;
+        done = true;
+        iframe.classList.remove('facade__frame--wait');
+        a.replaceWith(iframe);
+        iframe.focus({ preventScroll: true });
+      };
+      iframe.addEventListener('load', () => setTimeout(swap, Math.max(0, SPIN_UP_MS - (performance.now() - t0))));
+      setTimeout(swap, SWAP_MAX_MS);
     });
   });
-}
-
-/* ---- Disco táctil: arrastre horizontal = cuadro a cuadro ---------------------
-   touch-action: pan-y en la fachada deja el scroll vertical al navegador; solo se
-   captura el gesto cuando es claramente horizontal. Un arrastre nunca arranca el audio. */
-function setupDisc(facade: HTMLElement) {
-  const scope = facade.closest<HTMLElement>('[data-zt-scope]');
-  const discs = scope ? Array.from(scope.querySelectorAll<HTMLElement>('[data-zoetrope]')) : [];
-  if (!discs.length) return;
-  const STEP_PX = 22; // píxeles de arrastre por cuadro (30 grados)
-  let id = -1;
-  let x0 = 0;
-  let y0 = 0;
-  let dragging = false;
-  let steps = 0;
-  let base = 0;
-  let swallow = false;
-  facade.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'mouse') return;
-    id = e.pointerId;
-    x0 = e.clientX;
-    y0 = e.clientY;
-    dragging = false;
-    steps = 0;
-  });
-  facade.addEventListener('pointermove', (e) => {
-    if (e.pointerId !== id) return;
-    const dx = e.clientX - x0;
-    const dy = e.clientY - y0;
-    if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-      dragging = true;
-      try {
-        facade.setPointerCapture(id);
-      } catch {
-        /* puntero ya liberado */
-      }
-    }
-    if (!dragging) return;
-    const s = Math.round(dx / STEP_PX);
-    if (s !== steps) {
-      steps = s;
-      discs.forEach((d) => d.style.setProperty('--zt-drag', `${(base + steps) * 30}deg`));
-      buzz(4);
-    }
-  });
-  const end = () => {
-    if (dragging) {
-      base += steps;
-      swallow = true;
-      setTimeout(() => (swallow = false), 80);
-    }
-    dragging = false;
-    id = -1;
-  };
-  facade.addEventListener('pointerup', end);
-  facade.addEventListener('pointercancel', end);
-  facade.addEventListener(
-    'click',
-    (e) => {
-      if (swallow) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
-    },
-    true,
-  );
 }
 
 /* ---- Marquee: pausa manual ------------------------------------------------ */
@@ -251,7 +199,7 @@ function setupHero() {
   }
 }
 
-/* ---- Portadas generativas y campo moiré: solo cuando se acercan ------------ */
+/* ---- Portadas generativas, vinilo y campo moiré: solo cuando se acercan ----- */
 function lazyWhenNear(selector: string, load: (els: HTMLElement[]) => void) {
   const els = Array.from(document.querySelectorAll<HTMLElement>(selector));
   if (!els.length) return;
@@ -269,6 +217,8 @@ function lazyWhenNear(selector: string, load: (els: HTMLElement[]) => void) {
 }
 function setupGenerative() {
   lazyWhenNear('[data-gen]', () => void import('./gen-media'));
+  // Vinilo del reproductor (sello, fachada y mini del dock): un solo ángulo de giro para todos
+  lazyWhenNear('[data-disc]', () => void import('./disc'));
   lazyWhenNear('[data-moire-host]', (els) =>
     void import('./moire').then((m) =>
       els.forEach((host) => {
@@ -279,49 +229,10 @@ function setupGenerative() {
   );
 }
 
-/* ---- Disco zoótropo: avanza un cuadro por tramo de scroll ------------------
-   Amortiguado: como máximo un cuadro cada 70 ms, así un fling largo no se vuelve
-   un estroboscopio (antes saltaba ~50 cuadros en pocos frames). */
-function setupZoetrope() {
-  if (!motionOn || !('IntersectionObserver' in window)) return;
-  const scope = document.querySelector<HTMLElement>('[data-zt-scope]');
-  if (!scope) return;
-  const discs = Array.from(scope.querySelectorAll<HTMLElement>('[data-zoetrope]'));
-  let cur = Math.floor(window.scrollY / 56);
-  let target = cur;
-  let lastStep = 0;
-  let raf = 0;
-  const apply = () => discs.forEach((d) => d.style.setProperty('--zt-rot', `${(((cur % 12) + 12) % 12) * 30}deg`));
-  const tick = (now: number) => {
-    raf = 0;
-    if (cur === target) return;
-    if (now - lastStep >= 70) {
-      cur += Math.sign(target - cur);
-      lastStep = now;
-      apply();
-    }
-    raf = requestAnimationFrame(tick);
-  };
-  const onScroll = () => {
-    target = Math.floor(window.scrollY / 56);
-    if (Math.abs(target - cur) > 12) cur = target - Math.sign(target - cur) * 12;
-    if (!raf) raf = requestAnimationFrame(tick);
-  };
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting) {
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    } else {
-      window.removeEventListener('scroll', onScroll);
-    }
-  }).observe(scope);
-}
-
 setupReveals();
 setupHeader();
 setupHero();
 setupGenerative();
-setupZoetrope();
 const menu = setupMenu();
 setupDock(menu);
 setupCarousels();

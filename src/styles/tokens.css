@@ -8,7 +8,7 @@
    líneas concéntricas; plata fría como único neutro; un solo acento
    iridiscente (rosa) usado en gotas, nunca como superficie.
    Referencia: tablero "Portadas" (metal líquido/cromo, vidrio, moiré,
-   topografía, grano, scanlines, zoótropo). Ver README, sección Estética.
+   topografía, grano, scanlines, vinilo). Ver README, sección Estética.
    ========================================================================== */
 
 :root {
@@ -119,7 +119,7 @@
 
   /* ---- Formas --------------------------------------------------------------
      Esquinas vivas (industrial); lo redondo queda para discos y botones de
-     reproducción, que remiten al vinilo y al zoótropo. */
+     reproducción, que remiten al vinilo. */
   --radius-ui: 0;
   --radius-card: 0;
   --radius-round: 999px;
@@ -149,7 +149,7 @@
 
   /* ---- Movimiento -----------------------------------------------------------
      Carácter: pesado y viscoso (metal líquido), con cortes secos a saltos
-     (zoótropo, glitch). Nada rebota. */
+     (glitch, plato que gira). Nada rebota. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -162,9 +162,10 @@
   --stagger-word: 90ms;
   --stagger-item: 90ms;
   --marquee-dur: 60s;
-  --zoetrope-steps: 12;
-  --zoetrope-idle: 14s;
-  --zoetrope-live: 1.6s;
+  /* Vinilo del reproductor (scripts/disc.ts lo lee): vueltas completas. En vivo = 33 1/3 rpm. */
+  --disc-idle: 140s;
+  --disc-hover: 11s;
+  --disc-live: 1.8s;
   /* Lenguaje táctil: al apoyar el dedo (:active) el elemento se hunde y se
      ilumina de inmediato; al soltar vuelve lento. Cortes secos, sin rebote. */
   --dur-press: 70ms;

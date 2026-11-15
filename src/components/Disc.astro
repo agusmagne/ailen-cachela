@@ -1,0 +1,168 @@
+---
+/**
+ * Vinilo de cromo líquido negro. Tres tamaños, el mismo objeto:
+ *  - lg: la fachada del reproductor. Cara dibujada por el shader del hero en modo "disco"
+ *    (chrome.ts: surcos, cuñas anisotrópicas, metal que se deforma lento), sobre un respaldo
+ *    CSS completo (sin JS o sin WebGL se ve el disco CSS, sin movimiento).
+ *  - sm: sello junto a la etiqueta "Reproductor" y mini del dock. Solo CSS, sin WebGL.
+ * Capas: cara (cuñas fijas respecto de la luz, como en un disco real) + surcos + canvas (lg)
+ * + capa que gira (rayones en arco y un punto de acento) + canto + etiqueta (sm) o ranura (lg).
+ * El giro lo maneja scripts/disc.ts (un solo ángulo para todos los discos de la página).
+ * Los ángulos de las cuñas deben coincidir con L del shader (0,62 rad: 54,5 deg en conic CSS).
+ * Colores: solo variables de tokens.css.
+ */
+interface Props { size?: 'lg' | 'sm'; class?: string }
+const { size = 'sm', class: cls } = Astro.props;
+const lg = size === 'lg';
+---
+
+<span class:list={['disc', `disc--${size}`, cls]} data-disc={size} aria-hidden="true">
+  <span class="disc__body">
+    <span class="disc__face"></span>
+    <span class="disc__grooves"></span>
+    {lg && <canvas class="disc__gl" data-disc-gl></canvas>}
+    <span class="disc__spin" data-disc-spin>
+      {lg && <><i class="disc__scuff disc__scuff--a"></i><i class="disc__scuff disc__scuff--b"></i><i class="disc__scuff disc__scuff--c"></i><i class="disc__scuff disc__scuff--d"></i></>}
+      <b class="disc__dot"></b>
+    </span>
+  </span>
+  <span class="disc__rim"></span>
+  {!lg && <span class="disc__label"></span>}
+  <slot />
+</span>
+
+<style>
+  .disc {
+    --groove: max(2px, 1.15cqw);
+    --silver: color-mix(in srgb, var(--chrome-100) 62%, transparent);
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    container-type: inline-size;
+    border-radius: var(--radius-round);
+    background: var(--void);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--chrome-600) 80%, transparent),
+      0 0 4rem -1.2rem color-mix(in srgb, var(--chrome-300) 26%, transparent);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .disc__body { position: absolute; inset: 0; overflow: hidden; border-radius: var(--radius-round); }
+  .disc__body > * { position: absolute; inset: 0; display: block; border-radius: var(--radius-round); }
+
+  /* Cara de respaldo: cuñas opuestas (periodo de 180 deg) + dos manchas de metal líquido */
+  .disc__face {
+    background:
+      repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        transparent 22deg,
+        color-mix(in srgb, var(--chrome-300) 26%, transparent) 40deg,
+        var(--silver) 54.5deg,
+        color-mix(in srgb, var(--chrome-300) 24%, transparent) 70deg,
+        transparent 86deg,
+        transparent 92deg,
+        color-mix(in srgb, var(--chrome-300) 38%, transparent) 99.2deg,
+        transparent 106deg,
+        transparent 140deg,
+        color-mix(in srgb, var(--chrome-400) 34%, transparent) 153deg,
+        transparent 166deg,
+        transparent 180deg
+      ),
+      radial-gradient(48% 36% at 30% 26%, color-mix(in srgb, var(--chrome-300) 20%, transparent), transparent 72%),
+      radial-gradient(40% 30% at 70% 76%, color-mix(in srgb, var(--chrome-400) 14%, transparent), transparent 74%),
+      radial-gradient(circle at 50% 50%, var(--chrome-800), var(--bg) 62%, var(--void));
+  }
+  /* Surcos: franjas oscuras sobre las cuñas, solo en la zona de surcos (38 % a 92 % del radio) */
+  .disc__grooves {
+    background: repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0,
+      transparent calc(var(--groove) * 0.45),
+      color-mix(in srgb, var(--void) 62%, transparent) calc(var(--groove) * 0.45),
+      color-mix(in srgb, var(--void) 62%, transparent) var(--groove)
+    );
+    -webkit-mask-image: radial-gradient(circle closest-side, transparent 37%, #000 38.5%, #000 92%, transparent 93.5%);
+    mask-image: radial-gradient(circle closest-side, transparent 37%, #000 38.5%, #000 92%, transparent 93.5%);
+  }
+  .disc__gl { width: 100%; height: 100%; opacity: 0; transition: opacity var(--dur-slow) var(--ease); }
+  :global(.disc.is-gl) .disc__gl { opacity: 1; }
+  :global(.disc.is-gl) .disc__face,
+  :global(.disc.is-gl) .disc__grooves { visibility: hidden; }
+
+  /* Capa que gira: las cuñas quedan fijas con la luz, lo que se mueve son las marcas */
+  .disc__spin { will-change: transform; }
+  .disc__spin > * { position: absolute; display: block; border-radius: var(--radius-round); }
+  .disc__scuff {
+    inset: 0;
+    --from: 0deg;
+    --len: 40deg;
+    --a: 22%;
+    --r: 60%;
+    --w: 0.7%;
+    background: conic-gradient(
+      from var(--from) at 50% 50%,
+      transparent 0deg,
+      color-mix(in srgb, var(--chrome-50) var(--a), transparent) calc(var(--len) * 0.5),
+      transparent var(--len),
+      transparent 360deg
+    );
+    -webkit-mask-image: radial-gradient(circle closest-side, transparent calc(var(--r) - var(--w)), #000 calc(var(--r) - var(--w)), #000 var(--r), transparent var(--r));
+    mask-image: radial-gradient(circle closest-side, transparent calc(var(--r) - var(--w)), #000 calc(var(--r) - var(--w)), #000 var(--r), transparent var(--r));
+  }
+  .disc__scuff--a { --from: 20deg; --len: 52deg; --r: 48%; --a: 26%; }
+  .disc__scuff--b { --from: 150deg; --len: 30deg; --r: 66%; --a: 20%; --w: 0.5%; }
+  .disc__scuff--c { --from: 238deg; --len: 70deg; --r: 79%; --a: 16%; --w: 0.6%; }
+  .disc__scuff--d { --from: 318deg; --len: 22deg; --r: 87%; --a: 24%; --w: 0.45%; }
+  /* Único punto de acento: una gota rosa en el filo interior */
+  .disc__dot {
+    top: 3%;
+    left: 50%;
+    width: max(3px, 1.5cqw);
+    height: max(3px, 1.5cqw);
+    margin-left: calc(max(3px, 1.5cqw) / -2);
+    background: var(--accent);
+    box-shadow: 0 0 max(4px, 2.6cqw) color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  /* Canto: biselado con los mismos brillos que las cuñas */
+  .disc__rim {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-round);
+    pointer-events: none;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      var(--chrome-600) 0deg,
+      var(--chrome-500) 28deg,
+      var(--chrome-50) 54.5deg,
+      var(--chrome-500) 84deg,
+      var(--chrome-700) 118deg,
+      var(--chrome-300) 153deg,
+      var(--chrome-600) 190deg,
+      var(--chrome-500) 208deg,
+      var(--chrome-50) 234.5deg,
+      var(--chrome-500) 264deg,
+      var(--chrome-700) 300deg,
+      var(--chrome-300) 333deg,
+      var(--chrome-600) 360deg
+    );
+    -webkit-mask-image: radial-gradient(circle closest-side, transparent calc(100% - max(1.5px, 1.1cqw)), #000 calc(100% - max(1.5px, 1.1cqw)));
+    mask-image: radial-gradient(circle closest-side, transparent calc(100% - max(1.5px, 1.1cqw)), #000 calc(100% - max(1.5px, 1.1cqw)));
+  }
+
+  /* Etiqueta de los tamaños chicos (en lg es el botón de play de la fachada) */
+  .disc__label {
+    position: absolute;
+    inset: 33%;
+    border-radius: var(--radius-round);
+    background:
+      radial-gradient(circle at 50% 50%, var(--bg) 0 9%, transparent 10%),
+      conic-gradient(from 200deg, var(--chrome-200), var(--chrome-50) 20%, var(--chrome-300) 42%, var(--chrome-100) 64%, var(--chrome-400) 84%, var(--chrome-200));
+    box-shadow: 0 0 0 max(1px, 0.8cqw) var(--bg);
+  }
+  /* Chico: surcos más gruesos para que no se vuelvan gris liso */
+  .disc--sm { --groove: max(2.4px, 2.2cqw); }
+  .disc--sm .disc__grooves { opacity: 0.8; }
+</style>

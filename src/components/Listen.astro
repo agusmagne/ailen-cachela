@@ -3,7 +3,7 @@ import { site, t, type Lang } from '../lib/content';
 import Section from './Section.astro';
 import Marquee from './Marquee.astro';
 import SoundCloudFacade from './SoundCloudFacade.astro';
-import Zoetrope from './Zoetrope.astro';
+import Disc from './Disc.astro';
 import Glitch from './Glitch.astro';
 
 interface Props { lang: Lang }
@@ -24,10 +24,10 @@ const kindLabel = (k: string) => (k === 'track' ? t('listen_kind_track', lang) :
   <div class="listen__grid" class:list={{ 'listen__grid--single': !hero || tracks.length === 0 }}>
     {
       hero && (
-        <div class="listen__player" id="player" data-reveal data-zt-scope data-zt-state="idle">
+        <div class="listen__player" id="player" data-reveal data-disc-scope data-disc-state="idle">
           <div class="listen__head">
             <h3 class="label listen__label">{t('listen_player', lang)}</h3>
-            <Zoetrope class="listen__seal" />
+            <Disc class="listen__seal" />
           </div>
           <SoundCloudFacade title={hero.title} url={hero.url} lang={lang} />
         </div>
@@ -77,7 +77,7 @@ const kindLabel = (k: string) => (k === 'track' ? t('listen_kind_track', lang) :
   .listen__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); margin-bottom: var(--space-xs); }
   .listen__label { margin: 0; }
   .listen__list > .listen__label { margin-bottom: var(--space-xs); }
-  /* Sello: el mismo disco, chico, indica el estado (reposo / reproduciendo) */
+  /* Sello: el mismo disco, chico: gira con el hover y con el estado (reposo / reproduciendo) */
   .listen__head :global(.listen__seal) { width: 2.75rem; flex: none; }
   /* Numeración por contador: en móvil el track destacado (ya está en el reproductor) se
      oculta y la lista sigue contando 01, 02, 03 sin saltos */

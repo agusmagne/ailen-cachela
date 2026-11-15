@@ -1,7 +1,7 @@
 ---
 import { site, t, type Lang } from '../lib/content';
 import { isVisible } from '../lib/sections';
-import Zoetrope from './Zoetrope.astro';
+import Disc from './Disc.astro';
 
 /**
  * Dock inferior (solo móvil, solo con JS): la acción principal al alcance del
@@ -27,8 +27,8 @@ const booking = isVisible('contacto');
           </a>
         )}
         {listen && featured && (
-          <a class="dock__mini" href="#player" data-dock-mini data-zt-state="live" aria-label={`${t('dock_player', lang)}: ${featured.title}`}>
-            <Zoetrope class="dock__seal" />
+          <a class="dock__mini" href="#player" data-dock-mini aria-label={`${t('dock_player', lang)}: ${featured.title}`}>
+            <Disc class="dock__seal" />
             <span class="dock__text">
               <span class="label dock__kicker">{t('dock_player_short', lang)}</span>
               <span class="dock__title" aria-hidden="true">{featured.title}</span>

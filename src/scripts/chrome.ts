@@ -32,7 +32,7 @@ function readColors(): Vec3[] {
 
 const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
 
-const FRAG = `
+const COMMON = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -47,6 +47,7 @@ uniform vec2 uSeed;
 uniform float uScale;
 uniform float uDim;
 uniform float uAA;
+uniform float uLight;
 uniform vec3 cVoid, cShadow, cSilver, cCool, cPink, cBlue, cSand;
 
 vec2 hash22(vec2 p){
@@ -94,7 +95,9 @@ float hash12(vec2 p){
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
+`;
 
+const FIELD_MAIN = `
 void main(){
   vec2 uv = (gl_FragCoord.xy - .5 * uRes) / min(uRes.x, uRes.y);
   vec2 p = uv * uScale + uSeed;
@@ -148,6 +151,90 @@ void main(){
 }
 `;
 
+const FRAG = COMMON + FIELD_MAIN;
+
+/**
+ * Cara del vinilo (modo "disco"): coordenadas polares sobre el mismo metal líquido.
+ * Surcos concéntricos finos (con variación por surco y huecos entre temas), reflejo
+ * anisotrópico en forma de cuña (dos lóbulos opuestos, con borde que ondula con el
+ * líquido), película iridiscente apenas insinuada y un anillo oscuro alrededor de la
+ * etiqueta. El canto y la etiqueta los pone el CSS (Disc.astro). Las cuñas son fijas
+ * respecto de la luz, como en un disco real: lo que gira son las marcas de la capa CSS.
+ */
+const DISC_MAIN = `
+float wedge(float a, float c, float w){
+  float d = abs(mod(a - c + 1.5708, 3.14159) - 1.5708);
+  return exp(-d * d / (w * w));
+}
+float gap(float r, float c, float px){
+  return smoothstep(.0065 + px, .0025, abs(r - c));
+}
+
+void main(){
+  float m = min(uRes.x, uRes.y);
+  vec2 uv = (gl_FragCoord.xy - .5 * uRes) / (.5 * m);
+  float px = 2. / m;
+  float r = length(uv);
+  float t = uTime;
+
+  // metal líquido de la cara: el mismo domain warping del hero, fijo respecto de la luz
+  vec2 p = uv * .72 + vec2(3.1, 1.7);
+  vec2 b = p * .75;
+  vec2 q = vec2(fbm3(b + vec2(0., t * .5)), fbm3(b + vec2(5.2, 1.3) - vec2(t * .4, 0.)));
+  vec2 rr = vec2(fbm3(b + 2.6 * q + vec2(1.7, 9.2) + t * .3), fbm3(b + 2.6 * q + vec2(8.3, 2.8) - t * .25));
+  vec2 w = 1.8 * rr;
+  float eps = .02;
+  float h  = fbm3(p * .8 + w);
+  float hx = fbm3((p + vec2(eps, 0.)) * .8 + w);
+  float hy = fbm3((p + vec2(0., eps)) * .8 + w);
+  vec3 n = normalize(vec3(-(hx - h) / eps * .5, -(hy - h) / eps * .5, 1.));
+  vec3 liquid = studio(vec3(0., 0., -1.) + 2. * n.z * n);
+
+  // surcos: periodo en píxeles con piso, así no hay moiré con resoluciones bajas
+  float period = max(.0115, 3.2 * px);
+  float gr = r / period;
+  float g = .5 + .5 * cos(6.2832 * gr);
+  float jit = hash12(vec2(floor(gr), 7.3));
+  float groove = (.5 + .5 * g) * (.8 + .4 * jit);
+  float gaps = max(max(gap(r, .525, px), gap(r, .652, px)), max(gap(r, .758, px), gap(r, .846, px)));
+  float zone = smoothstep(.374, .384, r) * (1. - smoothstep(.918, .93, r));
+  float tex = mix(1., groove, zone * (1. - gaps));
+
+  // reflejo anisotrópico: cuñas opuestas cuyo borde ondula con el líquido
+  float a = atan(uv.y, uv.x);
+  float warp = .3 * fbm3(vec2(r * 2.3, t * .6) + vec2(2., 5.)) + .1 * sin(r * 6. + t * .8);
+  float L = .62 + uLight;
+  float aa = a + warp;
+  float sh = 1.35 * wedge(aa, L, .26) + .62 * wedge(aa, L + 1.42, .13) + .4 * wedge(aa, L - .78, .075);
+  sh *= mix(.5, 1., smoothstep(.36, .95, r)) * (.72 + .55 * smoothstep(-.25, .3, h));
+  vec3 wcol = mix(cCool, cSilver, smoothstep(.2, .9, sh));
+
+  vec3 col = liquid * .36 * (.45 + .55 * tex) + wcol * sh * tex * 1.1;
+  col += liquid * .45 * gaps * zone;
+
+  // película delgada, apenas: rosa / azul / arena donde el brillo es más fuerte
+  float thick = h * 2.4 + r * 3. + sh * .6;
+  vec3 film = .5 + .5 * cos(6.2832 * (thick + vec3(0., .33, .67)));
+  vec3 iris = mix(mix(cPink, cBlue, film.g), cSand, film.b * .45);
+  col += iris * sh * sh * tex * .11 * zone;
+
+  // anillo oscuro y filo fino alrededor de la etiqueta
+  float ring = smoothstep(.33, .345, r) * (1. - smoothstep(.368, .376, r));
+  col *= 1. - .65 * ring;
+  col += cSilver * smoothstep(px * 1.6, 0., abs(r - .378)) * (.1 + .35 * sh);
+  // filo del fin de los surcos
+  col += cSilver * smoothstep(px * 1.6, 0., abs(r - .934)) * (.08 + .3 * sh);
+
+  col = pow(col, vec3(1.42)) * 1.12;
+  col = mix(cVoid, col, .97);
+  col *= 1. - smoothstep(.984, .998, r) * .85;
+  col += (hash12(gl_FragCoord.xy + uTime) - .5) / 220.;
+  gl_FragColor = vec4(max(col, cVoid * .8), 1.);
+}
+`;
+
+const DISC_FRAG = COMMON + DISC_MAIN;
+
 interface DrawParams {
   w: number;
   h: number;
@@ -160,9 +247,15 @@ interface DrawParams {
   dim?: number;
 }
 
+interface Program {
+  prog: WebGLProgram;
+  u: Record<string, WebGLUniformLocation | null>;
+}
+type Mode = 'field' | 'disc';
+
 class ChromeGL {
   gl: WebGLRenderingContext;
-  private u: Record<string, WebGLUniformLocation | null> = {};
+  private progs: Partial<Record<Mode, Program>> = {};
   private colors: Vec3[];
 
   constructor(public canvas: HTMLCanvasElement, preserve = false) {
@@ -176,48 +269,78 @@ class ChromeGL {
     });
     if (!gl) throw new Error('webgl');
     this.gl = gl;
-    const sh = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error('shader: ' + gl.getShaderInfoLog(s));
-      return s;
-    };
-    const prog = gl.createProgram()!;
-    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
-    gl.useProgram(prog);
+    this.colors = readColors();
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, 'p');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    for (const n of ['uRes', 'uTime', 'uPtr', 'uPtrAmt', 'uScroll', 'uSeed', 'uScale', 'uDim', 'uAA']) this.u[n] = gl.getUniformLocation(prog, n);
-    this.colors = readColors();
-    const names = ['cVoid', 'cShadow', 'cSilver', 'cCool', 'cPink', 'cBlue', 'cSand'];
-    names.forEach((n, i) => gl.uniform3fv(gl.getUniformLocation(prog, n), this.colors[i]));
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    this.use('field'); // compila ya: si falla, el constructor lanza y quedan los respaldos CSS
+  }
+
+  /** Compila (una sola vez por contexto) y activa el programa del modo. Un contexto sirve a todos los modos. */
+  private use(mode: Mode): Program {
+    const { gl } = this;
+    let pr = this.progs[mode];
+    if (!pr) {
+      const sh = (type: number, src: string) => {
+        const s = gl.createShader(type)!;
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error('shader: ' + gl.getShaderInfoLog(s));
+        return s;
+      };
+      const prog = gl.createProgram()!;
+      gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
+      gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, mode === 'disc' ? DISC_FRAG : FRAG));
+      gl.bindAttribLocation(prog, 0, 'p');
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
+      gl.useProgram(prog);
+      const u: Program['u'] = {};
+      for (const n of ['uRes', 'uTime', 'uPtr', 'uPtrAmt', 'uScroll', 'uSeed', 'uScale', 'uDim', 'uAA', 'uLight']) u[n] = gl.getUniformLocation(prog, n);
+      const names = ['cVoid', 'cShadow', 'cSilver', 'cCool', 'cPink', 'cBlue', 'cSand'];
+      names.forEach((n, i) => gl.uniform3fv(gl.getUniformLocation(prog, n), this.colors[i]));
+      pr = this.progs[mode] = { prog, u };
+    }
+    gl.useProgram(pr.prog);
+    return pr;
+  }
+
+  private size(w: number, h: number) {
+    const { gl, canvas } = this;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    gl.viewport(0, 0, w, h);
   }
 
   draw(p: DrawParams) {
-    const { gl, canvas } = this;
-    if (canvas.width !== p.w || canvas.height !== p.h) {
-      canvas.width = p.w;
-      canvas.height = p.h;
-    }
-    gl.viewport(0, 0, p.w, p.h);
-    gl.uniform2f(this.u.uRes, p.w, p.h);
-    gl.uniform1f(this.u.uTime, p.time);
-    gl.uniform2f(this.u.uPtr, p.ptr?.[0] ?? 9, p.ptr?.[1] ?? 9);
-    gl.uniform1f(this.u.uPtrAmt, p.ptrAmt ?? 0);
-    gl.uniform1f(this.u.uScroll, p.scroll ?? 0);
-    gl.uniform2f(this.u.uSeed, p.seed?.[0] ?? 0, p.seed?.[1] ?? 0);
-    gl.uniform1f(this.u.uScale, p.scale ?? 1.7);
-    gl.uniform1f(this.u.uDim, p.dim ?? 0);
+    const { gl } = this;
+    const { u } = this.use('field');
+    this.size(p.w, p.h);
+    gl.uniform2f(u.uRes, p.w, p.h);
+    gl.uniform1f(u.uTime, p.time);
+    gl.uniform2f(u.uPtr, p.ptr?.[0] ?? 9, p.ptr?.[1] ?? 9);
+    gl.uniform1f(u.uPtrAmt, p.ptrAmt ?? 0);
+    gl.uniform1f(u.uScroll, p.scroll ?? 0);
+    gl.uniform2f(u.uSeed, p.seed?.[0] ?? 0, p.seed?.[1] ?? 0);
+    gl.uniform1f(u.uScale, p.scale ?? 1.7);
+    gl.uniform1f(u.uDim, p.dim ?? 0);
     // píxeles gruesos (móvil, portadas chicas): afinar menos las tiras de luz para que no se vean como puntos
-    gl.uniform1f(this.u.uAA, Math.min(2.2, Math.max(1, 640 / Math.min(p.w, p.h))));
+    gl.uniform1f(u.uAA, Math.min(2.2, Math.max(1, 640 / Math.min(p.w, p.h))));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  drawDisc(size: number, time: number, light: number) {
+    const { gl } = this;
+    const { u } = this.use('disc');
+    this.size(size, size);
+    gl.uniform2f(u.uRes, size, size);
+    gl.uniform1f(u.uTime, time);
+    gl.uniform1f(u.uLight, light);
+    gl.uniform1f(u.uAA, Math.min(2.2, Math.max(1, 640 / size)));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
@@ -489,7 +612,13 @@ let shared: ChromeGL | null | undefined;
 function sharedGL(): ChromeGL | null {
   if (shared === undefined) {
     try {
-      shared = new ChromeGL(document.createElement('canvas'));
+      const c = document.createElement('canvas');
+      // Si el navegador reclama el contexto compartido, se recrea en el próximo dibujo (lo ya pintado queda en cada canvas 2D)
+      c.addEventListener('webglcontextlost', (e) => {
+        e.preventDefault();
+        shared = undefined;
+      });
+      shared = new ChromeGL(c);
     } catch {
       shared = null;
     }
@@ -502,6 +631,20 @@ export function drawChromeStill(target: HTMLCanvasElement, seed: [number, number
   const ctx = target.getContext('2d');
   if (!g || !ctx) return false;
   g.draw({ w: target.width, h: target.height, time, seed, scale, ptrAmt: 0, dim });
+  ctx.drawImage(g.canvas, 0, 0);
+  return true;
+}
+
+/** Cara del vinilo del reproductor (Disc.astro): mismo contexto compartido, un cuadro por llamada. */
+export function drawChromeDisc(target: HTMLCanvasElement, time: number, light = 0): boolean {
+  const g = sharedGL();
+  const ctx = target.getContext('2d');
+  if (!g || !ctx) return false;
+  try {
+    g.drawDisc(target.width, time, light);
+  } catch {
+    return false; // el shader del disco no compiló: queda el disco CSS
+  }
   ctx.drawImage(g.canvas, 0, 0);
   return true;
 }

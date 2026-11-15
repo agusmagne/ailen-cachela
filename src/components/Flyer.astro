@@ -1,0 +1,124 @@
+---
+/**
+ * Flyer generativo de una fecha (decorativo, aria-hidden). Mismo motor que las portadas:
+ * campo de cromo del shader (src/scripts/chrome.ts, lo dibuja src/scripts/gen-media.ts, solo
+ * al acercarse a la pantalla, con un único contexto WebGL compartido) más trazos SVG hechos
+ * en el build. La semilla y los rasgos salen del id y de datos reales del evento: ver
+ * src/lib/flyer.ts. Sin JS ni WebGL queda el degradé CSS + los trazos SVG.
+ * Se posiciona absoluto dentro de su contenedor (no ocupa lugar: sin layout shift).
+ * tier "next": pieza protagonista (dos recortes, ancho para escritorio y alto para móvil);
+ * tier "card": versión contenida.
+ */
+import { flyerSpec, flyerShapes } from '../lib/flyer';
+import type { Show } from '../lib/show-map';
+
+interface Props { show: Show; tier?: 'next' | 'card' }
+const { show, tier = 'card' } = Astro.props;
+const spec = flyerSpec(show);
+const dim = show.status === 'cancelled' ? 0.72 : show.status === 'soldout' ? 0.62 : tier === 'next' ? 0.38 : 0.55;
+const scale = +(spec.scale * (tier === 'next' ? 1 : 1.12)).toFixed(3);
+// recortes: cuadrado (tarjeta y móvil) y apaisado (primera fecha en escritorio)
+const frames = tier === 'next' ? [{ key: 'tall', w: 100 }, { key: 'wide', w: 150 }] : [{ key: 'tall', w: 100 }];
+const base = `--g-a:${Math.round(spec.seedA * 9)}deg;--g-x:${Math.round(spec.fx * 100)}%;--g-y:${Math.round(spec.fy * 100)}%`;
+---
+
+<div
+  class:list={['flyer', `flyer--${tier}`, `flyer--${show.status}`]}
+  aria-hidden="true"
+  data-gen
+  data-variant="flyer"
+  data-live={tier === 'next' ? 'view' : 'hover'}
+  data-seed-a={spec.seedA}
+  data-seed-b={spec.seedB}
+  data-t0={spec.t0}
+  data-scale={scale}
+  data-dim={dim}
+  style={base}
+>
+  <div class="flyer__base"></div>
+  <canvas class="flyer__canvas" data-gen-canvas></canvas>
+  {
+    frames.map((f) => {
+      const g = flyerShapes(spec, f.w);
+      return (
+        <svg class={`flyer__svg flyer__svg--${f.key}`} viewBox={`0 0 ${f.w} 100`} preserveAspectRatio="xMidYMid slice" focusable="false">
+          <g class="flyer__field">
+            {g.lines.map((l) => <line class:list={['flyer__ln', { 'is-strong': l.strong }]} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />)}
+            {g.rings.map((r) => <circle class:list={['flyer__ln', { 'is-strong': r.strong, 'is-alt': r.alt }]} cx={r.cx} cy={r.cy} r={r.r} />)}
+            {g.arcs.map((a) => <path class:list={['flyer__ln', { 'is-strong': a.strong }]} d={a.d} />)}
+          </g>
+          <g class="flyer__dial">
+            {g.ticks.map((t) => <line class:list={['flyer__tick', { 'is-day': t.day }]} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />)}
+            {g.hour && <line class="flyer__hour" x1={g.hour.x1} y1={g.hour.y1} x2={g.hour.x2} y2={g.hour.y2} />}
+          </g>
+          {show.status === 'cancelled' && (
+            <g class="flyer__x">
+              <line x1="0" y1="0" x2={f.w} y2="100" />
+              <line x1={f.w} y1="0" x2="0" y2="100" />
+            </g>
+          )}
+          {show.status === 'soldout' && <circle class="flyer__full" cx={g.cx} cy={g.cy} r={+(g.tickR - 1.6).toFixed(2)} />}
+          <path class="flyer__corners" d={`M3 8V3H8M${f.w - 8} 3H${f.w - 3}V8M${f.w - 3} 92V97H${f.w - 8}M8 97H3V92`} />
+        </svg>
+      );
+    })
+  }
+</div>
+
+<style>
+  .flyer { position: absolute; inset: 0; overflow: hidden; background: var(--void); pointer-events: none; }
+  /* Respaldo sin WebGL ni JS: plata sobre negro, con el foco del flyer */
+  .flyer__base {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(45% 38% at var(--g-x) var(--g-y), color-mix(in srgb, var(--chrome-200) 26%, transparent), transparent 72%),
+      conic-gradient(from var(--g-a) at var(--g-x) var(--g-y), var(--void), var(--chrome-700), var(--void) 22%, var(--chrome-500) 38%, var(--void) 52%, var(--chrome-600) 70%, var(--void));
+  }
+  .flyer__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
+  }
+  .flyer__canvas.is-live { opacity: 1; }
+  /* Velo oscuro a la izquierda y abajo: el día, el mes y los textos de la ficha se leen primero */
+  .flyer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(100deg, color-mix(in srgb, var(--void) 88%, transparent) 0%, color-mix(in srgb, var(--void) 62%, transparent) 45%, color-mix(in srgb, var(--void) 10%, transparent) 100%),
+      radial-gradient(120% 100% at 50% 45%, transparent 55%, color-mix(in srgb, var(--void) 70%, transparent) 100%);
+  }
+
+  .flyer__svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  .flyer__svg--wide { display: none; }
+  @media (min-width: 52.01rem) {
+    .flyer--next .flyer__svg--tall { display: none; }
+    .flyer--next .flyer__svg--wide { display: block; }
+  }
+  .flyer__ln { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .flyer__ln.is-strong { stroke-opacity: 0.6; }
+  .flyer__ln.is-alt { stroke: var(--chrome-300); stroke-opacity: 0.4; }
+  .flyer__tick { stroke: var(--chrome-200); stroke-opacity: 0.55; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  /* El único acento: la marca del día del mes */
+  .flyer__tick.is-day { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+  .flyer__hour { stroke: var(--chrome-50); stroke-opacity: 0.8; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .flyer__corners { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.55; stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+  /* Estados: la forma cambia (no solo el color) */
+  .flyer--soldout .flyer__canvas,
+  .flyer--soldout .flyer__base { filter: grayscale(1) brightness(0.8); }
+  .flyer--soldout .flyer__tick.is-day { stroke: var(--chrome-50); }
+  /* Agotado: el anillo del dial se cierra (lleno) */
+  .flyer__full { fill: none; stroke: var(--chrome-50); stroke-opacity: 0.75; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .flyer--cancelled .flyer__canvas,
+  .flyer--cancelled .flyer__base { filter: grayscale(1) brightness(0.65); }
+  .flyer--cancelled .flyer__ln { stroke-dasharray: 3 4; }
+  .flyer--cancelled .flyer__tick.is-day { stroke: var(--chrome-200); }
+  .flyer__x line { stroke: var(--chrome-100); stroke-opacity: 0.65; stroke-width: 1; vector-effect: non-scaling-stroke; }
+</style>

@@ -3,6 +3,7 @@ import { site, t, formatDate, link, type Lang } from '../lib/content';
 import { getShows } from '../lib/shows';
 import { countryLabel, linkify, showDate, showEndTime, showTime, type Show } from '../lib/show-map';
 import Section from './Section.astro';
+import Flyer from './Flyer.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -85,7 +86,10 @@ const empty = upcoming.length === 0;
               const ticket = s.url && s.status === 'scheduled';
               const info = s.url && s.status === 'soldout';
               return (
-                <li class:list={['show', `show--${s.status}`, { 'show--next': i === 0 && s.status !== 'cancelled' }]} data-reveal style={`--reveal-delay:${Math.min(i, 5) * 90}ms`}>
+                <li class:list={['show', `show--${s.status}`, { 'show--next': i === 0 && s.status !== 'cancelled' }]} data-gen-host data-reveal style={`--reveal-delay:${Math.min(i, 5) * 90}ms`}>
+                  <div class="show__art" aria-hidden="true">
+                    <Flyer show={s} tier={i === 0 && s.status !== 'cancelled' ? 'next' : 'card'} />
+                  </div>
                   <time class="when" datetime={p.iso}>
                     <span class="when__wd label">{p.wd}</span>
                     <span class="when__day display">{p.day}</span>
@@ -246,16 +250,21 @@ const empty = upcoming.length === 0;
     background: var(--glint);
     pointer-events: none;
   }
-  .show--next { --when-w: clamp(11rem, 20vw, 15rem); border-color: var(--line-strong); }
+  .show--next { --when-w: clamp(11rem, 26vw, 20rem); border-color: var(--line-strong); }
   .show--next::before { height: 2px; background: var(--iris); }
 
+  /* El flyer vive en la misma celda que la fecha (detrás): no agrega alto a la ficha */
+  .show__art { grid-column: 1; grid-row: 1; position: relative; overflow: hidden; border-right: var(--divider); min-height: 8.5rem; }
   .when {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
     display: grid;
     align-content: center;
     justify-items: start;
     gap: var(--space-3xs);
     padding: var(--space-m);
-    border-right: var(--divider);
     color: var(--fg);
   }
   .when__wd { color: var(--accent); }
@@ -268,9 +277,11 @@ const empty = upcoming.length === 0;
   }
   .show--next .when__day { font-size: clamp(4.5rem, 10vw, 8rem); }
   .when__mon { color: var(--fg); white-space: nowrap; }
-  .when__year { color: var(--subtle); }
+  .when__year { color: var(--muted); }
 
   .show__body {
+    grid-column: 2;
+    grid-row: 1;
     display: grid;
     align-content: center;
     gap: var(--space-2xs);
@@ -306,6 +317,8 @@ const empty = upcoming.length === 0;
   }
 
   .show__actions {
+    grid-column: 3;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -401,13 +414,13 @@ const empty = upcoming.length === 0;
     .show { --when-w: 6.75rem; grid-template-columns: var(--when-w) minmax(0, 1fr); }
     .show--next { --when-w: 8rem; }
     .when {
-      grid-row: 1;
       padding: var(--space-s);
       align-content: start;
     }
     .when__day { font-size: clamp(2.75rem, 13vw, 3.5rem); }
     .show--next .when__day { font-size: clamp(3.25rem, 16vw, 4.5rem); }
-    .show__body { grid-row: 1; padding: var(--space-s); align-content: start; }
+    .show__art { min-height: 0; }
+    .show__body { padding: var(--space-s); align-content: start; }
     .show__title,
     .show--next .show__title { font-size: var(--step-1); }
     .show__actions {
