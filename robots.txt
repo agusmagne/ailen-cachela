@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agusmagne.github.io/ailen-cachela/sitemap-index.xml
