@@ -8,8 +8,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro",
-    "deploy": "sh scripts/deploy.sh"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.12",
