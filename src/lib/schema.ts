@@ -95,17 +95,23 @@ export const siteSchema = z
         })
         .strict(),
     ),
-    shows: z.array(
-      z
-        .object({
-          date: isoDate,
-          venue: z.string().min(1),
-          city: z.string().min(1),
-          country: z.string().regex(/^[A-Z]{2}$/, 'ISO 3166 alpha-2, 2 letras mayúsculas'),
-          url: optUrl.default(''),
-        })
-        .strict(),
-    ),
+    shows: z
+      .object({
+        // URL pública del calendario de iCloud (https:// o webcal://). Vacía = solo fechas manuales.
+        calendar_url: z.union([z.literal(''), z.string().regex(/^(https?|webcal):\/\/\S+$/i, 'URL https:// o webcal://')]),
+        manual: z.array(
+          z
+            .object({
+              date: isoDate,
+              venue: z.string().min(1),
+              city: z.string().min(1),
+              country: z.string().regex(/^[A-Z]{2}$/, 'ISO 3166 alpha-2, 2 letras mayúsculas'),
+              url: optUrl.default(''),
+            })
+            .strict(),
+        ),
+      })
+      .strict(),
     about: z
       .object({ bio: localized, bio_long: localized, photo: z.string(), photo_alt: localized })
       .strict(),

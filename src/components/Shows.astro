@@ -1,85 +1,193 @@
 ---
 import { site, t, formatDate, link, type Lang } from '../lib/content';
+import { getShows } from '../lib/shows';
+import { countryLabel, linkify, showDate, showEndTime, showTime, type Show } from '../lib/show-map';
 import Section from './Section.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const today = new Date().toISOString().slice(0, 10);
-const upcoming = site.shows.filter((s) => s.date >= today).sort((a, b) => a.date.localeCompare(b.date));
-const past = site.shows.filter((s) => s.date < today).sort((a, b) => b.date.localeCompare(a.date));
-const ig = link('instagram');
 
-const byMonth = (list: typeof upcoming) => {
-  const groups = new Map<string, typeof upcoming>();
-  for (const s of list) {
-    const key = s.date.slice(0, 7);
-    groups.set(key, [...(groups.get(key) ?? []), s]);
-  }
-  return [...groups.entries()].map(([key, items]) => ({
-    key,
-    label: formatDate(`${key}-01`, lang, { month: 'long', year: 'numeric' }),
-    items,
-  }));
+const { upcoming, past } = await getShows();
+const ig = link('instagram');
+const PAST_VISIBLE = 5; // el resto del archivo queda plegado
+const pastShown = past.slice(0, PAST_VISIBLE);
+const pastRest = past.slice(PAST_VISIBLE);
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+const parts = (s: Show) => {
+  const d = showDate(s);
+  return {
+    iso: d,
+    wd: formatDate(d, lang, { weekday: 'short' }),
+    day: formatDate(d, lang, { day: 'numeric' }),
+    mon: formatDate(d, lang, { month: 'short' }).replace(/\.$/, ''),
+    year: formatDate(d, lang, { year: 'numeric' }),
+  };
 };
-const groups = [
-  { id: 'upcoming', title: t('shows_upcoming', lang), months: byMonth(upcoming), empty: past.length > 0 && upcoming.length === 0 },
-  { id: 'past', title: t('shows_past', lang), months: byMonth(past), empty: false },
-].filter((g) => g.months.length > 0 || g.empty);
+const shortDate = (s: Show) => {
+  const p = parts(s);
+  return `${p.day.padStart(2, '0')} ${p.mon} ${p.year}`;
+};
+const placeOf = (s: Show) => {
+  const c = countryLabel(s, lang);
+  if (s.city) return [s.city, c].filter(Boolean).join(', ');
+  return [s.location, c].filter(Boolean).join(', ');
+};
+const timeOf = (s: Show) => {
+  const a = showTime(s);
+  if (!a) return s.end ? t('shows_until', lang, { date: formatDate(s.end, lang, { day: 'numeric', month: 'short' }).replace(/\./g, '') }) : '';
+  const b = showEndTime(s);
+  return t('shows_time', lang, { time: b ? `${a} – ${b}` : a });
+};
+const statusText = (s: Show) => (s.status === 'soldout' ? t('shows_status_soldout', lang) : s.status === 'cancelled' ? t('shows_status_cancelled', lang) : '');
+const noteLines = (s: Show) => (s.notes ? linkify(s.notes) : []);
+
+const empty = upcoming.length === 0;
 ---
 
 <Section id="fechas" title={t('shows_title', lang)}>
   <div class="moire" data-moire-host aria-hidden="true">
     <canvas class="moire__canvas" data-moire></canvas>
   </div>
-  {
-    site.shows.length === 0 ? (
-      <div class="empty" data-reveal>
-        <p class="empty__text display">{t('shows_none', lang)}</p>
-        <ul class="empty__actions">
-          {ig && ig.url && (
+
+  <div class="lists">
+    {
+      empty ? (
+        <div class="empty" data-reveal>
+          <p class="empty__text display">{t('shows_none', lang)}</p>
+          <ul class="empty__actions">
+            {ig && ig.url && (
+              <li>
+                <a class="btn" href={ig.url} target="_blank" rel="noopener noreferrer">
+                  {t('shows_follow', lang, { handle: ig.handle })}
+                  <span class="sr-only"> {t('new_tab', lang)}</span>
+                </a>
+              </li>
+            )}
             <li>
-              <a class="btn" href={ig.url} target="_blank" rel="noopener noreferrer">
-                {t('shows_follow', lang, { handle: ig.handle })}
-                <span class="sr-only"> {t('new_tab', lang)}</span>
-              </a>
+              <a class="btn" href={`mailto:${site.contact.email}`}>{t('shows_book', lang, { email: site.contact.email })}</a>
             </li>
-          )}
-          <li>
-            <a class="btn" href={`mailto:${site.contact.email}`}>{t('shows_book', lang, { email: site.contact.email })}</a>
-          </li>
-        </ul>
-      </div>
-    ) : (
-      <div class="lists">
-        {groups.map((g) => (
-          <div class="group" data-reveal>
-            <h3 class="label group__title">{g.title}</h3>
-            {g.months.length === 0 && <p class="empty__text">{t('shows_upcoming_none', lang)}</p>}
-            {g.months.map((m) => (
-              <div class="month">
-                <h4 class="month__name label">{m.label}</h4>
-                <ul>
-                  {m.items.map((s) => (
-                    <li class="show">
-                      <time class="show__date" datetime={s.date}>{formatDate(s.date, lang, { day: 'numeric', month: 'short' })}</time>
-                      <span class="show__venue">{s.venue}</span>
-                      <span class="show__place label">{s.city}, {s.country}</span>
-                      {s.url && (
-                        <a class="btn show__btn" href={s.url} target="_blank" rel="noopener noreferrer">
-                          {g.id === 'upcoming' ? t('shows_tickets', lang) : t('shows_info', lang)}
-                          <span class="sr-only">: {s.venue} {t('new_tab', lang)}</span>
+          </ul>
+        </div>
+      ) : (
+        <div class="group" data-reveal>
+          <h3 class="group__title label">
+            <span>{t('shows_upcoming', lang)}</span>
+            <span class="group__count">{t('shows_count', lang, { n: upcoming.length })}</span>
+          </h3>
+          <ul class="shows">
+            {upcoming.map((s, i) => {
+              const p = parts(s);
+              const place = placeOf(s);
+              const time = timeOf(s);
+              const notes = noteLines(s);
+              const status = statusText(s);
+              const ticket = s.url && s.status === 'scheduled';
+              const info = s.url && s.status === 'soldout';
+              return (
+                <li class:list={['show', `show--${s.status}`, { 'show--next': i === 0 && s.status !== 'cancelled' }]} data-reveal style={`--reveal-delay:${Math.min(i, 5) * 90}ms`}>
+                  <time class="when" datetime={p.iso}>
+                    <span class="when__wd label">{p.wd}</span>
+                    <span class="when__day display">{p.day}</span>
+                    <span class="when__mon label">{p.mon} <span class="when__year">{p.year}</span></span>
+                  </time>
+                  <div class="show__body">
+                    {(i === 0 && s.status !== 'cancelled') || status ? (
+                      <p class="show__tags">
+                        {i === 0 && s.status !== 'cancelled' && <span class="tag-next label">{t('shows_next', lang)}</span>}
+                        {status && <span class={`chip chip--${s.status}`}>{status}</span>}
+                      </p>
+                    ) : null}
+                    <h4 class="show__title display">{s.title}</h4>
+                    {place && <p class="show__place">{place}</p>}
+                    {s.address && s.city && <p class="show__address label">{s.address}</p>}
+                    {time && <p class="show__time label">{time}</p>}
+                    {notes.length > 0 && (
+                      <p class="show__notes">
+                        {notes.map((line, li) => (
+                          <>
+                            {li > 0 && <br />}
+                            {line.map((tok) =>
+                              tok.type === 'link' ? (
+                                <a class="link" href={tok.href} target="_blank" rel="noopener noreferrer">
+                                  {tok.text}
+                                  <span class="sr-only"> {t('new_tab', lang)}</span>
+                                </a>
+                              ) : (
+                                tok.text
+                              ),
+                            )}
+                          </>
+                        ))}
+                      </p>
+                    )}
+                  </div>
+                  {(ticket || info || s.mapUrl) && (
+                    <div class="show__actions">
+                      {ticket && (
+                        <a class="btn btn--primary" href={s.url!} target="_blank" rel="noopener noreferrer">
+                          {t('shows_tickets', lang)} <span class="arrow" aria-hidden="true">↗</span>
+                          <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
                         </a>
                       )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      {info && (
+                        <a class="btn" href={s.url!} target="_blank" rel="noopener noreferrer">
+                          {t('shows_info', lang)} <span class="arrow" aria-hidden="true">↗</span>
+                          <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
+                        </a>
+                      )}
+                      {s.mapUrl && (
+                        <a class="btn" href={s.mapUrl} target="_blank" rel="noopener noreferrer">
+                          {t('shows_directions', lang)} <span class="arrow" aria-hidden="true">↗</span>
+                          <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      past.length > 0 && (
+        <div class="group group--past" data-reveal>
+          <h3 class="group__title label">
+            <span>{t('shows_past', lang)}</span>
+            <span class="group__count">{pad2(past.length)}</span>
+          </h3>
+          <ul class="archive">
+            {pastShown.map((s) => (
+              <li class={`arow arow--${s.status}`}>
+                <time class="arow__date label" datetime={showDate(s)}>{shortDate(s)}</time>
+                <span class="arow__title">{s.title}</span>
+                <span class="arow__place label">{placeOf(s)}</span>
+                {statusText(s) && <span class={`chip chip--${s.status}`}>{statusText(s)}</span>}
+              </li>
             ))}
-          </div>
-        ))}
-      </div>
-    )
-  }
+          </ul>
+          {pastRest.length > 0 && (
+            <details class="more">
+              <summary class="more__summary label">{t('shows_more_past', lang, { n: pastRest.length })}</summary>
+              <ul class="archive">
+                {pastRest.map((s) => (
+                  <li class={`arow arow--${s.status}`}>
+                    <time class="arow__date label" datetime={showDate(s)}>{shortDate(s)}</time>
+                    <span class="arow__title">{s.title}</span>
+                    <span class="arow__place label">{placeOf(s)}</span>
+                    {statusText(s) && <span class={`chip chip--${s.status}`}>{statusText(s)}</span>}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      )
+    }
+  </div>
 </Section>
 
 <style>
@@ -100,36 +208,220 @@ const groups = [
     background: repeating-radial-gradient(circle at 72% 50%, transparent 0 6px, color-mix(in srgb, var(--chrome-500) 70%, transparent) 6px 7px);
   }
 
+  /* ---- Estado vacío (se conserva) ---- */
   .empty { display: grid; gap: var(--space-m); justify-items: start; }
   .empty__text { font-size: var(--step-3); line-height: 1.05; max-width: 16ch; }
   .empty__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
-  /* Móvil: las dos acciones son blancos grandes de ancho completo */
+  .empty__actions .btn { text-align: center; overflow-wrap: anywhere; background: color-mix(in srgb, var(--bg) 60%, transparent); }
+
+  .lists { display: grid; gap: var(--space-xl); }
+  .group__title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-bottom: var(--space-s);
+    padding-bottom: var(--space-2xs);
+    border-bottom: var(--divider);
+    text-transform: var(--case-ui);
+  }
+  .group__count { color: var(--subtle); }
+
+  /* ---- Próximas: fichas de cromo negro ---- */
+  .shows { display: grid; gap: var(--space-s); }
+  .show {
+    --when-w: 9.5rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--when-w) minmax(0, 1fr) auto;
+    align-items: stretch;
+    border: var(--divider);
+    background: color-mix(in srgb, var(--bg) 66%, transparent);
+  }
+  .show::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--stroke) * -1) 0 auto 0;
+    height: var(--stroke);
+    background: var(--glint);
+    pointer-events: none;
+  }
+  .show--next { --when-w: clamp(11rem, 20vw, 15rem); border-color: var(--line-strong); }
+  .show--next::before { height: 2px; background: var(--iris); }
+
+  .when {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: var(--space-3xs);
+    padding: var(--space-m);
+    border-right: var(--divider);
+    color: var(--fg);
+  }
+  .when__wd { color: var(--accent); }
+  .when__day {
+    font-size: clamp(3.25rem, 6vw, 5rem);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    font-stretch: var(--stretch-display);
+    font-variant-numeric: tabular-nums;
+  }
+  .show--next .when__day { font-size: clamp(4.5rem, 10vw, 8rem); }
+  .when__mon { color: var(--fg); white-space: nowrap; }
+  .when__year { color: var(--subtle); }
+
+  .show__body {
+    display: grid;
+    align-content: center;
+    gap: var(--space-2xs);
+    min-width: 0;
+    padding: var(--space-m);
+  }
+  .show__tags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs); }
+  .tag-next { color: var(--accent); }
+  .tag-next::before { content: ''; display: inline-block; width: 0.5em; height: 0.5em; margin-right: 0.6em; background: var(--accent); }
+  .show__title {
+    font-size: var(--step-2);
+    line-height: var(--lh-title);
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+  .show--next .show__title { font-size: var(--step-3); }
+  .show__place { font-size: var(--step-0); font-weight: 600; font-stretch: var(--stretch-title); overflow-wrap: anywhere; }
+  .show__address, .show__time { overflow-wrap: anywhere; }
+  .show__time { color: var(--fg); }
+  .show__notes {
+    max-width: 52ch;
+    margin-top: var(--space-2xs);
+    padding-left: var(--space-xs);
+    border-left: var(--stroke) solid var(--chrome-500);
+    font-size: var(--step--1);
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .show__notes :global(a) { color: var(--fg); position: relative; }
+  /* Área táctil de 44 px alrededor de los links de las notas (sin mover el texto) */
+  @media (max-width: 52rem), (pointer: coarse) {
+    .show__notes :global(a)::before { content: ''; position: absolute; inset: -0.85rem -0.35rem; }
+  }
+
+  .show__actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2xs);
+    padding: var(--space-m);
+    border-left: var(--divider);
+  }
+  .show__actions .btn { justify-content: space-between; min-width: 11rem; }
+
+  /* Estado: texto + forma + trazo, nunca solo color */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.7rem;
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    line-height: 1.2;
+    border: var(--stroke) solid var(--chrome-200);
+    white-space: nowrap;
+  }
+  .chip::before { content: ''; flex: none; width: 0.7em; height: 0.7em; }
+  .chip--soldout { background: var(--chrome-100); border-color: var(--chrome-100); color: var(--bg); }
+  .chip--soldout::before { background: currentColor; }
+  .chip--cancelled {
+    border-style: dashed;
+    color: var(--fg);
+    background: repeating-linear-gradient(135deg, transparent 0 5px, var(--chrome-600) 5px 6px);
+  }
+  .chip--cancelled::before {
+    background:
+      linear-gradient(45deg, transparent 44%, currentColor 44% 56%, transparent 56%),
+      linear-gradient(-45deg, transparent 44%, currentColor 44% 56%, transparent 56%);
+  }
+  .show--cancelled { border-style: dashed; }
+  .show--cancelled::before { background: none; }
+  .show--cancelled .show__title,
+  .show--cancelled .when__day,
+  .show--cancelled .show__place {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 0.07em;
+  }
+  .show--cancelled .when__wd { color: var(--muted); }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .show { transition: border-color var(--dur-base) var(--ease); }
+    .show:hover { border-color: var(--chrome-400); }
+  }
+
+  /* ---- Archivo: filas compactas ---- */
+  .archive { display: grid; }
+  .arow {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 16rem) 8.5rem;
+    align-items: center;
+    gap: var(--space-s);
+    min-height: var(--tap);
+    padding-block: var(--space-2xs);
+    border-bottom: var(--divider);
+  }
+  .arow__date { color: var(--subtle); white-space: nowrap; }
+  .arow__title { font-weight: 600; font-stretch: var(--stretch-title); overflow-wrap: anywhere; }
+  .arow__place { overflow-wrap: anywhere; text-align: left; }
+  .arow .chip { justify-self: end; grid-column: 4; }
+  .arow--cancelled .arow__title { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 0.07em; }
+  .more { margin-top: var(--space-2xs); }
+  .more[open] > .archive { margin-top: 0; }
+  .more__summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    cursor: pointer;
+    color: var(--fg);
+    list-style: none;
+  }
+  .more__summary::-webkit-details-marker { display: none; }
+  .more__summary::before { content: '+'; display: inline-block; width: 1.25em; color: var(--accent); }
+  .more[open] > .more__summary::before { content: '–'; }
+
+  /* ---- Móvil: ficha vertical, acciones de ancho completo con el pulgar ---- */
   @media (max-width: 52rem) {
+    .lists { gap: var(--space-l); }
     .empty { gap: var(--space-s); justify-items: stretch; }
     .empty__text { max-width: 14ch; }
     .empty__actions { flex-direction: column; }
     .empty__actions .btn { width: 100%; min-height: 3.25rem; }
-    .lists { gap: var(--space-l); }
-  }
-  .empty__actions .btn { text-align: center; overflow-wrap: anywhere; background: color-mix(in srgb, var(--bg) 60%, transparent); }
-  .lists { display: grid; gap: var(--space-xl); }
-  .group__title { margin-bottom: var(--space-s); }
-  .month { margin-bottom: var(--space-l); }
-  .month__name { padding-bottom: var(--space-2xs); border-bottom: var(--divider); text-transform: var(--case-ui); }
-  .show {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: 0 var(--space-s);
-    align-items: center;
-    padding-block: var(--space-s);
-    border-bottom: var(--divider);
-  }
-  .show__date { font-family: var(--font-ui); font-size: var(--step--1); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--accent); }
-  .show__venue { font-size: var(--step-1); font-stretch: var(--stretch-title); font-weight: 600; }
-  .show__place { grid-column: 2; }
-  .show__btn { grid-column: 2; justify-self: start; margin-top: var(--space-xs); }
-  @media (min-width: 52rem) {
-    .show { grid-template-columns: 6rem 1fr auto auto; gap: var(--space-m); }
-    .show__place, .show__btn { grid-column: auto; margin: 0; }
+
+    .show { --when-w: 6.75rem; grid-template-columns: var(--when-w) minmax(0, 1fr); }
+    .show--next { --when-w: 8rem; }
+    .when {
+      grid-row: 1;
+      padding: var(--space-s);
+      align-content: start;
+    }
+    .when__day { font-size: clamp(2.75rem, 13vw, 3.5rem); }
+    .show--next .when__day { font-size: clamp(3.25rem, 16vw, 4.5rem); }
+    .show__body { grid-row: 1; padding: var(--space-s); align-content: start; }
+    .show__title,
+    .show--next .show__title { font-size: var(--step-1); }
+    .show__actions {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      padding: var(--space-s);
+      border-left: 0;
+      border-top: var(--divider);
+    }
+    .show__actions .btn { min-height: var(--tap-lg); width: 100%; }
+
+    .arow { grid-template-columns: auto minmax(0, 1fr); gap: 0 var(--space-s); padding-block: var(--space-xs); }
+    .arow__date { grid-row: 1 / span 2; align-self: start; padding-top: 0.15rem; max-width: 6rem; white-space: normal; }
+    .arow__title, .arow__place { grid-column: 2; }
+    .arow .chip { grid-column: 2; justify-self: start; margin-top: var(--space-3xs); }
   }
 </style>

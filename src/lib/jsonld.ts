@@ -1,7 +1,8 @@
 import { site, pick, BASE, type Lang } from './content';
+import type { Show } from './show-map';
 
-/** JSON-LD desde site.yaml. Solo datos verificados; sin genre salvo confirmación, sin email salvo autorización. */
-export function buildJsonLd(lang: Lang, origin: string) {
+/** JSON-LD desde site.yaml y el calendario. Solo datos verificados; sin genre salvo confirmación, sin email salvo autorización. */
+export function buildJsonLd(lang: Lang, origin: string, upcoming: Show[] = []) {
   const root = origin.replace(/\/$/, '') + BASE;
   const url = lang === 'es' ? `${root}/` : `${root}/en/`;
   const artistId = `${root}/#artist`;
@@ -45,22 +46,45 @@ export function buildJsonLd(lang: Lang, origin: string) {
     });
   }
 
-  // Event: solo con fechas reales cargadas.
-  const today = new Date().toISOString().slice(0, 10);
-  for (const s of site.shows.filter((x) => x.date >= today)) {
-    graph.push({
-      '@type': 'Event',
-      name: `${site.artist.name} @ ${s.venue}`,
-      startDate: s.date,
-      location: {
-        '@type': 'Place',
-        name: s.venue,
-        address: { '@type': 'PostalAddress', addressLocality: s.city, addressCountry: s.country },
-      },
-      performer: { '@id': artistId },
-      ...(s.url ? { url: s.url } : {}),
-    });
-  }
+  // MusicEvent: una por fecha próxima, solo con los datos que existen en el calendario/YAML.
+  for (const s of upcoming) graph.push(musicEvent(s, artistId));
 
   return { '@context': 'https://schema.org', '@graph': graph };
+}
+
+const EVENT_STATUS = {
+  scheduled: 'https://schema.org/EventScheduled',
+  soldout: 'https://schema.org/EventScheduled',
+  cancelled: 'https://schema.org/EventCancelled',
+} as const;
+
+function musicEvent(s: Show, artistId: string): Record<string, unknown> {
+  const address: Record<string, unknown> = { '@type': 'PostalAddress' };
+  if (s.address) address.streetAddress = s.address;
+  if (s.city) address.addressLocality = s.city;
+  if (s.region) address.addressRegion = s.region;
+  if (s.countryCode ?? s.country) address.addressCountry = s.countryCode ?? s.country;
+  const hasAddress = Object.keys(address).length > 1;
+
+  const place: Record<string, unknown> = { '@type': 'Place', name: s.title };
+  if (hasAddress) place.address = address;
+  else if (s.location) place.address = s.location;
+
+  const ev: Record<string, unknown> = {
+    '@type': 'MusicEvent',
+    name: `${site.artist.name} @ ${s.title}`,
+    startDate: s.start,
+    ...(s.end ? { endDate: s.end } : {}),
+    eventStatus: EVENT_STATUS[s.status],
+    location: place,
+    performer: { '@id': artistId },
+  };
+  if (s.url) {
+    ev.offers = {
+      '@type': 'Offer',
+      url: s.url,
+      ...(s.status === 'soldout' ? { availability: 'https://schema.org/SoldOut' } : {}),
+    };
+  }
+  return ev;
 }

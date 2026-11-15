@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//test//ES
+BEGIN:VEVENT
+UID:n1
+DTSTART;TZID=America/Argentina/Buenos_Aires:20261201T220000
+SUMMARY:Sin URL
+DESCRIPTION:Entradas en https://tickets.example.com/ev?id=1&x=2.\nPuerta 22 h\, no falta nadie.\n\n\n\nhttp://otro.example.org
+END:VEVENT
+BEGIN:VEVENT
+UID:n2
+DTSTART;TZID=America/Argentina/Buenos_Aires:20261202T220000
+SUMMARY:Sin nada
+END:VEVENT
+BEGIN:VEVENT
+UID:n3
+DTSTART;TZID=America/Argentina/Buenos_Aires:20261203T220000
+SUMMARY:URL mala
+URL:javascript:alert(1)
+DESCRIPTION:Mirá javascript:alert(2) o ftp://x.example.com o https://ok.example.com/a
+END:VEVENT
+END:VCALENDAR

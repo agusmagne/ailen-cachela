@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Recompila cada 3 horas para que las fechas del calendario de iCloud aparezcan solas.
+  # Minuto 17 (no redondo): GitHub avisa que los cron a la hora en punto se demoran o se
+  # pierden por carga (docs: "Events that trigger workflows" > schedule). Los cron corren en UTC.
+  schedule:
+    - cron: '17 */3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,6 +20,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Mantener vivo el cron (solo en corridas programadas).
+  # VERIFICADO en la documentación oficial de GitHub:
+  #   - En un repo público, los workflows programados se desactivan solos tras 60 días sin
+  #     "actividad en el repositorio" (docs: "Events that trigger workflows" y "Disabling and
+  #     enabling a workflow").
+  #   - Existe PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/enable ("Enables a workflow
+  #     and sets the state of the workflow to active"); con token fine-grained pide el permiso
+  #     "Actions: write", y el GITHUB_TOKEN lo concede con `permissions: actions: write`.
+  # NO VERIFICADO (la documentación no lo dice y no se pudo probar acá):
+  #   - Qué cuenta como "actividad" ni si llamar a este endpoint reinicia el contador de 60 días.
+  #   - Si un workflow ya desactivado puede re-habilitarse a sí mismo: no puede, porque deja de
+  #     correr. Este paso solo sirve mientras el workflow siga activo (p. ej. si se desactivó por
+  #     otra causa y alguien lo vuelve a correr a mano, o si el endpoint cuenta como actividad).
+  #   - Red de seguridad real: cualquier commit al repo cuenta como actividad. Si el sitio queda
+  #     sin cambios 2 meses y deja de actualizarse, hacer un commit cualquiera o activar el
+  #     workflow a mano en Actions > Deploy to GitHub Pages > "Enable workflow".
+  # El permiso `actions: write` queda confinado a este job; el job de build no lo recibe.
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Re-habilitar el workflow programado
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/deploy.yml/enable"
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,8 +58,12 @@ jobs:
       - run: npm ci
       - id: pages
         uses: actions/configure-pages@v5
+      - run: npm test
       - run: npm run build
         env:
+          # Corridas programadas: si el calendario falla, el build falla y queda el sitio anterior.
+          # Corridas por push o manuales: se usa la copia guardada y se deja un warning en el log.
+          SHOWS_STRICT: ${{ github.event_name == 'schedule' && '1' || '' }}
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
       - uses: actions/upload-pages-artifact@v3

@@ -194,10 +194,17 @@ projects:
     platform: Bandcamp
     url: "https://roomarg.bandcamp.com/"
 
-# Fechas. Vacío = estado "Sin fechas anunciadas por ahora."
-# Cada ítem: date (YYYY-MM-DD), venue, city, country (ISO alpha-2, 2 letras), url (opcional).
+# Fechas. Se leen solas de un calendario público de iCloud al compilar el sitio
+# (ver "Cómo cargar una fecha" en README.md). Se recompila cada pocas horas.
+# - calendar_url: link público del calendario (https:// o webcal://). Vacío = solo `manual`.
+#   Se puede pisar al compilar con la variable de entorno SHOWS_CALENDAR_URL.
+# - manual: fechas sueltas opcionales (date YYYY-MM-DD, venue, city, country ISO alpha-2, url
+#   opcional). Si coinciden en fecha y nombre con una del calendario, gana la del calendario.
+# Sin fechas en ningún lado = estado "Sin fechas anunciadas por ahora."
 # No cargar acá "Mesdar Festival Worldwide Connection": vive en Escuchar.
-shows: []
+shows:
+  calendar_url: "https://p138-caldav.icloud.com/published/2/MTg3NzI1Mjg3NTgxODc3MrQcBkMNFPE9kAmjEkSzqrRYHPIKW0yUrtQZh9TGApTS9SGGO4PGo4yGIlV_BJm1ZjAuHj-wIJGbY4UXOex_5Ok"
+  manual: []
 
 about:
   bio:
@@ -273,8 +280,16 @@ ui:
   shows_upcoming: { es: "Próximas fechas", en: "Upcoming" }
   shows_upcoming_none: { es: "Sin anuncios por ahora.", en: "Nothing announced for now." }
   shows_past: { es: "Pasados", en: "Past" }
-  shows_tickets: { es: "Tickets", en: "Tickets" }
+  shows_tickets: { es: "Entradas", en: "Tickets" }
   shows_info: { es: "Info", en: "Info" }
+  shows_next: { es: "Próxima", en: "Next up" }
+  shows_status_soldout: { es: "Agotado", en: "Sold out" }
+  shows_status_cancelled: { es: "Cancelado", en: "Cancelled" }
+  shows_directions: { es: "Cómo llegar", en: "Directions" }
+  shows_time: { es: "{time} hs", en: "{time}" }
+  shows_until: { es: "hasta el {date}", en: "until {date}" }
+  shows_more_past: { es: "Ver {n} más", en: "Show {n} more" }
+  shows_count: { es: "{n} en agenda", en: "{n} scheduled" }
   about_title: { es: "Sobre", en: "About" }
   about_more: { es: "Leer más", en: "Read more" }
   contact_title: { es: "Booking & prensa", en: "Booking & press" }

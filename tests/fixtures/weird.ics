@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//test//ES
+BEGIN:VEVENT
+UID:w1
+DTSTART;TZID=America/Argentina/Buenos_Aires:20261201T220000
+SUMMARY:<script>alert("x")</script> & <b>negrita</b>\u202E
+DESCRIPTION:<img src=x onerror=alert(1)> "comillas" 'simples' \\ barra \; punto y coma\nlínea con \u0007 control
+LOCATION:<b>Calle</b> 1\nB1000 Ciudad <i>X</i>\nProvincia\nArgentina
+URL:https://user:pass@evil.example.com/
+END:VEVENT
+END:VCALENDAR

@@ -68,7 +68,7 @@ const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_AR';
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 
     <script is:inline>
       (function () {
