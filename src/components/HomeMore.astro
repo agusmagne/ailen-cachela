@@ -51,9 +51,9 @@ const items = ids.map((id) => ({ id, href: router.path(id, lang), label: routeLa
     background: color-mix(in srgb, var(--bg-raised) 60%, transparent);
     transition: border-color var(--dur-base) var(--ease), background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
   }
-  .more__name { font-size: var(--step-1); line-height: 1.1; color: var(--chrome-50); }
+  .more__name { font-size: var(--step-1); line-height: 1.1; color: var(--chrome-50); overflow-wrap: anywhere; hyphens: auto; }
   .more__text { font-size: var(--step-ui); color: var(--muted); max-width: 30ch; }
-  .more__arrow { position: absolute; top: var(--space-s); right: var(--space-s); color: var(--chrome-400); transition: transform var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease); }
+  .more__arrow { position: absolute; bottom: var(--space-s); right: var(--space-s); color: var(--chrome-400); transition: transform var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease); }
   .more__link:focus-visible { border-color: var(--chrome-300); }
   @media (hover: hover) {
     .more__link:hover { border-color: var(--chrome-300); }
@@ -67,5 +67,7 @@ const items = ids.map((id) => ({ id, href: router.path(id, lang), label: routeLa
     .more__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xs); }
     .more__link { padding: var(--space-xs) var(--space-s) var(--space-xs) var(--space-xs); }
     .more__text { font-size: var(--step--1); }
+    .more__name { font-size: clamp(0.95rem, 4.2vw, 1.1rem); }
+    .more__text { padding-right: 1.4rem; }
   }
 </style>

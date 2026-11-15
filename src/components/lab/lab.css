@@ -84,7 +84,7 @@
 .seq-mute:focus-visible { border-color: var(--chrome-50); }
 .seq-cellwrap { min-width: 0; }
 .seq-cell { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; min-height: var(--lab-cell); padding: 0; font-family: var(--font-ui); font-size: var(--step-ui); color: var(--bg); background: var(--lab-cell-bg); border: var(--stroke) solid var(--chrome-700); border-radius: var(--radius-ui); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease); }
-.seq-cellwrap[data-beat='1'] .seq-cell { background: var(--lab-cell-beat-bg); }
+.seq-cellwrap[data-beat='1'] .seq-cell:not(.is-on) { background: var(--lab-cell-beat-bg); }
 .seq-cell.is-on { background: var(--lab-cell-on); border-color: var(--chrome-50); }
 .seq-cell:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; z-index: 2; }
 .seq-cell.is-now { box-shadow: inset 0 0 0 2px var(--lab-now); }
@@ -101,7 +101,7 @@
 @media (max-width: 62rem) {
   .seq-grid { grid-template-columns: 2.25rem repeat(6, minmax(0, 1fr)); grid-template-rows: auto repeat(16, var(--lab-cell)); grid-auto-flow: column; }
   .seq-head { align-items: end; }
-  .seq-mute { writing-mode: horizontal-tb; min-height: 2.75rem; padding: 0 0.15rem; justify-content: center; flex-direction: column; gap: 0.15rem; font-size: 0.7rem; letter-spacing: 0.02em; text-align: center; text-transform: var(--case-ui); overflow-wrap: anywhere; }
+  .seq-mute { writing-mode: horizontal-tb; min-height: 2.75rem; padding: 0 0.15rem; justify-content: center; flex-direction: column; gap: 0.15rem; font-size: 0.78rem; letter-spacing: 0; text-align: center; text-transform: var(--case-ui); overflow-wrap: anywhere; }
   .seq-cell { min-height: 0; height: 100%; }
 }
 
@@ -130,7 +130,7 @@
 
 /* ---- Visualizador: escenario ---------------------------------------------------------------------------------------------------- */
 .viz-stage {
-  position: relative; isolation: isolate; overflow: hidden; aspect-ratio: var(--lab-stage-ratio); min-height: 22rem;
+  position: relative; isolation: isolate; overflow: hidden; width: 100%; max-width: 100%; aspect-ratio: var(--lab-stage-ratio); min-height: 22rem;
   border: var(--stroke) solid var(--chrome-600); background: var(--void);
   background-image:
     radial-gradient(60% 55% at 38% 36%, color-mix(in srgb, var(--chrome-200) 22%, transparent), transparent 72%),
@@ -193,7 +193,7 @@ html.lab-fs-lock { overflow: hidden; }
 .gen-format { position: relative; }
 .gen-format input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .gen-format span { display: grid; gap: 0.1rem; min-height: var(--tap); align-content: center; padding: 0.4rem var(--space-xs); font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--fg); border: var(--stroke) solid var(--chrome-500); transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
-.gen-format small { font-size: 0.85em; opacity: 0.75; }
+.gen-format small { font-size: max(0.85em, 0.78rem); opacity: 0.75; }
 .gen-format input:checked + span { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
 .gen-format input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
 @media (hover: hover) { .gen-format input:not(:checked):hover + span { border-color: var(--chrome-50); } }

@@ -72,7 +72,7 @@ const { title, lang, href, external = false, kicker, as: Tag = 'article', demo =
   .card__media { margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) 0; }
   .card__body { display: grid; gap: var(--space-2xs); align-content: start; flex: 1; }
   .card__kicker { color: var(--accent); }
-  .card__title { font-size: clamp(1.2rem, 1rem + 0.8vw, 1.7rem); line-height: var(--lh-title); overflow-wrap: anywhere; color: var(--chrome-50); }
+  .card__title { font-size: clamp(1.15rem, 0.98rem + 0.5vw, 1.55rem); line-height: var(--lh-title); overflow-wrap: break-word; hyphens: auto; color: var(--chrome-50); }
   /* El link del título cubre toda la tarjeta */
   .card__link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
   .card__link:focus-visible { outline: none; }

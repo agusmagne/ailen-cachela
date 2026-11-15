@@ -49,6 +49,9 @@ const mode = img ? 'image' : video ? 'video' : 'gen';
 
 // Semilla determinista (FNV-1a) para que cada pieza sea distinta pero estable entre builds
 const key = seed || `${label}|${kicker}|${variant}`;
+// Tamaño del rótulo sobre la portada: la palabra más larga tiene que entrar en el ancho útil (85 % del cuadro)
+const longestWord = Math.max(1, ...label.split(/\s+/).map((w) => w.length));
+const labelSize = Math.min(9.5, Math.round((85 / (longestWord * 1.02)) * 10) / 10);
 let h = 2166136261;
 for (const ch of key) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
 const rnd = (n: number) => ((Math.imul(h ^ (n * 0x9e3779b1), 2246822519) >>> 0) % 10000) / 10000;
@@ -115,7 +118,7 @@ const ringEmph = 2 + Math.floor(rnd(7) * 4);
           </g>
         </svg>
         {kicker && <span class="gen__kicker label">{kicker}</span>}
-        {label && <span class="gen__label">{label}</span>}
+        {label && <span class="gen__label" style={`--gl:${labelSize}`}>{label}</span>}
       </div>
     )
   }
@@ -176,7 +179,7 @@ const ringEmph = 2 + Math.floor(rnd(7) * 4);
   .gen__ring { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.32; stroke-width: 1; vector-effect: non-scaling-stroke; }
   .gen__ring--emph { stroke: var(--accent); stroke-opacity: 0.95; stroke-width: 1.5; }
   .gen__ticks path { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.8; stroke-width: 1; vector-effect: non-scaling-stroke; }
-  .gen__kicker { position: absolute; z-index: 2; top: 6cqi; left: 9cqi; color: var(--chrome-100); }
+  .gen__kicker { position: absolute; z-index: 2; top: 6cqi; left: 9cqi; max-width: 56cqi; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--chrome-100); }
   .gen__label {
     position: absolute;
     z-index: 2;
@@ -186,7 +189,7 @@ const ringEmph = 2 + Math.floor(rnd(7) * 4);
     font-family: var(--font-display);
     font-weight: var(--font-display-weight);
     font-stretch: var(--stretch-display);
-    font-size: clamp(1.1rem, 9.5cqi, 3rem);
+    font-size: clamp(0.85rem, calc(var(--gl, 9.5) * 1cqi), 3rem);
     line-height: 1;
     letter-spacing: var(--tracking-title);
     text-transform: var(--case-display);

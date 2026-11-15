@@ -2,7 +2,7 @@
 :root {
   --agenda-panel-bg: color-mix(in srgb, var(--bg) 66%, transparent);
   --agenda-cd-size: clamp(3rem, 11vw, 7.5rem);
-  --agenda-cd-size-sm: clamp(2.25rem, 14vw, 3.5rem);
+  --agenda-cd-size-sm: clamp(1.9rem, 10.5vw, 3rem);
   /* Mapa */
   --agenda-map-bg: radial-gradient(120% 90% at 50% 40%, var(--chrome-800), var(--bg) 70%);
   --agenda-map-land: var(--chrome-400);

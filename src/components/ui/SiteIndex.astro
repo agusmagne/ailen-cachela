@@ -41,7 +41,7 @@ const groups = indexGroups(lang, { legal: variant === 'footer' });
 <style>
   .sidx { display: grid; gap: var(--space-s); }
   .sidx__title { color: var(--subtle); }
-  .sidx__groups { display: grid; gap: var(--space-m) var(--space-l); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .sidx__groups { display: grid; gap: var(--space-m) var(--space-l); grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.25rem), 1fr)); }
   .sidx__label { color: var(--accent); margin-bottom: var(--space-3xs); }
   .sidx__link {
     display: inline-flex;
