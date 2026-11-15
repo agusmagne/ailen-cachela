@@ -1,0 +1,64 @@
+---
+/**
+ * Titular partido en palabras o caracteres para el reveal. El texto completo
+ * queda en el DOM (.sr-only) y las piezas animadas van en aria-hidden.
+ */
+interface Props {
+  text: string;
+  by?: 'words' | 'chars';
+  /** Una palabra por línea (hero). */
+  stack?: boolean;
+}
+const { text, by = 'words', stack = false } = Astro.props;
+const words = text.split(' ');
+let ci = 0;
+---
+
+<span class="sr-only">{text}</span>
+<span class:list={['split', { 'split--stack': stack }]} data-split={by} aria-hidden="true">
+  {
+    words.map((w, wi) => (
+      <>
+        <span class="word">
+          {by === 'chars' ? (
+            [...w].map((c) => (
+              <span class="char" style={`--i:${ci++}`}>
+                {c}
+              </span>
+            ))
+          ) : (
+            <span class="char" style={`--i:${wi}`}>
+              {w}
+            </span>
+          )}
+        </span>
+        {wi < words.length - 1 && ' '}
+      </>
+    ))
+  }
+</span>
+
+<style>
+  .word {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    /* Aire para tildes y descendentes: el máscara no corta la É */
+    padding-block: 0.18em 0.12em;
+    margin-block: -0.18em -0.12em;
+  }
+  .split--stack .word { display: block; }
+  .char { display: inline-block; }
+
+  :global(.js-motion) .char {
+    transform: translate3d(0, 115%, 0);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  :global(.js-motion) .split[data-split='chars'] .char {
+    transition-delay: calc(var(--i) * var(--stagger-char));
+  }
+  :global(.js-motion) .split[data-split='words'] .char {
+    transition-delay: calc(var(--i) * var(--stagger-word));
+  }
+  :global(.js-motion) .split.is-in .char { transform: none; }
+</style>

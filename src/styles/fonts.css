@@ -1,0 +1,17 @@
+/* Fuentes autoalojadas (SIL OFL 1.1), subseteadas a latín básico + latín-1 +
+   puntuación (scripts/subset-fonts.mjs). Licencias en src/assets/fonts/. */
+@font-face {
+  font-family: 'Archivo Cachela';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  font-stretch: 100% 125%;
+  src: url('../assets/fonts/archivo-cachela.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Martian Mono Cachela';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 600;
+  src: url('../assets/fonts/martian-mono-cachela.woff2') format('woff2');
+}

@@ -1,0 +1,80 @@
+---
+import { sections } from '../lib/sections';
+import SplitText from './SplitText.astro';
+import Glitch from './Glitch.astro';
+
+interface Props {
+  id: string;
+  title: string;
+}
+const { id, title } = Astro.props;
+const visible = sections.filter((s) => s.visible);
+const idx = visible.findIndex((s) => s.id === id) + 1;
+const n = String(idx).padStart(2, '0');
+const total = String(visible.length).padStart(2, '0');
+---
+
+<section id={id} class="section" aria-labelledby={`${id}-title`}>
+  <div class="section__edge" data-reveal="line" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="section__head" data-glitch-host>
+      <span class="section__numeral" aria-hidden="true">{n}</span>
+      <p class="section__idx label" aria-hidden="true"><span class="section__n">{n}</span> / {total}</p>
+      <h2 id={`${id}-title`} class="section__title display">
+        <Glitch text={title} block><SplitText text={title} /></Glitch>
+      </h2>
+    </header>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--section-gap);
+  }
+  .section__edge {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--stroke);
+    background: linear-gradient(90deg, var(--chrome-600), var(--chrome-300) 18%, var(--chrome-600) 58%, transparent);
+  }
+  .section__head {
+    display: grid;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xl);
+  }
+  .section__idx { display: flex; align-items: center; gap: var(--space-2xs); color: var(--subtle); }
+  .section__idx::before { content: ''; width: 2.5rem; height: var(--stroke); background: var(--chrome-500); }
+  .section__n { color: var(--accent); }
+  .section__title {
+    font-size: var(--step-4);
+    line-height: var(--lh-title);
+    overflow-wrap: anywhere;
+  }
+  .section__numeral { display: none; }
+
+  /* Móvil: capítulo. Numeral gigante en contorno detrás del título (decorativo) */
+  @media (max-width: 52rem) {
+    .section__head { position: relative; margin-bottom: var(--space-l); }
+    .section__numeral {
+      display: block;
+      position: absolute;
+      z-index: -1;
+      top: -0.1em;
+      right: -0.05em;
+      font-family: var(--font-display);
+      font-weight: var(--font-display-weight);
+      font-stretch: var(--stretch-display);
+      font-size: clamp(7.5rem, 40vw, 13rem);
+      line-height: 0.8;
+      letter-spacing: var(--tracking-display);
+      color: transparent;
+      -webkit-text-stroke: var(--stroke) var(--chrome-700);
+      pointer-events: none;
+      user-select: none;
+    }
+    .section__title { text-wrap: balance; position: relative; }
+  }
+</style>

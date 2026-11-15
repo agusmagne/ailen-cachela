@@ -1,0 +1,134 @@
+---
+import { site, pick, t, formatDate, type Lang } from '../lib/content';
+import Section from './Section.astro';
+import Media from './Media.astro';
+import Glitch from './Glitch.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<Section id="musica" title={t('music_title', lang)}>
+  <div class="releases" class:list={{ 'releases--single': site.releases.length === 1 }}>
+    {
+      site.releases.map((r) => (
+        <article class="release" data-reveal>
+          <div class="release__cover" data-reveal="clip">
+            <Media
+              src={r.cover}
+              alt={pick(r.cover_alt, lang)}
+              label={r.catalog || r.title}
+              kicker={r.label.name}
+              variant="cover"
+              seed={r.id}
+              sizes="(min-width: 60rem) 40vw, 90vw"
+            />
+          </div>
+          <div class="release__body">
+            {r.compilation && (
+              <p class="label">
+                {t('music_compilation', lang, { label: r.label.name, count: r.compilation.artists.length })}
+              </p>
+            )}
+            <h3 class="release__title display" data-glitch-host><Glitch text={r.title} block>{r.title}</Glitch></h3>
+            {r.own_tracks.map((tr) => (
+              <p class="release__own">
+                {t('music_participates', lang, { track: tr.title, n: tr.number, duration: tr.duration })}
+              </p>
+            ))}
+            <dl class="facts">
+              <div>
+                <dt class="label">{t('music_label', lang)}</dt>
+                <dd>
+                  {r.label.url ? (
+                    <a class="link" href={r.label.url} target="_blank" rel="noopener noreferrer">
+                      {r.label.name}
+                      <span class="sr-only"> {t('new_tab', lang)}</span>
+                    </a>
+                  ) : (
+                    r.label.name
+                  )}
+                </dd>
+              </div>
+              <div>
+                <dt class="label">{t('music_released', lang)}</dt>
+                <dd><time datetime={r.date}>{formatDate(r.date, lang, { day: 'numeric', month: 'long', year: 'numeric' })}</time></dd>
+              </div>
+              <div>
+                <dt class="label">{t('music_format', lang)}</dt>
+                <dd>{pick(r.format, lang)}</dd>
+              </div>
+              {r.compilation && (
+                <div class="facts__wide">
+                  <dt class="label">{t('music_artists', lang)}</dt>
+                  <dd>{r.compilation.artists.join(' · ')}</dd>
+                </div>
+              )}
+            </dl>
+            {r.url && (
+              <a class="btn btn--primary" href={r.url} target="_blank" rel="noopener noreferrer">
+                {t('music_listen', lang)} <span class="arrow" aria-hidden="true">↗</span>
+                <span class="sr-only"> {t('new_tab', lang)}</span>
+              </a>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .releases { display: grid; gap: var(--space-2xl); }
+  .release { display: grid; gap: var(--space-l); align-items: end; }
+  @media (min-width: 52rem) {
+    .release { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-2xl); }
+  }
+  .release__cover { max-width: 34rem; width: 100%; box-shadow: 0 0 0 var(--stroke) var(--chrome-600), 0 2.5rem 5rem -2rem color-mix(in srgb, var(--chrome-300) 18%, transparent); }
+  .release__body { display: grid; gap: var(--space-s); justify-items: start; }
+  .release__title {
+    font-size: var(--step-3);
+    line-height: var(--lh-title);
+    overflow-wrap: anywhere;
+  }
+  .release__own { font-size: var(--step-1); max-width: var(--measure); color: var(--chrome-200); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--space-s) var(--space-m); width: 100%; margin-block: var(--space-xs) var(--space-s); padding-top: var(--space-m); border-top: var(--divider); }
+  .facts dd { margin: 0; color: var(--chrome-100); }
+  .facts dt { margin-bottom: var(--space-3xs); }
+  .facts__wide { grid-column: 1 / -1; }
+
+  /* ==== Móvil: la portada va a sangre y los datos pasan a filas ============ */
+  @media (max-width: 52rem) {
+    .releases { gap: var(--space-xl); }
+    .release { gap: var(--space-m); }
+    .release__cover {
+      /* a sangre: sale del gutter hasta los bordes de la pantalla */
+      width: auto;
+      max-width: none;
+      margin-inline: calc(var(--pad-l) * -1) calc(var(--pad-r) * -1);
+      box-shadow: 0 var(--stroke) 0 var(--chrome-600), 0 calc(var(--stroke) * -1) 0 var(--chrome-600);
+    }
+    .release__body { justify-items: stretch; gap: var(--space-xs); }
+    .release__body > .btn { width: 100%; min-height: var(--tap-lg); margin-top: var(--space-2xs); }
+    .facts { grid-template-columns: 1fr; gap: 0; margin-block: var(--space-2xs) var(--space-xs); padding-top: 0; border-top: 0; }
+    .facts > div {
+      display: grid;
+      grid-template-columns: 7.5rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: var(--space-xs);
+      padding-block: var(--space-xs);
+      border-bottom: var(--divider);
+    }
+    .facts > div:first-child { border-top: var(--divider); }
+    .facts dt { margin: 0; }
+    .facts dd .link { display: inline-block; padding-block: 0.7rem; margin-block: -0.7rem; background-origin: content-box; }
+  }
+
+  @media (pointer: coarse) {
+    .facts dd .link { display: inline-block; padding-block: 0.7rem; margin-block: -0.7rem; background-origin: content-box; }
+  }
+  /* Teléfono en horizontal: la portada cuadrada no puede superar el alto de la pantalla */
+  @media (pointer: coarse) and (max-height: 32rem) {
+    .release__cover { max-width: min(34rem, 64vh); }
+  }
+</style>

@@ -1,0 +1,370 @@
+---
+import { site, t, homePath, type Lang } from '../lib/content';
+import { sections } from '../lib/sections';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const other: Lang = lang === 'es' ? 'en' : 'es';
+// La hoja móvil lista todas las secciones visibles (incluida Sobre); el nav de escritorio, solo las inNav.
+const all = sections.filter((s) => s.visible);
+const social = site.links.filter((l) => l.nav && l.url);
+---
+
+<a class="skip" href="#main">{t('skip', lang)}</a>
+<header class="header" data-header>
+  <div class="header__bar wrap">
+    <a class="brand" href={homePath(lang)} aria-label={site.site.name} data-brand>{site.site.name}</a>
+
+    <nav class="nav" aria-label={t('nav_label', lang)}>
+      <button
+        type="button"
+        class="nav__btn label"
+        aria-expanded="false"
+        aria-controls="menu"
+        data-menu-btn
+        data-label-open={t('menu_open', lang)}
+        data-label-close={t('menu_close', lang)}
+      >
+        <span data-menu-text>{t('menu_open', lang)}</span>
+        <span class="nav__bars" aria-hidden="true"></span>
+      </button>
+      <div class="menu" id="menu" data-menu>
+        <ul class="menu__list">
+          {
+            all.map((s, i) => (
+              <li class:list={['menu__item', { 'menu__item--sheet': !s.inNav }]} style={`--i:${i}`}>
+                <a class="menu__link" href={`#${s.id}`} data-nav-link>
+                  <span class="menu__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="menu__label">{t(s.navKey, lang)}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <ul class="menu__social">
+          {
+            social.map((l) => (
+              <li>
+                <a class="menu__link menu__link--small" href={l.url} target="_blank" rel="noopener noreferrer">
+                  {l.platform}
+                  <span class="sr-only"> {l.handle} {t('new_tab', lang)}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <!-- Solo en la hoja móvil: el cierre con el pulgar (email, idioma, redes) -->
+        <div class="menu__foot" style={`--i:${all.length}`}>
+          {
+            site.contact.email && (
+              <a class="btn btn--primary btn--xl btn--mail" href={`mailto:${site.contact.email}`}>
+                <span class="btn__stack">
+                  <span>{t('contact_write', lang)}</span>
+                  <span class="btn__sub">{site.contact.email}</span>
+                </span>
+                <span class="arrow" aria-hidden="true">↗</span>
+              </a>
+            )
+          }
+          <div class="menu__row">
+            <a class="chip" href={homePath(other)} hreflang={other} lang={other} data-lang-link={homePath(other)}>{t('lang_switch', lang)}</a>
+            {
+              social.map((l) => (
+                <a class="chip" href={l.url} target="_blank" rel="noopener noreferrer">
+                  {l.platform}
+                  <span class="sr-only"> {l.handle} {t('new_tab', lang)}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <a class="lang label" href={homePath(other)} hreflang={other} lang={other} aria-label={t('lang_switch', lang)} data-lang-link={homePath(other)}>
+      {t('lang_short', lang)}
+    </a>
+  </div>
+</header>
+
+<style>
+  .skip {
+    position: fixed;
+    top: var(--space-2xs);
+    left: var(--space-2xs);
+    z-index: calc(var(--z-overlay) + 1);
+    padding: var(--space-xs) var(--space-s);
+    background: var(--chrome-50);
+    color: var(--bg);
+    font-family: var(--font-ui);
+    font-size: var(--step-ui);
+    transform: translateY(-200%);
+  }
+  .skip:focus { transform: none; }
+
+  .header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-header);
+    height: var(--header-h);
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: var(--divider);
+    transition: background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease),
+      backdrop-filter var(--dur-base) var(--ease);
+  }
+  /* Con JS: transparente sobre el hero, sólida al scrollear (motion.ts alterna .is-solid) */
+  :global(.js) .header:not(.is-solid):not(.is-open) {
+    background: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .header__bar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    column-gap: var(--space-m);
+    height: 100%;
+  }
+  .brand {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    min-height: var(--tap);
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-stretch: var(--stretch-display);
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    text-transform: var(--case-display);
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--chrome-50);
+  }
+  .brand::before {
+    content: '';
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    background: conic-gradient(from 210deg, var(--chrome-50), var(--chrome-500), var(--chrome-200), var(--chrome-600), var(--chrome-50));
+    box-shadow: inset 0 0 0 0.2em var(--bg);
+    outline: var(--stroke) solid var(--chrome-400);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  @media (hover: hover) { .brand:hover::before { transform: rotate(180deg); } }
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--tap);
+    min-height: var(--tap);
+    color: var(--chrome-100);
+    border: var(--stroke) solid var(--chrome-600);
+    border-radius: var(--radius-ui);
+    transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease-out);
+  }
+  .lang:focus-visible { border-color: var(--chrome-50); background: var(--chrome-50); color: var(--bg); }
+  @media (hover: hover) { .lang:hover { border-color: var(--chrome-50); background: var(--chrome-50); color: var(--bg); } }
+  .lang:active { transform: translateY(1px); }
+  @media (hover: none) {
+    .lang:active { transform: scale(var(--press-scale)); border-color: var(--chrome-50); background: var(--chrome-50); color: var(--bg); transition-duration: var(--dur-press); }
+  }
+
+  .menu { display: flex; align-items: center; gap: var(--space-l); }
+  .menu__list, .menu__social { display: flex; align-items: center; gap: var(--space-m); }
+  .menu__social { padding-left: var(--space-m); border-left: var(--divider); }
+  .menu__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    color: var(--chrome-200);
+    transition: color var(--dur-fast) var(--ease);
+  }
+  .menu__link--small { color: var(--muted); }
+  .menu__link::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0.6rem;
+    height: var(--stroke);
+    background: var(--chrome-50);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .menu__link:focus-visible, .menu__link[aria-current] { color: var(--chrome-50); }
+  .menu__link:focus-visible::after, .menu__link[aria-current]::after { transform: scaleX(1); transform-origin: left; }
+  .menu__link[aria-current]::after { background: var(--accent); }
+  @media (hover: hover) {
+    .menu__link:hover { color: var(--chrome-50); }
+    .menu__link:hover::after { transform: scaleX(1); transform-origin: left; }
+    .menu__link--small:hover { color: var(--chrome-50); }
+  }
+
+  .nav__btn { display: none; }
+  /* Piezas que solo existen en la hoja móvil */
+  .menu__num, .menu__foot, .menu__item--sheet { display: none; }
+
+  @media (max-width: 24rem) {
+    .brand { font-size: 0.8rem; }
+    .brand::before { display: none; }
+  }
+
+  @media (max-width: 62rem) {
+    .menu__social { display: none; }
+    .menu { gap: var(--space-s); }
+    .menu__list { gap: var(--space-xs); }
+  }
+
+  /* ==== Móvil: hoja a pantalla completa (solo con JS) ======================
+     Teléfono o tableta vertical (<= 52 rem) y teléfono en horizontal. Entra
+     desde abajo, con los links grandes en la zona del pulgar. El bloqueo de
+     scroll (html.is-menu-open) vive en base.css dentro de esta misma consulta. */
+  @media (max-width: 52rem), ((pointer: coarse) and (max-height: 32rem)) {
+    :global(.js) .header { backdrop-filter: none; -webkit-backdrop-filter: none; background: color-mix(in srgb, var(--bg) 94%, transparent); }
+    :global(.js) .header:not(.is-solid):not(.is-open) { background: transparent; }
+    :global(.js) .header__bar { column-gap: var(--space-xs); }
+    :global(.js) .nav__btn [data-menu-text] { min-width: 6ch; text-align: right; }
+    :global(.js) .nav__btn {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: var(--tap);
+      padding: 0 var(--space-2xs);
+      background: none;
+      border: 0;
+      color: var(--chrome-100);
+      cursor: pointer;
+    }
+    :global(.js) .brand, :global(.js) .lang { position: relative; z-index: 2; }
+    .nav__bars, .nav__bars::before {
+      display: block;
+      width: 1.25rem;
+      height: var(--stroke);
+      background: currentColor;
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+    .nav__bars { position: relative; }
+    .nav__bars::before { content: ''; position: absolute; top: -0.35rem; }
+    .nav__btn[aria-expanded='true'] .nav__bars { transform: translateY(-0.17rem) rotate(-45deg); }
+    .nav__btn[aria-expanded='true'] .nav__bars::before { transform: translateY(0.35rem) rotate(90deg); top: -0.35rem; }
+
+    :global(.js) .menu {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-end;
+      gap: var(--space-m);
+      padding: calc(var(--header-h) + var(--space-m)) var(--pad-r) max(var(--space-m), var(--safe-b)) var(--pad-l);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background:
+        radial-gradient(70% 40% at 90% 0%, color-mix(in srgb, var(--chrome-300) 12%, transparent), transparent 70%),
+        var(--bg);
+      /* Cerrada: invisible y fuera del orden de tabulación; se abre cortando desde la base */
+      visibility: hidden;
+      clip-path: inset(100% 0 0 0);
+      transition: clip-path var(--sheet-dur) var(--ease-out), visibility 0s linear var(--sheet-dur);
+    }
+    :global(.js) .menu.is-open {
+      visibility: visible;
+      clip-path: inset(0 0 0 0);
+      transition-delay: 0s;
+    }
+    :global(.js) .menu__list { flex-direction: column; align-items: stretch; gap: 0; }
+    :global(.js) .menu__item, :global(.js) .menu__foot { opacity: 0; transform: translate3d(0, 1.25rem, 0); transition: opacity var(--dur-base) var(--ease-out), transform var(--sheet-dur) var(--ease-out); }
+    :global(.js) .menu.is-open .menu__item,
+    :global(.js) .menu.is-open .menu__foot {
+      opacity: 1;
+      transform: none;
+      transition-delay: calc(90ms + var(--i, 0) * 45ms);
+    }
+    :global(.js) .menu__item--sheet { display: block; }
+    :global(.js) .menu__item { border-bottom: var(--divider); }
+    :global(.js) .menu__item:first-child { border-top: var(--divider); }
+    :global(.js) .menu__list .menu__link {
+      display: grid;
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+      align-items: baseline;
+      width: 100%;
+      min-height: 3.75rem;
+      padding-block: var(--space-2xs);
+      font-family: var(--font-display);
+      font-weight: var(--font-display-weight);
+      font-stretch: var(--stretch-title);
+      font-size: clamp(1.9rem, 9vw, 2.75rem);
+      letter-spacing: var(--tracking-title);
+      line-height: 1.05;
+      color: var(--chrome-100);
+      transition: color var(--dur-fast) var(--ease), background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+    }
+    :global(.js) .menu__link::after { display: none; }
+    :global(.js) .menu__num { display: block; font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); color: var(--subtle); }
+    :global(.js) .menu__link[aria-current] .menu__num { color: var(--accent); }
+    :global(.js) .menu__link[aria-current] { color: var(--chrome-50); }
+    :global(.js) .menu__list .menu__link:active {
+      background: var(--press-bg);
+      color: var(--chrome-50);
+      transform: scale(var(--press-scale-row));
+      transition-duration: var(--dur-press);
+    }
+    :global(.js) .menu__social { display: none; }
+    :global(.js) .menu__foot { display: grid; gap: var(--space-xs); }
+    .btn--mail { justify-content: space-between; }
+    .menu__row { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--tap);
+      padding: 0 var(--space-s);
+      border: var(--stroke) solid var(--chrome-600);
+      font-family: var(--font-ui);
+      font-weight: var(--font-ui-weight);
+      font-size: var(--step-ui);
+      letter-spacing: var(--tracking-ui);
+      text-transform: var(--case-ui);
+      color: var(--chrome-100);
+      transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease-out);
+    }
+    .chip:active { background: var(--chrome-50); color: var(--bg); transform: scale(var(--press-scale)); transition-duration: var(--dur-press); }
+  }
+  /* Teléfono en horizontal: dos columnas, todo a la vista sin scrollear */
+  @media (pointer: coarse) and (max-height: 32rem) and (min-width: 40rem) {
+    :global(.js) .menu {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      gap: var(--space-l);
+      padding-top: calc(var(--header-h) + var(--space-xs));
+      padding-bottom: max(var(--space-s), var(--safe-b));
+    }
+    :global(.js) .menu__list .menu__link { min-height: 2.75rem; font-size: 1.5rem; grid-template-columns: 2.75rem minmax(0, 1fr); }
+    :global(.js) .menu__foot { align-self: end; }
+  }
+
+  /* Sin JS en móvil: los ítems pasan a una segunda fila */
+  @media (max-width: 52rem) {
+    :global(html:not(.js)) .header { height: auto; }
+    :global(html:not(.js)) .header__bar { grid-template-columns: 1fr auto; padding-block: var(--space-2xs); }
+    :global(html:not(.js)) .nav { grid-column: 1 / -1; grid-row: 2; }
+    :global(html:not(.js)) .menu { flex-wrap: wrap; gap: var(--space-2xs) var(--space-s); }
+    :global(html:not(.js)) .menu__list { flex-wrap: wrap; gap: 0 var(--space-s); }
+    :global(html:not(.js)) .menu__social { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .menu__item, :global(.js) .menu__foot { opacity: 1; transform: none; }
+  }
+</style>

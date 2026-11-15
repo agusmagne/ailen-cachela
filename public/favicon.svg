@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Monograma geométrico: lambda de cromo (A sin travesaño) sobre aros concéntricos, con una gota
+       rosa como travesaño. Sin texto, para no depender de fuentes. Los colores van fijos porque un
+       favicon no lee las variables CSS; son los de src/styles/tokens.css (--bg, --chrome-*, --accent). -->
+  <defs>
+    <linearGradient id="c" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4f6f9"/>
+      <stop offset=".48" stop-color="#7d848f"/>
+      <stop offset=".56" stop-color="#cfd4db"/>
+      <stop offset="1" stop-color="#f4f6f9"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="#050506"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#353a42" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#22262c" stroke-width="1.2"/>
+  <path d="M15 49 32 13 49 49H41.5L32 28.5 22.5 49Z" fill="url(#c)"/>
+  <circle cx="32" cy="43" r="3" fill="#e58fd2"/>
+</svg>

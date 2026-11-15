@@ -1,0 +1,103 @@
+---
+import { site, t, type Lang } from '../lib/content';
+import { isVisible } from '../lib/sections';
+import Zoetrope from './Zoetrope.astro';
+
+/**
+ * Dock inferior (solo móvil, solo con JS): la acción principal al alcance del
+ * pulgar. Escuchar + Booking; cuando el reproductor ya se cargó y quedó fuera
+ * de pantalla, Escuchar pasa a ser un mini reproductor (disco girando + título)
+ * que vuelve al reproductor. motion.ts decide cuándo se muestra: se esconde en
+ * el hero (que ya tiene las mismas CTA), con el menú abierto y en Contacto/pie.
+ */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const featured = site.listen.tracks.find((x) => x.id === site.listen.featured);
+const listen = isVisible('escuchar');
+const booking = isVisible('contacto');
+---
+
+{
+  (listen || booking) && (
+    <nav class="dock" aria-label={t('dock_label', lang)} data-dock data-mode="default">
+      <div class="dock__bar">
+        {listen && (
+          <a class="btn btn--primary dock__listen" href="#escuchar" data-dock-listen>
+            {t('hero_cta_listen', lang)} <span class="arrow" data-dir="down" aria-hidden="true">↓</span>
+          </a>
+        )}
+        {listen && featured && (
+          <a class="dock__mini" href="#player" data-dock-mini data-zt-state="live" aria-label={`${t('dock_player', lang)}: ${featured.title}`}>
+            <Zoetrope class="dock__seal" />
+            <span class="dock__text">
+              <span class="label dock__kicker">{t('dock_player_short', lang)}</span>
+              <span class="dock__title" aria-hidden="true">{featured.title}</span>
+            </span>
+          </a>
+        )}
+        {booking && <a class="btn dock__booking" href="#contacto">{t('hero_cta_booking', lang)}</a>}
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .dock { display: none; }
+  .dock__mini { display: none; }
+
+  @media (max-width: 52rem) and (min-height: 32rem) {
+    :global(.js) .dock {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: var(--z-dock);
+      display: block;
+      background: color-mix(in srgb, var(--bg) 94%, transparent);
+      border-top: var(--divider);
+      /* Escondido: fuera de pantalla e inalcanzable por teclado (visibility) */
+      transform: translate3d(0, 100%, 0);
+      visibility: hidden;
+      transition: transform var(--dur-base) var(--ease-out), visibility 0s linear var(--dur-base);
+    }
+    :global(.js) .dock.is-on {
+      transform: none;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+    .dock__bar {
+      display: flex;
+      gap: var(--space-2xs);
+      padding: var(--space-2xs) var(--pad-r) calc(var(--space-2xs) + var(--safe-b)) var(--pad-l);
+    }
+    .dock__bar > * { min-height: 3rem; }
+    .dock__listen { flex: 1.35 1 0; min-width: 0; }
+    .dock__booking { flex: 1 1 0; min-width: 0; }
+    /* Con el reproductor cargado y fuera de pantalla, Escuchar es el mini reproductor */
+    .dock[data-mode='player'] .dock__listen,
+    .dock[data-mode='booking'] .dock__listen { display: none; }
+    .dock[data-mode='player'] .dock__mini {
+      flex: 1.35 1 0;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 0 var(--space-xs);
+      border: var(--stroke) solid var(--chrome-500);
+      color: var(--chrome-50);
+      transition: background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+    }
+    .dock__mini:active { background: var(--press-bg); transform: scale(var(--press-scale)); transition-duration: var(--dur-press); }
+    .dock__mini :global(.dock__seal) { width: 2.25rem; flex: none; }
+    .dock__text { display: grid; min-width: 0; line-height: 1.15; }
+    .dock__kicker { color: var(--accent); }
+    .dock__title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-stretch: var(--stretch-title);
+      font-size: var(--step--1);
+      color: var(--chrome-100);
+    }
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+/**
+ * Envuelve un texto con dos capas duplicadas (aria-hidden) para el glitch RGB
+ * por bandas. El contenido real va en el slot; `text` solo alimenta las capas.
+ * Las reglas viven en base.css (.glitch*) y se disparan por hover/foco del propio
+ * elemento o de un ancestro con [data-glitch-host].
+ */
+interface Props {
+  text: string;
+  block?: boolean;
+  /** Una palabra por línea (igual que SplitText stack). */
+  stack?: boolean;
+}
+const { text, block = false, stack = false } = Astro.props;
+const words = stack ? text.split(' ') : [text];
+// Los nombres con punto (fragmento.techno) pueden cortar después del punto
+const parts = (w: string) => w.split(/(?<=\.)/);
+---
+
+<span class:list={['glitch', { 'glitch--block': block }]}>
+  <span class="glitch__base"><slot /></span>
+  <span class="glitch__l glitch__l--r" aria-hidden="true">{words.map((w) => (stack ? <span class="glitch__w">{w}</span> : parts(w).map((x) => <>{x}<wbr /></>)))}</span>
+  <span class="glitch__l glitch__l--c" aria-hidden="true">{words.map((w) => (stack ? <span class="glitch__w">{w}</span> : parts(w).map((x) => <>{x}<wbr /></>)))}</span>
+</span>
+
+<style>
+  .glitch__w { display: block; }
+</style>

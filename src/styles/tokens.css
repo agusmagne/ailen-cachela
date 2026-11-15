@@ -1,0 +1,208 @@
+/* ==========================================================================
+   TOKENS VISUALES. Único lugar con colores, familias, escala, espaciado,
+   radios, movimiento y textura. Ningún componente escribe estos valores a
+   mano. Los shaders y canvas leen sus colores de las variables --gl-* (ver
+   src/scripts/chrome.ts, que lo hace con getComputedStyle).
+
+   DIRECCIÓN: "cromo negro". Negro casi absoluto, metal líquido, vidrio y
+   líneas concéntricas; plata fría como único neutro; un solo acento
+   iridiscente (rosa) usado en gotas, nunca como superficie.
+   Referencia: tablero "Portadas" (metal líquido/cromo, vidrio, moiré,
+   topografía, grano, scanlines, zoótropo). Ver README, sección Estética.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* ---- Paleta -------------------------------------------------------------
+     Negro profundo + escala de plata (cromo). Contrastes medidos sobre --bg:
+     chrome-100 17:1 · chrome-300 8:1 · chrome-400 5.2:1 (mínimo para texto). */
+  --void: #020203; /* piso del shader y del og:image */
+  --bg: #050506;
+  --bg-raised: #0b0c0e;
+  --bg-glass: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+
+  --chrome-50: #f4f6f9;
+  --chrome-100: #e7eaef;
+  --chrome-200: #cfd4db;
+  --chrome-300: #a6acb7;
+  --chrome-400: #7d848f;
+  --chrome-500: #565c66;
+  --chrome-600: #353a42;
+  --chrome-700: #22262c;
+  --chrome-800: #14171b;
+
+  --fg: var(--chrome-100);
+  --muted: var(--chrome-300);
+  --subtle: var(--chrome-400); /* solo texto grande o decorativo */
+  --line: var(--chrome-700);
+  --line-strong: var(--chrome-600);
+  --focus: var(--chrome-50); /* anillo de foco: 17:1 sobre --bg */
+
+  /* Acento iridiscente: rosa de película delgada. Único acento del sitio.
+     --iris es el barrido completo (rosa, azul frío, arena) y se usa solo en
+     filos finos, nunca como relleno de superficie. */
+  --accent: #e58fd2;
+  --accent-b: #8ec5f2;
+  --accent-c: #f0d9a6;
+  --on-accent: #0a0a0c;
+  --iris: linear-gradient(100deg, var(--accent) 0%, var(--accent-b) 52%, var(--accent-c) 100%);
+
+  /* Canales del glitch RGB (solo se ven ~0.5 s en hover/foco). */
+  --glitch-r: #ff3d6e;
+  --glitch-c: #33dfff;
+
+  /* ---- Constantes de shader/canvas (hex, sin var(); las lee chrome.ts) ---- */
+  --gl-void: #020203;
+  --gl-shadow: #090b0f;
+  --gl-silver: #d6dce6;
+  --gl-cool: #8da4c6;
+  --gl-pink: #e58fd2;
+  --gl-blue: #8ec5f2;
+  --gl-sand: #f0d9a6;
+
+  /* ---- Tipografía ----------------------------------------------------------
+     Display: Archivo (variable, eje de ancho) en versión expandida: grotesca
+     ancha de proporción técnica, tomada de la escena techno/industrial pero
+     con carácter propio por el ancho y el peso. Datos y etiquetas: Martian
+     Mono. Ambas SIL OFL 1.1, autoalojadas y subseteadas (src/assets/fonts). */
+  --font-display: 'Archivo Cachela', 'Archivo', 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Archivo Cachela', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-ui: 'Martian Mono Cachela', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-display-weight: 800;
+  --font-body-weight: 400;
+  --font-ui-weight: 500;
+  --stretch-display: 125%;
+  --stretch-title: 112%;
+  --stretch-body: 100%;
+  --tracking-display: -0.015em;
+  --tracking-title: -0.01em;
+  --tracking-ui: 0.08em; /* etiquetas en mayúsculas */
+  --case-display: uppercase;
+  --case-ui: uppercase;
+  --lh-display: 0.9;
+  --lh-title: 1.02;
+  --lh-body: 1.6;
+
+  /* ---- Escala tipográfica fluida (360 a 1440 px) --------------------------- */
+  --step-ui: clamp(0.6875rem, 0.66rem + 0.14vw, 0.78rem);
+  --step--1: clamp(0.8125rem, 0.79rem + 0.12vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.4rem, 1.15rem + 1.2vw, 2.1rem);
+  --step-3: clamp(1.85rem, 1.4rem + 2.2vw, 3.2rem);
+  --step-4: clamp(2.2rem, 1.4rem + 4vw, 5rem);
+  --step-hero: clamp(2.6rem, 14.4vw, 12rem);
+
+  /* ---- Espaciado ----------------------------------------------------------- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  /* Márgenes laterales respetando muesca / isla (0 fuera de iOS con notch) */
+  --pad-l: max(var(--gutter), env(safe-area-inset-left, 0px));
+  --pad-r: max(var(--gutter), env(safe-area-inset-right, 0px));
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --wrap: 80rem;
+  --measure: 62ch;
+  --section-gap: clamp(5rem, 11vw, 10rem); /* respiro generoso entre momentos */
+  --header-h: 4rem;
+  --tap: 2.75rem; /* objetivo táctil mínimo (44 px) */
+  --tap-lg: 3.5rem; /* acciones principales con el pulgar (56 px) */
+  --dock-h: 4rem; /* dock inferior móvil: botones de 48 px + 8 px de aire */
+
+  /* ---- Formas --------------------------------------------------------------
+     Esquinas vivas (industrial); lo redondo queda para discos y botones de
+     reproducción, que remiten al vinilo y al zoótropo. */
+  --radius-ui: 0;
+  --radius-card: 0;
+  --radius-round: 999px;
+  --img-radius: 0;
+  --img-ratio: 1 / 1;
+  --stroke: 1px;
+  --divider: var(--stroke) solid var(--line);
+  --glint: linear-gradient(90deg, transparent, var(--chrome-400) 50%, transparent);
+
+  /* ---- Tratamiento de imagen (fotos reales, cuando se carguen) -------------
+     Plata y contraste; el color vuelve a medias con hover/foco/touch. */
+  --img-filter: grayscale(1) contrast(1.1) brightness(0.92);
+  --img-filter-hover: grayscale(0.15) contrast(1.05) brightness(1);
+
+  /* ---- Textura global, generada por código ---------------------------------
+     Grano: ruido fractal SVG (feTurbulence) en blanco con alfa, en mosaico.
+     Scanlines: líneas de 1 px cada 3 px, casi invisibles. */
+  --grain-opacity: 0.085;
+  --grain-size: 220px;
+  --texture-url: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -.28'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --scan-opacity: 0.045;
+  --scanlines: repeating-linear-gradient(to bottom, rgb(255 255 255 / var(--scan-opacity)) 0 1px, transparent 1px 3px);
+  /* Semitono para hover de tarjetas */
+  --halftone: radial-gradient(circle at center, var(--chrome-300) 0 0.9px, transparent 1.3px);
+  --halftone-size: 7px;
+  --bg-pattern: none;
+
+  /* ---- Movimiento -----------------------------------------------------------
+     Carácter: pesado y viscoso (metal líquido), con cortes secos a saltos
+     (zoótropo, glitch). Nada rebota. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-base: 300ms;
+  --dur-slow: 1100ms;
+  --dur-glitch: 520ms;
+  --reveal-distance: 1.25rem;
+  --stagger-char: 34ms;
+  --stagger-word: 90ms;
+  --stagger-item: 90ms;
+  --marquee-dur: 60s;
+  --zoetrope-steps: 12;
+  --zoetrope-idle: 14s;
+  --zoetrope-live: 1.6s;
+  /* Lenguaje táctil: al apoyar el dedo (:active) el elemento se hunde y se
+     ilumina de inmediato; al soltar vuelve lento. Cortes secos, sin rebote. */
+  --dur-press: 70ms;
+  --press-scale: 0.97;
+  --press-scale-row: 0.992;
+  --press-bg: color-mix(in srgb, var(--chrome-300) 14%, transparent);
+  --sheet-dur: 420ms;
+
+  /* ---- Capas ---------------------------------------------------------------- */
+  --z-dock: 40;
+  --z-header: 50;
+  --z-overlay: 100;
+}
+
+/* ---- Escala móvil -----------------------------------------------------------
+   Toda la sobrescritura táctil/móvil de tokens vive acá. "Móvil" = ancho de
+   teléfono o tableta vertical, o un teléfono en horizontal (táctil y bajo).
+   Escritorio con mouse (>= 1024 px) no entra en ninguna de estas consultas. */
+@media (max-width: 52rem), (pointer: coarse) {
+  /* Etiquetas mono: piso de 13 px (nada interactivo ni legible bajo ~12,5 px) */
+  :root {
+    --step-ui: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+    --tracking-ui: 0.06em;
+  }
+}
+@media (max-width: 52rem) {
+  :root {
+    --header-h: 3.5rem;
+    --step--1: clamp(0.875rem, 0.84rem + 0.12vw, 0.9rem);
+    --step-4: clamp(2.4rem, 11.8vw, 3.75rem); /* títulos de sección: aprovechan el ancho */
+    --section-gap: clamp(3.25rem, 13vw, 5.5rem);
+    --grain-opacity: 0.07;
+  }
+}
+/* Teléfono en horizontal: barra y hero compactos */
+@media (pointer: coarse) and (max-height: 32rem) {
+  :root {
+    --header-h: 3rem;
+    --section-gap: 3.5rem;
+  }
+}

@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { t, site, homePath } from '../lib/content';
+const lang = 'es';
+---
+
+<Base lang={lang} title={`${t('notfound_title', lang)} | ${site.site.name}`} noindex>
+  <Nav lang={lang} />
+  <main id="main" class="nf wrap">
+    <p class="label">404</p>
+    <h1 class="nf__title">{t('notfound_title', lang)}</h1>
+    <p>{t('notfound_text', lang)}</p>
+    <a class="btn btn--primary" href={homePath(lang)}>{t('notfound_back', lang)}</a>
+  </main>
+  <Footer lang={lang} />
+</Base>
+
+<style>
+  .nf { display: grid; gap: var(--space-m); justify-items: start; align-content: center; min-height: 80svh; padding-top: calc(var(--header-h) + var(--space-l)); }
+  .nf__title {
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-size: var(--step-4);
+    line-height: var(--lh-title);
+    letter-spacing: var(--tracking-display);
+    text-transform: var(--case-display);
+  }
+</style>

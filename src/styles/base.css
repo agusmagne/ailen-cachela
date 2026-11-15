@@ -1,0 +1,388 @@
+/* Base global. Solo usa tokens de tokens.css. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Un solo offset de ancla (antes se sumaban html + .section): el filete
+     superior de cada sección cae justo bajo la barra. */
+  scroll-padding-top: calc(var(--header-h) - 1px);
+  /* El azul del sistema sobre negro/plata desentona: el feedback es :active propio */
+  -webkit-tap-highlight-color: transparent;
+  background: var(--bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--chrome-500) var(--bg);
+}
+html::-webkit-scrollbar { width: 10px; height: 10px; }
+html::-webkit-scrollbar-track { background: var(--bg); }
+html::-webkit-scrollbar-thumb { background: var(--chrome-600); border: 2px solid var(--bg); border-radius: var(--radius-round); }
+html::-webkit-scrollbar-thumb:hover { background: var(--chrome-500); }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg);
+  background-image: var(--bg-pattern);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-weight: var(--font-body-weight);
+  font-stretch: var(--stretch-body);
+  font-size: var(--step-0);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+/* ---- Textura global generada por código ---------------------------------
+   Scanlines casi invisibles + grano fílmico. Ambos son capas fijas que no
+   reciben eventos; el grano se desplaza a saltos (compositor, sin repintado). */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: var(--z-overlay);
+}
+body::before {
+  inset: 0;
+  background-image: var(--scanlines);
+}
+body::after {
+  inset: -30%;
+  background-image: var(--texture-url);
+  background-size: var(--grain-size);
+  opacity: var(--grain-opacity);
+}
+@media (prefers-reduced-motion: no-preference) {
+  body::after { animation: grain 1.1s steps(1, end) infinite; }
+}
+/* Móvil: una sola capa de grano, estática y sin scanlines (a esa densidad de
+   píxeles no se ven y cuestan dos capas fijas a pantalla completa por cuadro). */
+@media (max-width: 52rem), (pointer: coarse) {
+  body::before { display: none; }
+  body::after { inset: 0; animation: none; }
+}
+@keyframes grain {
+  0% { transform: translate3d(0, 0, 0); }
+  12% { transform: translate3d(-4%, 3%, 0); }
+  25% { transform: translate3d(3%, -5%, 0); }
+  37% { transform: translate3d(-6%, -2%, 0); }
+  50% { transform: translate3d(5%, 4%, 0); }
+  62% { transform: translate3d(-2%, 6%, 0); }
+  75% { transform: translate3d(6%, -3%, 0); }
+  87% { transform: translate3d(-5%, 5%, 0); }
+}
+
+img, svg, video, iframe, canvas { display: block; max-width: 100%; }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+button, [role='button'], summary, label[for] { cursor: pointer; }
+/* Sin espera de doble toque ni zoom por doble toque sobre controles (el pellizco sigue funcionando) */
+a, button, summary, [role='button'] { touch-action: manipulation; }
+
+::selection { background: var(--accent); color: var(--on-accent); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-ui);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--pad-l) var(--pad-r);
+}
+
+/* Etiquetas y datos: mono en mayúsculas con tracking */
+.label {
+  font-family: var(--font-ui);
+  font-weight: var(--font-ui-weight);
+  font-size: var(--step-ui);
+  letter-spacing: var(--tracking-ui);
+  text-transform: var(--case-ui);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Titulares: grotesca expandida */
+.display {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-stretch: var(--stretch-title);
+  letter-spacing: var(--tracking-title);
+  text-transform: var(--case-display);
+  line-height: var(--lh-title);
+}
+
+/* Flecha de link externo: dibujada con máscara, no depende de la tipografía.
+   El glifo queda en el DOM (aria-hidden) pero fuera de la caja, recortado:
+   el tamaño sale de la fuente del padre (antes font-size:0 anulaba el 0.78em). */
+.arrow {
+  display: inline-block;
+  flex: none;
+  width: 0.9em;
+  height: 0.9em;
+  overflow: hidden;
+  text-indent: 200%;
+  white-space: nowrap;
+  letter-spacing: 0;
+  line-height: 0;
+  vertical-align: -0.08em;
+  background: currentColor;
+  -webkit-mask: var(--arrow-ne) center / contain no-repeat;
+  mask: var(--arrow-ne) center / contain no-repeat;
+  --arrow-ne: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 12.5 12 4M5.5 3.5H12.5V10.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/></svg>");
+  --arrow-down: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 2.5V13M3.5 8.5 8 13l4.5-4.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/></svg>");
+  --arrow-left: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M13.5 8H3M7.5 3.5 3 8l4.5 4.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/></svg>");
+  --arrow-right: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2.5 8H13M8.5 3.5 13 8l-4.5 4.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/></svg>");
+  --arrow-up: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 13.5V3M3.5 7.5 8 3l4.5 4.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/></svg>");
+}
+.arrow[data-dir='down'] { -webkit-mask-image: var(--arrow-down); mask-image: var(--arrow-down); }
+.arrow[data-dir='up'] { -webkit-mask-image: var(--arrow-up); mask-image: var(--arrow-up); }
+.arrow[data-dir='left'] { -webkit-mask-image: var(--arrow-left); mask-image: var(--arrow-left); }
+.arrow[data-dir='right'] { -webkit-mask-image: var(--arrow-right); mask-image: var(--arrow-right); }
+
+/* Link de texto con subrayado animado */
+.link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% var(--stroke);
+  padding-bottom: 0.1em;
+  transition: background-size var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease);
+}
+.link:focus-visible { background-size: 100% 0.12em; color: var(--chrome-50); }
+@media (hover: hover) {
+  .link:hover { background-size: 100% 0.12em; color: var(--chrome-50); }
+  .link { background-size: 0 var(--stroke); background-position: 100% 100%; }
+  .link:hover, .link:focus-visible { background-size: 100% var(--stroke); background-position: 0 100%; }
+}
+@media (hover: none) {
+  .link:active { color: var(--chrome-50); background-size: 100% 0.12em; }
+}
+
+/* Botones: rectángulo duro con barrido de cromo */
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  min-height: var(--tap);
+  padding: 0.65rem 1.35rem;
+  font-family: var(--font-ui);
+  font-weight: var(--font-ui-weight);
+  font-size: var(--step-ui);
+  letter-spacing: var(--tracking-ui);
+  text-transform: var(--case-ui);
+  line-height: 1.3;
+  color: var(--fg);
+  background: transparent;
+  border: var(--stroke) solid var(--chrome-500);
+  border-radius: var(--radius-ui);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, var(--chrome-300), var(--chrome-50) 45%, var(--chrome-200));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.btn:focus-visible { color: var(--bg); border-color: var(--chrome-50); }
+.btn:focus-visible::before { transform: scaleX(1); transform-origin: left; }
+@media (hover: hover) {
+  .btn:hover { color: var(--bg); border-color: var(--chrome-50); }
+  .btn:hover::before { transform: scaleX(1); transform-origin: left; }
+}
+.btn:active { transform: translateY(1px); }
+.btn:active::before { background: var(--chrome-200); }
+/* Táctil: al apoyar el dedo el botón se hunde y el barrido cromo corre en 140 ms */
+@media (hover: none) {
+  .btn { transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease-out); }
+  .btn::before { transition-duration: var(--dur-fast); }
+  .btn:active { transform: scale(var(--press-scale)); color: var(--bg); border-color: var(--chrome-50); transition-duration: var(--dur-press); }
+  .btn:active::before { transform: scaleX(1); transform-origin: left; background: var(--chrome-200); }
+}
+.btn--primary {
+  color: var(--bg);
+  border-color: var(--chrome-100);
+  background: linear-gradient(100deg, var(--chrome-200), var(--chrome-50) 45%, var(--chrome-200));
+}
+.btn--primary::before { background: var(--bg); }
+.btn--primary:focus-visible { color: var(--fg); border-color: var(--accent); }
+@media (hover: hover) { .btn--primary:hover { color: var(--fg); border-color: var(--accent); } }
+@media (hover: none) { .btn--primary:active { color: var(--fg); border-color: var(--accent); } .btn--primary:active::before { background: var(--bg); } }
+.btn .arrow { transition: transform var(--dur-base) var(--ease-out); }
+.btn:focus-visible .arrow { transform: translate(2px, -2px); }
+@media (hover: hover) { .btn:hover .arrow { transform: translate(2px, -2px); } }
+.btn .arrow[data-dir='down'] { transition: transform var(--dur-base) var(--ease-out); }
+@media (hover: hover) { .btn:hover .arrow[data-dir='down'] { transform: translateY(2px); } }
+/* Botón grande de pulgar (móvil): acción principal */
+.btn--xl { min-height: var(--tap-lg); padding-inline: var(--space-m); }
+/* Botón de email: etiqueta mono arriba, dirección abajo, flecha a la derecha */
+.btn--mail { justify-content: space-between; gap: var(--space-s); text-align: left; }
+.btn__stack { display: grid; gap: 0.15rem; min-width: 0; justify-items: start; }
+.btn__sub {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Glitch por bandas con separación RGB --------------------------------
+   Capas duplicadas (aria-hidden) con bandas horizontales que saltan a
+   cuadros; solo corren en hover/foco/pulsado, ~0.5 s, una vez. */
+.glitch { position: relative; display: inline-block; max-width: 100%; }
+.glitch--block { display: block; }
+.glitch__l {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  mix-blend-mode: screen;
+  user-select: none;
+  overflow-wrap: inherit;
+}
+.glitch__l--r { color: var(--glitch-r); }
+.glitch__l--c { color: var(--glitch-c); }
+@media (prefers-reduced-motion: no-preference) {
+  :is([data-glitch-host]:focus-within, [data-glitch-host].is-glitching) .glitch__l,
+  .glitch:focus-within .glitch__l {
+    opacity: 0.95;
+    animation: glitch-r var(--dur-glitch) steps(1, end) 1 both;
+  }
+  :is([data-glitch-host]:focus-within, [data-glitch-host].is-glitching) .glitch__l--c,
+  .glitch:focus-within .glitch__l--c {
+    animation-name: glitch-c;
+  }
+  :is([data-glitch-host]:focus-within, [data-glitch-host].is-glitching) .glitch__base,
+  .glitch:focus-within .glitch__base {
+    animation: glitch-base var(--dur-glitch) steps(1, end) 1 both;
+  }
+}
+/* Con mouse: hover. En táctil lo dispara motion.ts al soltar el dedo (.is-glitching) */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  :is([data-glitch-host]:hover) .glitch__l,
+  .glitch:hover .glitch__l {
+    opacity: 0.95;
+    animation: glitch-r var(--dur-glitch) steps(1, end) 1 both;
+  }
+  :is([data-glitch-host]:hover) .glitch__l--c,
+  .glitch:hover .glitch__l--c {
+    animation-name: glitch-c;
+  }
+  :is([data-glitch-host]:hover) .glitch__base,
+  .glitch:hover .glitch__base {
+    animation: glitch-base var(--dur-glitch) steps(1, end) 1 both;
+  }
+}
+@keyframes glitch-r {
+  0% { clip-path: inset(8% 0 72% 0); transform: translate3d(-7px, 0, 0); }
+  14% { clip-path: inset(56% 0 18% 0); transform: translate3d(5px, 0, 0); }
+  28% { clip-path: inset(30% 0 46% 0); transform: translate3d(-3px, 0, 0); }
+  42% { clip-path: inset(80% 0 3% 0); transform: translate3d(8px, 0, 0); }
+  57% { clip-path: inset(4% 0 84% 0); transform: translate3d(-5px, 0, 0); }
+  71% { clip-path: inset(46% 0 34% 0); transform: translate3d(4px, 0, 0); }
+  85% { clip-path: inset(18% 0 62% 0); transform: translate3d(-2px, 0, 0); }
+  100% { clip-path: inset(0 0 100% 0); transform: none; }
+}
+@keyframes glitch-c {
+  0% { clip-path: inset(62% 0 14% 0); transform: translate3d(6px, 0, 0); }
+  14% { clip-path: inset(12% 0 70% 0); transform: translate3d(-5px, 0, 0); }
+  28% { clip-path: inset(70% 0 8% 0); transform: translate3d(4px, 0, 0); }
+  42% { clip-path: inset(24% 0 52% 0); transform: translate3d(-8px, 0, 0); }
+  57% { clip-path: inset(50% 0 30% 0); transform: translate3d(5px, 0, 0); }
+  71% { clip-path: inset(2% 0 88% 0); transform: translate3d(-4px, 0, 0); }
+  85% { clip-path: inset(84% 0 2% 0); transform: translate3d(2px, 0, 0); }
+  100% { clip-path: inset(0 0 100% 0); transform: none; }
+}
+@keyframes glitch-base {
+  0%, 100% { transform: none; }
+  20% { transform: translate3d(2px, 0, 0); }
+  45% { transform: translate3d(-3px, 0, 0); }
+  70% { transform: translate3d(1px, 0, 0); }
+}
+
+/* ---- Movimiento: el contenido es visible sin JS --------------------------
+   El script del <head> agrega .js-motion solo si el usuario no pidió
+   reduced-motion; recién ahí se esconden los elementos para revelarlos. */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  transition: opacity var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms),
+    transform var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.js-motion [data-reveal].is-in { opacity: 1; transform: none; will-change: auto; }
+
+/* Revelado por máscara (piezas visuales): se abre de abajo hacia arriba */
+.js-motion [data-reveal='clip'] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.3s var(--ease-out) var(--reveal-delay, 0ms);
+  will-change: clip-path;
+}
+.js-motion [data-reveal='clip'].is-in { clip-path: inset(0 0 0 0); will-change: auto; }
+
+/* Línea de corte entre secciones: se dibuja al entrar */
+.js-motion [data-reveal='line'] {
+  opacity: 1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.6s var(--ease-out);
+}
+.js-motion [data-reveal='line'].is-in { transform: none; }
+
+/* Bloqueo de scroll con el menú abierto: vive en la MISMA consulta que la hoja,
+   así es imposible que quede colgado si se rota o se agranda la ventana. */
+@media (max-width: 52rem), ((pointer: coarse) and (max-height: 32rem)) {
+  html.is-menu-open { overflow: hidden; overscroll-behavior: none; }
+}
+@media (max-width: 52rem) and (min-height: 32rem) {
+  /* Foco por teclado y anclas no quedan bajo el dock inferior */
+  html { scroll-padding-bottom: calc(var(--dock-h) + var(--safe-b)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+  .glitch__l { display: none; }
+}

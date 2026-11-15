@@ -1,0 +1,71 @@
+---
+import { site, pick, t, type Lang } from '../lib/content';
+import Section from './Section.astro';
+import Media from './Media.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hasPhoto = site.about.photo !== '';
+const name = site.artist.name;
+const long = pick(site.about.bio_long, lang);
+---
+
+<Section id="sobre" title={t('about_title', lang)}>
+  <div class="about">
+    <div class="about__text" data-reveal>
+      <p class="about__bio" lang={lang}>{pick(site.about.bio, lang)}</p>
+      {
+        long && (
+          <details class="about__more">
+            <summary class="label">{t('about_more', lang)}</summary>
+            <p>{long}</p>
+          </details>
+        )
+      }
+    </div>
+    <div class="about__photo" data-reveal="clip" style="--reveal-delay:120ms">
+      {
+        hasPhoto ? (
+          <Media src={site.about.photo} alt={pick(site.about.photo_alt, lang)} sizes="(min-width: 52rem) 40vw, 90vw" />
+        ) : (
+          <Media variant="portrait" seed={`retrato-${name}`} />
+        )
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .about { display: grid; gap: var(--space-xl); }
+  @media (min-width: 52rem) {
+    .about { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-2xl); align-items: start; }
+  }
+  .about__photo { max-width: 28rem; width: 100%; justify-self: end; }
+  .about__photo :global(.media) { --media-ratio: 4 / 5; }
+  .about__bio {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-stretch: 108%;
+    font-size: var(--step-2);
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+    max-width: 30ch;
+    color: var(--chrome-50);
+  }
+  .about__more { margin-top: var(--space-m); max-width: var(--measure); }
+  .about__more summary { min-height: var(--tap); display: flex; align-items: center; color: var(--chrome-200); transition: color var(--dur-fast) var(--ease); }
+  .about__more p { margin-top: var(--space-xs); color: var(--muted); }
+  @media (hover: hover) { .about__more summary:hover { color: var(--chrome-50); } }
+
+  /* Móvil: la bio manda; el retrato es un recuadro ancho, no una columna de 490 px */
+  @media (max-width: 52rem) {
+    .about { gap: var(--space-l); }
+    .about__bio { font-size: clamp(1.45rem, 1.1rem + 1.6vw, 1.9rem); max-width: none; text-wrap: pretty; }
+    .about__photo { max-width: none; justify-self: stretch; }
+    .about__photo :global(.media) { --media-ratio: 6 / 5; }
+    .about__more summary:active { color: var(--chrome-50); }
+  }
+  @media (pointer: coarse) and (max-height: 32rem) {
+    .about__photo { max-width: min(28rem, 56vh); }
+  }
+</style>

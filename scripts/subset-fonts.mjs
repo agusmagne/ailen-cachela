@@ -1,0 +1,17 @@
+import subsetFont from 'subset-font';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+const root = fileURLToPath(new URL('../', import.meta.url));
+let chars = '';
+for (let c = 0x20; c < 0x7f; c++) chars += String.fromCharCode(c);
+for (let c = 0xa0; c <= 0x17f; c++) chars += String.fromCharCode(c);
+chars += '“”‘’‚„–—·•…←→↑↓↗↘©®™€°×№‹›«»− ';
+fs.mkdirSync(root + 'src/assets/fonts', { recursive: true });
+const a = fs.readFileSync(root + 'node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2');
+const out = await subsetFont(a, chars, { targetFormat: 'woff2', variationAxes: { wght: { min: 400, max: 800 }, wdth: { min: 100, max: 125 } } });
+fs.writeFileSync(root + 'src/assets/fonts/archivo-cachela.woff2', out);
+console.log('archivo', a.length, '->', out.length);
+const m = fs.readFileSync(root + 'node_modules/@fontsource-variable/martian-mono/files/martian-mono-latin-wght-normal.woff2');
+const mo = await subsetFont(m, chars, { targetFormat: 'woff2', variationAxes: { wght: { min: 400, max: 600 } } });
+fs.writeFileSync(root + 'src/assets/fonts/martian-mono-cachela.woff2', mo);
+console.log('martian', m.length, '->', mo.length);

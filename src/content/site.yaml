@@ -1,0 +1,291 @@
+# =============================================================================
+# CONTENIDO DEL SITIO — único archivo editable. Se valida en build con
+# src/lib/schema.ts: si falta un campo, hay una fecha mal escrita o una URL
+# inválida, `npm run build` falla con el detalle.
+#
+# Reglas:
+# - Solo datos verificados. Lo PROBABLE o faltante va vacío ("") o comentado.
+# - Un campo `url` vacío oculta el botón/link correspondiente.
+# - Los textos con es/en van en los dos idiomas.
+# =============================================================================
+
+site:
+  name: Ailén Cachela
+  # Color de la barra del navegador en móvil: igual a --bg de src/styles/tokens.css
+  theme_color: "#050506"
+  title:
+    es: "Ailén Cachela | DJ y productora, Buenos Aires"
+    en: "Ailén Cachela | DJ & producer, Buenos Aires"
+  description:
+    es: "DJ y productora de Buenos Aires, Argentina. Co-fundadora de fragmento.techno. Lanzó en el sello ROOM."
+    en: "DJ & Producer from Buenos Aires, Argentina. Co-founder of fragmento.techno. Releases on ROOM."
+
+artist:
+  name: Ailén Cachela
+  role:
+    es: DJ y productora
+    en: DJ & producer
+  city: Buenos Aires
+  country: Argentina
+  country_code: AR
+  # FALTA: género. Ninguna fuente lo define; no usar subgénero. Si la artista
+  # confirma "Techno", completar acá (se publica en JSON-LD).
+  genre: ""
+
+hero:
+  # Foto o video de la artista: dejar el archivo en src/assets/media/ y poner
+  # acá solo el nombre (ej. "hero.jpg" o "hero.mp4"). Vacío = hero tipográfico.
+  media: ""
+  media_alt:
+    es: ""
+    en: ""
+  # Para video: imagen de póster obligatoria (también en src/assets/media/).
+  poster: ""
+
+# Redes. El texto visible usa el handle real de CADA plataforma (no unificar).
+# nav/contact/footer/same_as: dónde aparece. url vacía = no se muestra.
+links:
+  - id: instagram
+    platform: Instagram
+    label: ""
+    handle: "@ailucachela"
+    url: "https://www.instagram.com/ailucachela/"
+    nav: true
+    contact: true
+    footer: true
+    same_as: true
+  - id: soundcloud
+    platform: SoundCloud
+    label: ""
+    handle: "ailen-cachela"
+    url: "https://soundcloud.com/ailen-cachela"
+    nav: true
+    contact: true
+    footer: true
+    same_as: true
+  - id: senka-instagram
+    platform: Instagram
+    label: SENKA
+    handle: "@senka.1919"
+    url: "https://www.instagram.com/senka.1919/"
+    nav: false
+    contact: true
+    footer: false
+    same_as: false
+  - id: linktree
+    platform: Linktree
+    label: ""
+    handle: "ailencachela"
+    url: "https://linktr.ee/ailencachela"
+    nav: false
+    contact: true
+    footer: true
+    same_as: true
+  - id: pinterest
+    platform: Pinterest
+    label: ""
+    handle: "ailncachela"
+    url: "https://ar.pinterest.com/ailncachela/"
+    nav: false
+    contact: true
+    footer: false
+    same_as: true
+  # PENDIENTE de la artista (no mostrar hasta tener URL real):
+  # - Spotify, YouTube (playlist "Ahogo [ROOM.004]"), Beatport, Threads, Facebook, X
+  # - SoundCloud de SENKA: soundcloud.com/senka1919 (PROBABLE, sin abrir)
+  # - Instagram de fragmento.techno: @fragmento.techno (PROBABLE, perfil sin abrir)
+
+listen:
+  profile_url: "https://soundcloud.com/ailen-cachela"
+  # id del ítem de `tracks` que va en el reproductor (facade). Vacío = sin reproductor.
+  # Pendiente (artista): debe elegir cuál destacar; hoy es el primero de la lista.
+  featured: mesdar
+  # kind: unclassified | track | set. Hasta que la artista lo indique, todos
+  # quedan "unclassified" (se rotulan "En SoundCloud").
+  tracks:
+    - id: mesdar
+      title: "Mesdar Festival Worldwide Connection 18-04-2020"
+      url: "https://soundcloud.com/ailen-cachela/mesdar-festival-worldwide-connection-18-04-2020"
+      kind: unclassified
+    - id: dubbin-rain
+      title: "Dubbin' rain"
+      url: "https://soundcloud.com/ailen-cachela/dubbin-rain"
+      kind: unclassified
+    - id: sophie
+      title: "Sophie"
+      url: "https://soundcloud.com/ailen-cachela/sophie"
+      kind: unclassified
+    - id: worlds-tears
+      title: "World's tears in your eyes"
+      url: "https://soundcloud.com/ailen-cachela/worlds-tears-in-your-eyes"
+      kind: unclassified
+    # PENDIENTE: "Untitled 001 | Techno Session" (aparece en Linktree, sin URL ni plataforma).
+
+releases:
+  - id: ellas-ep
+    title: "Ellas EP [ROOM.004]"
+    catalog: "ROOM.004"
+    label:
+      name: ROOM
+      url: "https://roomarg.bandcamp.com/"
+    date: "2017-10-20"
+    format:
+      es: "Digital · pagás lo que quieras"
+      en: "Digital · name your price"
+    # Compilación de distintas artistas. NO es un EP propio de Ailén.
+    compilation:
+      artists:
+        - Euyinn
+        - Josefina Muñoz
+        - Miss Adk
+        - SO
+        - Dunkel Dame
+        - Mica Pert
+        - Ailén Cachela
+    own_tracks:
+      - number: 7
+        title: "Ahogo (Original Mix)"
+        duration: "07:56"
+    # Portada: la de Bandcamp existe pero no hay permiso de uso confirmado.
+    # Cuando haya permiso, dejar el archivo en src/assets/media/ y poner el nombre.
+    cover: ""
+    cover_alt:
+      es: "Portada de Ellas EP [ROOM.004]"
+      en: "Cover of Ellas EP [ROOM.004]"
+    url: "https://roomarg.bandcamp.com/album/ellas-ep-room-004"
+    # PENDIENTE: Beatport de "Ahogo" y playlist de YouTube (sin URL).
+
+projects:
+  - id: senka
+    name: SENKA
+    visible: true
+    status:
+      es: "En desarrollo"
+      en: "Work in progress"
+    text:
+      es: "Proyecto artístico de Ailén."
+      en: "Ailén's artistic project."
+    handle: "@senka.1919"
+    platform: Instagram
+    url: "https://www.instagram.com/senka.1919/"
+  - id: fragmento
+    name: fragmento.techno
+    visible: true
+    status:
+      es: ""
+      en: ""
+    text:
+      es: "Colectivo del que Ailén es co-fundadora."
+      en: "Collective co-founded by Ailén."
+    handle: "@fragmento.techno"
+    platform: Instagram
+    # PROBABLE: https://www.instagram.com/fragmento.techno/ (perfil sin abrir).
+    url: ""
+  - id: room
+    name: ROOM
+    visible: true
+    status:
+      es: ""
+      en: ""
+    text:
+      es: "Sello de Buenos Aires, Argentina, donde Ailén lanzó “Ahogo”."
+      en: "Label from Buenos Aires, Argentina, where Ailén released “Ahogo”."
+    handle: "roomarg"
+    platform: Bandcamp
+    url: "https://roomarg.bandcamp.com/"
+
+# Fechas. Vacío = estado "Sin fechas anunciadas por ahora."
+# Cada ítem: date (YYYY-MM-DD), venue, city, country (ISO alpha-2, 2 letras), url (opcional).
+# No cargar acá "Mesdar Festival Worldwide Connection": vive en Escuchar.
+shows: []
+
+about:
+  bio:
+    es: "DJ y productora de Buenos Aires, Argentina. Co-fundadora de fragmento.techno. Lanzó en el sello ROOM. Proyecto artístico: SENKA."
+    en: "DJ & Producer from Buenos Aires, Argentina. Co-founder of fragmento.techno. Releases on ROOM. Artistic project: SENKA."
+  # Bio larga (se muestra con "Leer más"). FALTA: pendiente de la artista.
+  bio_long:
+    es: ""
+    en: ""
+  # Foto de prensa: archivo en src/assets/media/. Vacío = solo texto.
+  photo: ""
+  photo_alt:
+    es: ""
+    en: ""
+
+contact:
+  email: "ailen.cachela@gmail.com"
+  # Publicar el email en el JSON-LD requiere autorización de la artista.
+  email_in_jsonld: false
+
+# Textos de interfaz (español rioplatense sobrio / inglés). Placeholders: {x}
+ui:
+  skip: { es: "Saltar al contenido", en: "Skip to content" }
+  nav_label: { es: "Principal", en: "Main" }
+  menu_open: { es: "Menú", en: "Menu" }
+  menu_close: { es: "Cerrar", en: "Close" }
+  menu_sections: { es: "Secciones", en: "Sections" }
+  menu_elsewhere: { es: "Redes", en: "Elsewhere" }
+  dock_label: { es: "Acciones rápidas", en: "Quick actions" }
+  dock_player: { es: "Volver al reproductor", en: "Back to the player" }
+  dock_player_short: { es: "Reproductor", en: "Player" }
+  lang_switch: { es: "Read in English", en: "Leer en español" }
+  lang_short: { es: "EN", en: "ES" }
+  new_tab: { es: "(se abre en otra pestaña)", en: "(opens in a new tab)" }
+  nav_listen: { es: "Escuchar", en: "Listen" }
+  nav_music: { es: "Música", en: "Music" }
+  nav_projects: { es: "Proyectos", en: "Projects" }
+  nav_shows: { es: "Fechas", en: "Shows" }
+  nav_about: { es: "Sobre", en: "About" }
+  nav_contact: { es: "Contacto", en: "Contact" }
+  hero_cta_listen: { es: "Escuchar", en: "Listen" }
+  hero_cta_booking: { es: "Booking", en: "Booking" }
+  listen_title: { es: "Escuchar", en: "Listen" }
+  listen_player: { es: "Reproductor", en: "Player" }
+  listen_play: { es: "Reproducir", en: "Play" }
+  listen_privacy: { es: "Al reproducir se carga el reproductor de SoundCloud.", en: "Playing loads the SoundCloud player." }
+  listen_fallback: { es: "¿No carga? Abrilo en SoundCloud", en: "Not loading? Open it on SoundCloud" }
+  listen_list: { es: "En SoundCloud", en: "On SoundCloud" }
+  listen_view_all: { es: "Ver todo en SoundCloud", en: "See everything on SoundCloud" }
+  listen_kind_track: { es: "Track", en: "Track" }
+  listen_kind_set: { es: "Set", en: "Set" }
+  marquee_pause: { es: "Pausar texto en movimiento", en: "Pause moving text" }
+  marquee_play: { es: "Reanudar texto en movimiento", en: "Resume moving text" }
+  music_title: { es: "Música", en: "Music" }
+  music_compilation: { es: "Compilación de {label} con {count} artistas", en: "{label} compilation with {count} artists" }
+  music_participates: { es: "Ailén participa con “{track}”, pista {n} ({duration}).", en: "Ailén appears with “{track}”, track {n} ({duration})." }
+  music_label: { es: "Sello", en: "Label" }
+  music_released: { es: "Lanzamiento", en: "Released" }
+  music_format: { es: "Formato", en: "Format" }
+  music_artists: { es: "Artistas", en: "Artists" }
+  music_listen: { es: "Escuchar en Bandcamp", en: "Listen on Bandcamp" }
+  projects_title: { es: "Proyectos", en: "Projects" }
+  projects_open: { es: "Ver en {platform}", en: "Open on {platform}" }
+  projects_nolink: { es: "Sin link por ahora", en: "No link yet" }
+  carousel: { es: "carrusel", en: "carousel" }
+  carousel_prev: { es: "Anterior", en: "Previous" }
+  carousel_next: { es: "Siguiente", en: "Next" }
+  carousel_pos: { es: "{n} de {total}", en: "{n} of {total}" }
+  shows_title: { es: "Fechas", en: "Shows" }
+  shows_none: { es: "Sin fechas anunciadas por ahora.", en: "No dates announced for now." }
+  shows_follow: { es: "Seguila en Instagram {handle}", en: "Follow her on Instagram {handle}" }
+  shows_book: { es: "Booking: {email}", en: "Booking: {email}" }
+  shows_upcoming: { es: "Próximas fechas", en: "Upcoming" }
+  shows_upcoming_none: { es: "Sin anuncios por ahora.", en: "Nothing announced for now." }
+  shows_past: { es: "Pasados", en: "Past" }
+  shows_tickets: { es: "Tickets", en: "Tickets" }
+  shows_info: { es: "Info", en: "Info" }
+  about_title: { es: "Sobre", en: "About" }
+  about_more: { es: "Leer más", en: "Read more" }
+  contact_title: { es: "Booking & prensa", en: "Booking & press" }
+  contact_lead: { es: "Un solo canal para fechas, lanzamientos y prensa.", en: "One channel for bookings, releases and press." }
+  contact_write: { es: "Escribime", en: "Write me" }
+  contact_copy: { es: "Copiar email", en: "Copy email" }
+  contact_copied: { es: "Email copiado", en: "Email copied" }
+  contact_networks: { es: "Redes", en: "Elsewhere" }
+  footer_rights: { es: "© {year} {name}", en: "© {year} {name}" }
+  footer_top: { es: "Volver arriba", en: "Back to top" }
+  footer_backup: { es: "Todos los links", en: "All links" }
+  notfound_title: { es: "Página no encontrada", en: "Page not found" }
+  notfound_text: { es: "Esta dirección no existe.", en: "This address does not exist." }
+  notfound_back: { es: "Volver al inicio", en: "Back to home" }

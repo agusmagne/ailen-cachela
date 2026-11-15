@@ -1,0 +1,139 @@
+---
+import { t, type Lang } from '../lib/content';
+
+interface Props { text: string; lang: Lang }
+const { text, lang } = Astro.props;
+const copies = Array.from({ length: 4 });
+---
+
+<div class="marquee" data-marquee>
+  <p class="sr-only">{text}</p>
+  <div class="marquee__viewport" aria-hidden="true">
+    <div class="marquee__track">
+      {
+        [0, 1].map(() => (
+          <div class="marquee__group">
+            {copies.map(() => (
+              <span class="marquee__item">{text}</span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <button
+    type="button"
+    class="marquee__toggle label"
+    aria-pressed="false"
+    data-marquee-toggle
+    data-label-pause={t('marquee_pause', lang)}
+    data-label-play={t('marquee_play', lang)}
+    ><span class="marquee__icon" aria-hidden="true"></span><span class="marquee__label" data-marquee-label>{t('marquee_pause', lang)}</span></button
+  >
+</div>
+
+<style>
+  .marquee { position: relative; }
+  .marquee__viewport {
+    overflow: hidden;
+    border-block: var(--divider);
+    mask-image: linear-gradient(90deg, transparent, var(--bg) 6%, var(--bg) 94%, transparent);
+  }
+  .marquee__track { display: flex; width: max-content; }
+  .marquee__group { display: flex; flex-shrink: 0; }
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--space-s);
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-stretch: var(--stretch-display);
+    font-size: var(--step-3);
+    line-height: 1;
+    letter-spacing: var(--tracking-title);
+    text-transform: var(--case-display);
+    white-space: nowrap;
+    color: var(--chrome-100);
+  }
+  /* Alterna relleno y contorno: el texto se vuelve textura */
+  .marquee__item:nth-child(even) {
+    color: transparent;
+    -webkit-text-stroke: var(--stroke) var(--chrome-300);
+  }
+  .marquee__item::after {
+    content: '';
+    width: 0.2em;
+    height: 0.2em;
+    margin-inline: 0.9em;
+    border: var(--stroke) solid var(--chrome-300);
+    transform: rotate(45deg);
+  }
+  /* Sin JS o con reduced-motion: estático (solo la primera copia visible) */
+  .marquee__toggle { display: none; }
+  :global(.js-motion) .marquee__track { animation: marquee var(--marquee-dur) linear infinite; }
+  :global(.js-motion) .marquee__toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: var(--space-2xs);
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+  @media (hover: hover) {
+    :global(.js-motion) .marquee__toggle:hover { color: var(--chrome-50); }
+    .marquee:hover .marquee__track { animation-play-state: paused; }
+  }
+  /* Pausa por foco solo con teclado (tras un toque el foco queda en el botón y no debe congelarlo) */
+  .marquee:has(:focus-visible) .marquee__track,
+  .marquee.is-paused .marquee__track { animation-play-state: paused; }
+  .marquee__icon { display: none; }
+
+  @keyframes marquee {
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  /* Móvil: el botón es un icono de 44 x 44 a la derecha de la franja (el texto queda para lectores) */
+  @media (max-width: 52rem) {
+    :global(.js-motion) .marquee { display: grid; grid-template-columns: minmax(0, 1fr) var(--tap); align-items: stretch; }
+    :global(.js-motion) .marquee__viewport { grid-column: 1; }
+    :global(.js-motion) .marquee__toggle {
+      grid-column: 2;
+      grid-row: 1;
+      justify-content: center;
+      width: var(--tap);
+      min-height: var(--tap);
+      margin: 0;
+      border-block: var(--divider);
+      border-left: var(--divider);
+      color: var(--chrome-100);
+      transition: background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+    }
+    :global(.js-motion) .marquee__toggle:active { background: var(--press-bg); transition-duration: var(--dur-press); }
+    :global(.js-motion) .marquee__label {
+      position: absolute;
+      width: 1px; height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    :global(.js-motion) .marquee__icon {
+      display: block;
+      width: 0.8rem;
+      height: 0.9rem;
+      background: currentColor;
+      /* pausa: dos barras */
+      -webkit-mask: linear-gradient(90deg, #000 0 36%, transparent 36% 64%, #000 64%) center / 100% 100% no-repeat;
+      mask: linear-gradient(90deg, #000 0 36%, transparent 36% 64%, #000 64%) center / 100% 100% no-repeat;
+    }
+    /* reanudar: triángulo */
+    :global(.js-motion) .marquee__toggle[aria-pressed='true'] .marquee__icon {
+      -webkit-mask: none;
+      mask: none;
+      background: currentColor;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+  }
+</style>

@@ -1,0 +1,185 @@
+---
+import { site, pick, t, type Lang } from '../lib/content';
+import Section from './Section.astro';
+import Glitch from './Glitch.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const projects = site.projects.filter((p) => p.visible);
+---
+
+<Section id="proyectos" title={t('projects_title', lang)}>
+  <!-- Móvil: carrusel horizontal con scroll-snap; escritorio: grilla. La lista sigue siendo una lista. -->
+  <div
+    class="carousel"
+    data-carousel
+    role="group"
+    aria-roledescription={t('carousel', lang)}
+    aria-label={t('projects_title', lang)}
+    data-pos-label={t('carousel_pos', lang)}
+  >
+    <ul class="cards" id="projects-track" data-carousel-track aria-label={t('projects_title', lang)}>
+      {
+        projects.map((p, i) => (
+          <li class="card" data-reveal style={`--reveal-delay:${i * 110}ms`} data-glitch-host data-carousel-item data-name={p.name}>
+            <span class="card__n label" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="card__name display">
+              <Glitch text={p.name} block>{p.name.split(/(?<=\.)/).map((x) => <>{x}<wbr /></>)}</Glitch>
+            </h3>
+            {pick(p.status, lang) && <p class="card__status label">{pick(p.status, lang)}</p>}
+            <p class="card__text">{pick(p.text, lang)}</p>
+            {p.url ? (
+              <a class="card__link link" href={p.url} target="_blank" rel="noopener noreferrer">
+                {t('projects_open', lang, { platform: p.platform })} {p.handle}
+                <span class="arrow" aria-hidden="true">↗</span>
+                <span class="sr-only"> {t('new_tab', lang)}</span>
+              </a>
+            ) : (
+              p.handle && (
+                <p class="card__link card__link--plain label">
+                  {p.handle}
+                  <span class="card__nolink"> · {t('projects_nolink', lang)}</span>
+                </p>
+              )
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    {
+      projects.length > 1 && (
+        <div class="carousel__ui" data-carousel-ui>
+          <p class="carousel__count label" aria-hidden="true"><span data-carousel-n>01</span> / {String(projects.length).padStart(2, '0')}</p>
+          <span class="carousel__bar" aria-hidden="true"><span data-carousel-bar></span></span>
+          <button type="button" class="carousel__btn" data-carousel-prev aria-controls="projects-track" aria-label={t('carousel_prev', lang)}>
+            <span class="arrow" data-dir="left" aria-hidden="true">←</span>
+          </button>
+          <button type="button" class="carousel__btn" data-carousel-next aria-controls="projects-track" aria-label={t('carousel_next', lang)}>
+            <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+          </button>
+          <p class="sr-only" role="status" aria-live="polite" data-carousel-live></p>
+        </div>
+      )
+    }
+  </div>
+</Section>
+
+<style>
+  .cards { display: grid; gap: var(--space-m); }
+  @media (min-width: 62rem) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-height: 17rem;
+    padding: var(--space-m);
+    border: var(--stroke) solid var(--chrome-700);
+    border-radius: var(--radius-card);
+    background: linear-gradient(160deg, color-mix(in srgb, var(--chrome-800) 70%, var(--bg-raised)), var(--bg));
+    transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+  }
+  /* Semitono: aparece desde la esquina al pasar o enfocar (grano/halftone del tablero) */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--halftone);
+    background-size: var(--halftone-size) var(--halftone-size);
+    opacity: 0;
+    -webkit-mask-image: radial-gradient(90% 90% at 100% 0%, #000, transparent 70%);
+    mask-image: radial-gradient(90% 90% at 100% 0%, #000, transparent 70%);
+    transform: scale(1.06);
+    transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  }
+  .card:focus-within { border-color: var(--chrome-300); }
+  .card:focus-within::before { opacity: 0.28; transform: none; }
+  @media (hover: hover) {
+    .card:hover { border-color: var(--chrome-300); }
+    .card:hover::before { opacity: 0.28; transform: none; }
+  }
+  .card__n { color: var(--subtle); margin-bottom: var(--space-l); }
+  .card__name {
+    font-size: clamp(1.3rem, 1rem + 1.1vw, 2rem);
+    line-height: var(--lh-title);
+    overflow-wrap: break-word;
+    color: var(--chrome-50);
+  }
+  .card__status { color: var(--accent); }
+  .card__text { color: var(--muted); flex: 1; max-width: 32ch; }
+  .card__link { align-self: flex-start; margin-top: var(--space-s); min-height: var(--tap); display: inline-flex; align-items: center; gap: 0.4em; overflow-wrap: anywhere; color: var(--chrome-100); }
+  .card__link--plain { color: var(--muted); }
+  .card__nolink { color: var(--subtle); }
+  .carousel__ui { display: none; }
+
+  /* ==== Móvil: carrusel con scroll-snap ===================================
+     Las tarjetas ocupan ~82 % del ancho (asoma la siguiente), arrancan en el
+     gutter y llegan al borde de la pantalla. El gesto horizontal es del
+     carrusel; el vertical, de la página. Teclado: foco en la lista y flechas. */
+  @media (max-width: 52rem) {
+    .carousel { margin-inline: calc(var(--pad-l) * -1) calc(var(--pad-r) * -1); }
+    .cards {
+      display: flex;
+      gap: var(--space-xs);
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--pad-l);
+      padding-inline: var(--pad-l) var(--pad-r);
+      padding-bottom: var(--space-2xs);
+      scrollbar-width: none;
+    }
+    .cards::-webkit-scrollbar { display: none; }
+    .cards:focus-visible { outline-offset: -3px; }
+    .card {
+      flex: 0 0 min(82vw, 21rem);
+      scroll-snap-align: start;
+      min-height: 0;
+      padding: var(--space-m) var(--space-s) var(--space-s);
+    }
+    .card__n { margin-bottom: var(--space-s); }
+    .card__text { max-width: none; }
+    .card__link { margin-top: var(--space-xs); }
+    /* Todas las tarjetas visibles al instante: el gesto horizontal no debe esperar un reveal */
+    :global(.js-motion) .cards .card[data-reveal] { opacity: 1; transform: none; }
+    .carousel__ui {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) var(--tap) var(--tap);
+      align-items: center;
+      gap: var(--space-xs);
+      margin-top: var(--space-s);
+      padding-inline: var(--pad-l) var(--pad-r);
+    }
+    :global(html:not(.js)) .carousel__ui { display: none; }
+    .carousel__count { color: var(--chrome-100); }
+    .carousel__bar { position: relative; height: var(--stroke); background: var(--chrome-700); }
+    .carousel__bar > span {
+      position: absolute;
+      inset: -1px auto -1px 0;
+      width: calc(100% / var(--n, 3));
+      background: var(--chrome-50);
+      transform: translateX(calc(var(--i, 0) * 100%));
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+    .carousel__btn {
+      display: grid;
+      place-items: center;
+      width: var(--tap);
+      height: var(--tap);
+      padding: 0;
+      background: none;
+      border: var(--stroke) solid var(--chrome-600);
+      color: var(--chrome-100);
+      transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease);
+    }
+    .carousel__btn[aria-disabled='true'] { opacity: 0.35; }
+    .carousel__btn:not([aria-disabled='true']):active { background: var(--chrome-50); color: var(--bg); transform: scale(var(--press-scale)); transition-duration: var(--dur-press); }
+  }
+  @media (hover: none) {
+    .card:active { border-color: var(--chrome-300); transform: scale(0.985); transition-duration: var(--dur-press); }
+    .card:active::before { opacity: 0.28; transform: none; transition-duration: var(--dur-fast); }
+  }
+</style>

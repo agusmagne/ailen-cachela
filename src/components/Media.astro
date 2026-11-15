@@ -1,0 +1,208 @@
+---
+import { Image } from 'astro:assets';
+
+/**
+ * Componente de medios. Acepta una imagen o un video de src/assets/media/
+ * (se pasa solo el nombre del archivo). Sin archivo, muestra una pieza
+ * generativa propia (metal líquido WebGL + líneas concéntricas SVG, ver
+ * src/scripts/gen-media.ts), determinista por `seed` (o `label`/`kicker`):
+ *  - variant "cover": portada cuadrada de release
+ *  - variant "portrait": retrato abstracto (arco de cromo), pensado para 4 / 5
+ * Con CSS solo (sin JS ni WebGL) queda un degradé de plata sobre negro.
+ */
+interface Props {
+  src?: string;
+  alt?: string;
+  poster?: string;
+  label?: string;
+  kicker?: string;
+  ratio?: string;
+  priority?: boolean;
+  sizes?: string;
+  class?: string;
+  variant?: 'cover' | 'portrait';
+  seed?: string;
+}
+const { src = '', alt = '', poster = '', label = '', kicker = '', ratio, priority = false, sizes = '100vw', variant = 'cover', seed = '' } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/media/*.{jpg,jpeg,png,webp,avif}', { eager: true });
+const videos = import.meta.glob<string>('/src/assets/media/*.{mp4,webm}', { query: '?url', import: 'default', eager: true });
+
+const find = <T,>(map: Record<string, T>, name: string): T | undefined =>
+  name ? map[`/src/assets/media/${name}`] : undefined;
+
+const isVideo = /\.(mp4|webm)$/i.test(src);
+const img = !isVideo ? find(images, src) : undefined;
+const video = isVideo ? find(videos, src) : undefined;
+const posterImg = poster ? find(images, poster) : undefined;
+
+if (src && !img && !video) {
+  throw new Error(`Media: no existe src/assets/media/${src}`);
+}
+if (isVideo && !posterImg) {
+  throw new Error(`Media: el video "${src}" necesita un póster (imagen en src/assets/media/).`);
+}
+// webm hermano (mismo nombre) como alternativa
+const webm = video && /\.mp4$/i.test(src) ? find(videos, src.replace(/\.mp4$/i, '.webm')) : undefined;
+const style = ratio ? `--media-ratio:${ratio}` : undefined;
+const mode = img ? 'image' : video ? 'video' : 'gen';
+
+// Semilla determinista (FNV-1a) para que cada pieza sea distinta pero estable entre builds
+const key = seed || `${label}|${kicker}|${variant}`;
+let h = 2166136261;
+for (const ch of key) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+const rnd = (n: number) => ((Math.imul(h ^ (n * 0x9e3779b1), 2246822519) >>> 0) % 10000) / 10000;
+const seedA = +(rnd(1) * 40).toFixed(3);
+const seedB = +(rnd(2) * 40).toFixed(3);
+const t0 = +(2 + rnd(3) * 12).toFixed(3);
+const genStyle = `--g-a:${Math.round(rnd(4) * 360)}deg;--g-x:${Math.round(30 + rnd(5) * 40)}%;--g-y:${Math.round(35 + rnd(6) * 30)}%`;
+const rings = Array.from({ length: 9 }, (_, i) => +(14 + i * 5.2 + rnd(10 + i) * 1.6).toFixed(2));
+const ringEmph = 2 + Math.floor(rnd(7) * 4);
+---
+
+<div class:list={['media', `media--${mode}`, Astro.props.class]} style={style}>
+  {
+    img && (
+      <Image
+        src={img.default}
+        alt={alt}
+        sizes={sizes}
+        widths={[480, 800, 1200, 1800]}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        decoding="async"
+        class="media__el"
+      />
+    )
+  }
+  {
+    video && posterImg && (
+      <video
+        class="media__el"
+        muted
+        loop
+        playsinline
+        preload="none"
+        data-bgvideo
+        poster={posterImg.default.src}
+        aria-label={alt || undefined}
+        aria-hidden={alt ? undefined : 'true'}
+      >
+        <source src={video} type="video/mp4" />
+        {webm && <source src={webm} type="video/webm" />}
+      </video>
+    )
+  }
+  {
+    mode === 'gen' && (
+      <div class="gen" aria-hidden="true" data-gen data-variant={variant} data-seed-a={seedA} data-seed-b={seedB} data-t0={t0} style={genStyle}>
+        <div class="gen__base"></div>
+        {
+          variant === 'portrait' ? (
+            <div class="gen__arch">
+              <canvas class="gen__canvas" data-gen-canvas />
+            </div>
+          ) : (
+            <canvas class="gen__canvas gen__canvas--full" data-gen-canvas />
+          )
+        }
+        <svg class="gen__lines" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <g class="gen__rings" transform={variant === 'portrait' ? 'translate(50 36)' : 'translate(50 50)'}>
+            {rings.map((r, i) => <circle class:list={['gen__ring', { 'gen__ring--emph': i === ringEmph }]} r={r} />)}
+          </g>
+          <g class="gen__ticks">
+            <path d="M3 8V3H8M92 3H97V8M97 92V97H92M8 97H3V92" />
+          </g>
+        </svg>
+        {kicker && <span class="gen__kicker label">{kicker}</span>}
+        {label && <span class="gen__label">{label}</span>}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--media-ratio, var(--img-ratio));
+    border-radius: var(--img-radius);
+    background: var(--bg-raised);
+    container-type: inline-size;
+  }
+  .media__el {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: var(--img-filter);
+    transition: filter var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .media:hover .media__el,
+    .media:focus-within .media__el { filter: var(--img-filter-hover); }
+  }
+  /* Sin hover (touch): tratamiento final por defecto */
+  @media (hover: none) {
+    .media__el { filter: var(--img-filter-hover); }
+  }
+
+  /* Pieza generativa cuando no hay archivo */
+  .gen { position: absolute; inset: 0; background: var(--void); }
+  .gen__base {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(40% 30% at var(--g-x) var(--g-y), color-mix(in srgb, var(--chrome-200) 28%, transparent), transparent 70%),
+      conic-gradient(from var(--g-a) at var(--g-x) var(--g-y), var(--void), var(--chrome-700), var(--void) 22%, var(--chrome-500) 38%, var(--void) 52%, var(--chrome-600) 70%, var(--void));
+  }
+  .gen__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
+  }
+  .gen__canvas.is-live { opacity: 1; }
+  .gen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 40%, transparent 55%, color-mix(in srgb, var(--void) 75%, transparent) 100%),
+      linear-gradient(to top, color-mix(in srgb, var(--void) 70%, transparent), transparent 38%);
+  }
+  .gen__lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+  .gen__ring { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.32; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .gen__ring--emph { stroke: var(--accent); stroke-opacity: 0.95; stroke-width: 1.5; }
+  .gen__ticks path { fill: none; stroke: var(--chrome-100); stroke-opacity: 0.8; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .gen__kicker { position: absolute; z-index: 2; top: 6cqi; left: 9cqi; color: var(--chrome-100); }
+  .gen__label {
+    position: absolute;
+    z-index: 2;
+    left: 9cqi;
+    right: 6cqi;
+    bottom: 7cqi;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-stretch: var(--stretch-display);
+    font-size: clamp(1.1rem, 9.5cqi, 3rem);
+    line-height: 1;
+    letter-spacing: var(--tracking-title);
+    text-transform: var(--case-display);
+    color: var(--chrome-50);
+    overflow-wrap: anywhere;
+  }
+  /* Retrato: arco de cromo (vidrio de catedral) con halo de líneas */
+  .gen__arch {
+    position: absolute;
+    z-index: 0;
+    inset: 12% 15% 0 15%;
+    border-radius: 999px 999px 0 0;
+    overflow: hidden;
+    outline: var(--stroke) solid var(--chrome-400);
+    outline-offset: 0.6rem;
+  }
+  .gen[data-variant='portrait'] .gen__base { opacity: 0.6; }
+  .gen[data-variant='portrait']::after { z-index: 1; }
+</style>

@@ -1,0 +1,223 @@
+---
+import { site, pick, t, type Lang } from '../lib/content';
+import { isVisible } from '../lib/sections';
+import SplitText from './SplitText.astro';
+import Glitch from './Glitch.astro';
+import Media from './Media.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+// Hero: si hero.media tiene foto o video, va a sangre; si no, metal líquido en WebGL
+// (src/scripts/chrome.ts) con fondo CSS de respaldo para sin WebGL / sin JS.
+const hasMedia = site.hero.media !== '';
+const role = pick(site.artist.role, lang);
+---
+
+<section id="top" class="hero" class:list={{ 'hero--image': hasMedia, 'hero--chrome': !hasMedia }} aria-labelledby="hero-title" data-hero>
+  {
+    hasMedia ? (
+      <div class="hero__bg">
+        <Media
+          src={site.hero.media}
+          poster={site.hero.poster}
+          alt={pick(site.hero.media_alt, lang)}
+          ratio="auto"
+          priority
+          sizes="100vw"
+        />
+      </div>
+    ) : (
+      <div class="hero__gl" aria-hidden="true" data-chrome-host>
+        <canvas class="hero__canvas" data-chrome-canvas></canvas>
+      </div>
+    )
+  }
+  <div class="hero__veil" aria-hidden="true"></div>
+  <div class="hero__inner wrap">
+    <p class="hero__kicker label" data-reveal>
+      <span class="hero__role">{role}</span>
+      <span class="hero__sep" aria-hidden="true"></span>
+      <span>{site.artist.city}</span>
+    </p>
+    <h1 id="hero-title" class="hero__title" data-glitch-host data-hero-title>
+      <Glitch text={site.artist.name} block stack><SplitText text={site.artist.name} by="chars" stack /></Glitch>
+    </h1>
+    <div class="hero__foot">
+      <div class="hero__cta" data-reveal style="--reveal-delay:700ms">
+        {isVisible('escuchar') && <a class="btn btn--primary" href="#escuchar">{t('hero_cta_listen', lang)} <span class="arrow" data-dir="down" aria-hidden="true">↓</span></a>}
+        {isVisible('contacto') && <a class="btn" href="#contacto">{t('hero_cta_booking', lang)}</a>}
+      </div>
+      <span class="hero__cue" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: var(--header-h);
+    padding-bottom: clamp(var(--space-l), 6vw, var(--space-xl));
+    overflow: hidden;
+    background: var(--void);
+  }
+  @media (hover: hover) { .hero--chrome { cursor: crosshair; } }
+  .hero--chrome :global(a), .hero--chrome :global(button) { cursor: pointer; }
+  /* Táctil: el dedo abolla el metal; el scroll vertical sigue siendo del navegador */
+  .hero--chrome { touch-action: pan-y pinch-zoom; }
+
+  /* Respaldo sin WebGL / mientras carga: reflejos plateados sobre negro, solo CSS */
+  .hero--chrome::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background:
+      radial-gradient(38% 30% at 74% 22%, color-mix(in srgb, var(--chrome-200) 24%, transparent), transparent 70%),
+      radial-gradient(30% 22% at 18% 64%, color-mix(in srgb, var(--chrome-400) 18%, transparent), transparent 72%),
+      radial-gradient(26% 40% at 92% 78%, color-mix(in srgb, var(--chrome-300) 14%, transparent), transparent 70%),
+      linear-gradient(118deg, transparent 38%, color-mix(in srgb, var(--chrome-300) 16%, transparent) 46%, transparent 50%, transparent 62%, color-mix(in srgb, var(--chrome-200) 12%, transparent) 66%, transparent 70%),
+      var(--void);
+  }
+  .hero__gl, .hero__bg { position: absolute; inset: 0; z-index: -2; }
+  .hero__canvas {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-out);
+  }
+  .hero__canvas.is-live { opacity: 1; }
+  .hero__bg :global(.media) { height: 100%; aspect-ratio: auto; border-radius: 0; }
+
+  /* Velo: asegura contraste AA del texto sobre los reflejos y funde con la sección siguiente */
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, color-mix(in srgb, var(--void) 78%, transparent), transparent 22%),
+      linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 78%, transparent) 18%, transparent 60%),
+      linear-gradient(to right, color-mix(in srgb, var(--void) 70%, transparent), transparent 70%);
+  }
+
+  .hero__inner { position: relative; }
+  .hero__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-m);
+    color: var(--chrome-100);
+  }
+  .hero__sep { width: clamp(1.5rem, 5vw, 3.5rem); height: var(--stroke); background: var(--chrome-400); }
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-stretch: var(--stretch-display);
+    font-size: var(--step-hero);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: var(--case-display);
+    margin-left: -0.05em;
+  }
+  /* Plateado de letrero cromado: degradé vertical con línea de horizonte, por letra */
+  .hero__title :global(.char) {
+    color: var(--chrome-100);
+    padding-block: 0.14em;
+    margin-block: -0.14em;
+  }
+  @supports (-webkit-background-clip: text) or (background-clip: text) {
+    .hero__title :global(.char) {
+      color: transparent;
+      background-image: linear-gradient(
+        180deg,
+        var(--chrome-50) 0%,
+        var(--chrome-200) 36%,
+        var(--chrome-400) 52%,
+        var(--chrome-200) 58%,
+        var(--chrome-50) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+  }
+  .hero__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+  }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .hero__cue {
+    position: relative;
+    flex: none;
+    align-self: flex-end;
+    width: var(--stroke);
+    height: 4.5rem;
+    background: var(--chrome-600);
+    overflow: hidden;
+  }
+  .hero__cue::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 40%;
+    background: var(--chrome-50);
+    animation: cue 2.4s var(--ease-in-out) infinite;
+  }
+  @keyframes cue {
+    0% { transform: translateY(-100%); }
+    70%, 100% { transform: translateY(260%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__cue::after { animation: none; transform: translateY(40%); }
+  }
+  @media (max-width: 40rem) {
+    .hero__cue { display: none; }
+  }
+
+  /* ==== Móvil: póster ======================================================
+     El nombre es un bloque justificado: AILÉN a 1,615x iguala el ancho de
+     CACHELA (relación medida con la fuente: 619,5 / 383,5). El tamaño sale del
+     ancho y del alto, así en horizontal el nombre cede y las CTA quedan a la vista. */
+  @media (max-width: 52rem), ((pointer: coarse) and (max-height: 32rem)) {
+    .hero {
+      --step-hero: clamp(2.6rem, min(14.4vw, 19vh), 12rem);
+      padding-bottom: max(var(--space-m), var(--safe-b));
+    }
+    @supports (height: 1svh) {
+      .hero { --step-hero: clamp(2.6rem, min(14.4vw, 19svh), 12rem); }
+    }
+    .hero__kicker { margin-bottom: var(--space-s); color: var(--chrome-50); text-shadow: 0 0 0.75rem var(--void), 0 0 0.25rem var(--void); }
+    /* Las palabras del nombre nunca se parten letra por letra */
+    .hero__title :global(.split--stack .word) { white-space: nowrap; }
+    .hero__title :global(.split--stack .word:first-child),
+    .hero__title :global(.glitch__w:first-child) { font-size: 1.615em; }
+    .hero__title :global(.split--stack .word:first-child) { letter-spacing: -0.02em; }
+    .hero__foot { margin-top: var(--space-m); }
+    .hero__cta { flex: 1; flex-wrap: nowrap; }
+    .hero__cta :global(.btn) { flex: 1 1 0; min-height: 3.25rem; padding-inline: var(--space-s); }
+    .hero__cta :global(.btn--primary) { flex-grow: 1.35; }
+    /* El velo también cubre el centro derecho del kicker */
+    .hero__veil {
+      background:
+        linear-gradient(to bottom, color-mix(in srgb, var(--void) 82%, transparent), transparent 26%),
+        linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, transparent) 22%, transparent 64%),
+        linear-gradient(to right, color-mix(in srgb, var(--void) 74%, transparent), transparent 80%);
+    }
+  }
+  /* Teléfono en horizontal: nombre a la izquierda, CTA al lado, todo sobre el pliegue */
+  @media (pointer: coarse) and (max-height: 32rem) {
+    .hero { align-items: flex-end; padding-bottom: max(var(--space-s), var(--safe-b)); }
+    .hero__inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: var(--space-l); }
+    .hero__kicker { grid-column: 1 / -1; margin-bottom: var(--space-2xs); }
+    .hero__foot { margin: 0; }
+    .hero__cta { flex-direction: column; flex: none; width: 13rem; }
+    .hero__cta :global(.btn) { flex: none; min-height: 3rem; }
+  }
+</style>

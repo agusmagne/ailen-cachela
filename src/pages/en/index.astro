@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import Home from '../../components/Home.astro';
+import { buildJsonLd } from '../../lib/jsonld';
+const origin = (Astro.site ?? new URL('https://ailencachela.com')).toString();
+---
+
+<Base lang="en" localized jsonLd={buildJsonLd('en', origin)}>
+  <Home lang="en" />
+</Base>

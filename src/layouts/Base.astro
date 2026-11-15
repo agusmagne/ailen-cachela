@@ -1,0 +1,94 @@
+---
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import { site, pick, absolute, homePath, withBase, type Lang } from '../lib/content';
+import archivoUrl from '../assets/fonts/archivo-cachela.woff2?url';
+import martianUrl from '../assets/fonts/martian-mono-cachela.woff2?url';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** Páginas con hreflang/canonical de idioma (home). */
+  localized?: boolean;
+  noindex?: boolean;
+  jsonLd?: object;
+}
+const { lang, localized = false, noindex = false, jsonLd } = Astro.props;
+const title = Astro.props.title ?? pick(site.site.title, lang);
+const description = Astro.props.description ?? pick(site.site.description, lang);
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const canonical = localized ? absolute(homePath(lang), origin) : absolute(Astro.url.pathname, origin);
+const ogImage = absolute(withBase('/og.png'), origin);
+const ogLocale = lang === 'es' ? 'es_AR' : 'en_US';
+const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_AR';
+---
+
+<!doctype html>
+<html lang={lang} data-lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={site.site.theme_color} />
+    <meta name="color-scheme" content="dark" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {
+      localized && (
+        <>
+          <link rel="alternate" hreflang="es" href={absolute(homePath('es'), origin)} />
+          <link rel="alternate" hreflang="en" href={absolute(homePath('en'), origin)} />
+          <link rel="alternate" hreflang="x-default" href={absolute(homePath('es'), origin)} />
+        </>
+      )
+    }
+    <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={martianUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlt} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={site.site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduce) {
+          d.classList.add('js-motion');
+          // Red de seguridad: si el script principal no arranca, el contenido se muestra igual.
+          setTimeout(function () {
+            if (!window.__motionReady) d.classList.remove('js-motion');
+          }, 4000);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

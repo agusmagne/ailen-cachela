@@ -1,0 +1,135 @@
+---
+import { site, t, formatDate, link, type Lang } from '../lib/content';
+import Section from './Section.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const today = new Date().toISOString().slice(0, 10);
+const upcoming = site.shows.filter((s) => s.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+const past = site.shows.filter((s) => s.date < today).sort((a, b) => b.date.localeCompare(a.date));
+const ig = link('instagram');
+
+const byMonth = (list: typeof upcoming) => {
+  const groups = new Map<string, typeof upcoming>();
+  for (const s of list) {
+    const key = s.date.slice(0, 7);
+    groups.set(key, [...(groups.get(key) ?? []), s]);
+  }
+  return [...groups.entries()].map(([key, items]) => ({
+    key,
+    label: formatDate(`${key}-01`, lang, { month: 'long', year: 'numeric' }),
+    items,
+  }));
+};
+const groups = [
+  { id: 'upcoming', title: t('shows_upcoming', lang), months: byMonth(upcoming), empty: past.length > 0 && upcoming.length === 0 },
+  { id: 'past', title: t('shows_past', lang), months: byMonth(past), empty: false },
+].filter((g) => g.months.length > 0 || g.empty);
+---
+
+<Section id="fechas" title={t('shows_title', lang)}>
+  <div class="moire" data-moire-host aria-hidden="true">
+    <canvas class="moire__canvas" data-moire></canvas>
+  </div>
+  {
+    site.shows.length === 0 ? (
+      <div class="empty" data-reveal>
+        <p class="empty__text display">{t('shows_none', lang)}</p>
+        <ul class="empty__actions">
+          {ig && ig.url && (
+            <li>
+              <a class="btn" href={ig.url} target="_blank" rel="noopener noreferrer">
+                {t('shows_follow', lang, { handle: ig.handle })}
+                <span class="sr-only"> {t('new_tab', lang)}</span>
+              </a>
+            </li>
+          )}
+          <li>
+            <a class="btn" href={`mailto:${site.contact.email}`}>{t('shows_book', lang, { email: site.contact.email })}</a>
+          </li>
+        </ul>
+      </div>
+    ) : (
+      <div class="lists">
+        {groups.map((g) => (
+          <div class="group" data-reveal>
+            <h3 class="label group__title">{g.title}</h3>
+            {g.months.length === 0 && <p class="empty__text">{t('shows_upcoming_none', lang)}</p>}
+            {g.months.map((m) => (
+              <div class="month">
+                <h4 class="month__name label">{m.label}</h4>
+                <ul>
+                  {m.items.map((s) => (
+                    <li class="show">
+                      <time class="show__date" datetime={s.date}>{formatDate(s.date, lang, { day: 'numeric', month: 'short' })}</time>
+                      <span class="show__venue">{s.venue}</span>
+                      <span class="show__place label">{s.city}, {s.country}</span>
+                      {s.url && (
+                        <a class="btn show__btn" href={s.url} target="_blank" rel="noopener noreferrer">
+                          {g.id === 'upcoming' ? t('shows_tickets', lang) : t('shows_info', lang)}
+                          <span class="sr-only">: {s.venue} {t('new_tab', lang)}</span>
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+</Section>
+
+<style>
+  /* Campo moiré: el momento "calmo" del recorrido, detrás del contenido de Fechas */
+  :global(#fechas) { overflow: hidden; isolation: isolate; }
+  .moire {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(75% 70% at 72% 50%, #000 25%, transparent 78%);
+    mask-image: radial-gradient(75% 70% at 72% 50%, #000 25%, transparent 78%);
+    opacity: 0.55;
+  }
+  .moire__canvas { width: 100%; height: 100%; }
+  /* Sin JS ni canvas: aros concéntricos CSS de respaldo */
+  .moire:not(:has(canvas[width])) {
+    background: repeating-radial-gradient(circle at 72% 50%, transparent 0 6px, color-mix(in srgb, var(--chrome-500) 70%, transparent) 6px 7px);
+  }
+
+  .empty { display: grid; gap: var(--space-m); justify-items: start; }
+  .empty__text { font-size: var(--step-3); line-height: 1.05; max-width: 16ch; }
+  .empty__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  /* Móvil: las dos acciones son blancos grandes de ancho completo */
+  @media (max-width: 52rem) {
+    .empty { gap: var(--space-s); justify-items: stretch; }
+    .empty__text { max-width: 14ch; }
+    .empty__actions { flex-direction: column; }
+    .empty__actions .btn { width: 100%; min-height: 3.25rem; }
+    .lists { gap: var(--space-l); }
+  }
+  .empty__actions .btn { text-align: center; overflow-wrap: anywhere; background: color-mix(in srgb, var(--bg) 60%, transparent); }
+  .lists { display: grid; gap: var(--space-xl); }
+  .group__title { margin-bottom: var(--space-s); }
+  .month { margin-bottom: var(--space-l); }
+  .month__name { padding-bottom: var(--space-2xs); border-bottom: var(--divider); text-transform: var(--case-ui); }
+  .show {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0 var(--space-s);
+    align-items: center;
+    padding-block: var(--space-s);
+    border-bottom: var(--divider);
+  }
+  .show__date { font-family: var(--font-ui); font-size: var(--step--1); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--accent); }
+  .show__venue { font-size: var(--step-1); font-stretch: var(--stretch-title); font-weight: 600; }
+  .show__place { grid-column: 2; }
+  .show__btn { grid-column: 2; justify-self: start; margin-top: var(--space-xs); }
+  @media (min-width: 52rem) {
+    .show { grid-template-columns: 6rem 1fr auto auto; gap: var(--space-m); }
+    .show__place, .show__btn { grid-column: auto; margin: 0; }
+  }
+</style>

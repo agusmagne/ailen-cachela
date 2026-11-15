@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+.env
+
+# Referencias de investigación y moodboard (material de terceros, no se publica)
+_research
+.claude
+.DS_Store
