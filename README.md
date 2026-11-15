@@ -1,32 +1,115 @@
 # Sitio de Ailén Cachela
 
-Astro estático, español (`/`) e inglés (`/en/`). La home es una página con anclas; la rama `pro-features` la amplía a un sitio de varias páginas
-(prensa, booking, música, fechas, lab, etc.) sobre una **base común** ya implementada: registro de rutas, `PageLayout`, componentes en
-`src/components/ui/`, datos por dominio, contenido de ejemplo con interruptor y descargables. Ver `src/components/README.md` (cómo se usa la base)
-y `_research/plan-pro.md` (plan, paquetes de trabajo y reglas). Sin cookies ni trackers; los embeds de SoundCloud cargan recién al hacer clic.
-
-**Contenido de ejemplo**: `demo_content` en `src/content/site.yaml` (o `DEMO_CONTENT=0` / `DEMO_CONTENT=1` al construir) muestra u oculta todo lo inventado
-(`demo: true` en los datos), siempre rotulado en pantalla. Verificación de un build: `npm run verify -- <carpeta> [--demo-off]`. PDF con Chrome: `npm run downloads`.
+Astro estático, español (`/`) e inglés (`/en/`). La **home** es la portada fuerte (hero con metal líquido, reproductor con el disco de cromo, anclas) y
+cada sección resume y enlaza a su página. La rama `pro-features` lo amplía a un sitio de ~60 páginas por idioma sobre una base común (registro de rutas,
+`PageLayout`, componentes en `src/components/ui/`, datos por dominio, contenido de ejemplo con interruptor y descargables). Cómo se usa la base:
+`src/components/README.md`. Plan y reglas: `_research/plan-pro.md`. Sin backend, sin cookies, sin trackers ni terceros: SoundCloud y YouTube cargan
+recién tras un clic; todos los formularios arman un `mailto:` y ofrecen copiar el texto; el audio del Lab se sintetiza en el navegador y nunca arranca solo.
 
 ## Correr
 
 ```sh
 npm install
-npm run dev        # http://localhost:4321
-npm run build      # astro check + build a dist/
-npm test           # pruebas del lector de calendario (node --test, sin red)
-npm run preview    # sirve dist/
+npm run dev          # http://localhost:4321 (kit de componentes en /kit/ y /kit/en/, solo desarrollo)
+npm test             # node --test: lógica pura de todos los paquetes, sin red
+npx astro check      # tipos y .astro, sin errores ni warnings
+npm run build        # astro check + build a dist/ (reescribe src/content/shows.snapshot.json; ver "Fechas")
+npm run preview      # sirve dist/
+npm run verify -- dist [--demo-off] [--base /prefijo]   # revisa un build ya generado (ver más abajo)
+npm run downloads    # regenera los PDF con Chrome (ver "Descargables")
 ```
 
-El dominio no está confirmado: se define al construir con `SITE_URL=https://ejemplo.com npm run build` (canonical, hreflang, sitemap, robots y JSON-LD lo usan).
+El dominio no está confirmado: `SITE_URL=https://ejemplo.com npm run build` (canonical, hreflang, sitemap, robots, JSON-LD y feeds lo usan). Para publicar en
+una subcarpeta (GitHub Pages de proyecto): `SITE_URL=https://usuario.github.io BASE_PATH=/repo npm run build`. Todos los enlaces, el manifest, el service worker,
+las descargas y el sitemap respetan `BASE_PATH`.
 
-## Editar contenido
+## Mapa del sitio
 
-Todo vive en **`src/content/site.yaml`** (textos, links, tracks, release, proyectos, fechas, bio, email y textos de interfaz es/en). Se valida en build con `src/lib/schema.ts`: un campo faltante, una fecha mal escrita o una URL inválida frenan el build con el detalle.
+| Grupo | es | en |
+|---|---|---|
+| Home | `/` | `/en/` |
+| Música | `/musica/`, `/musica/<slug>/` | `/en/music/`, `/en/music/<slug>/` |
+| Mixes | `/mixes/`, `/mixes/<slug>/`, `/mixes/feed.xml` | `/en/mixes/`, `/en/mixes/<slug>/`, `/en/mixes/feed.xml` |
+| Videos | `/videos/` | `/en/videos/` |
+| Lab | `/lab/`, `/lab/secuenciador/`, `/lab/visualizador/`, `/lab/scratch/`, `/lab/generador/`, `/lab/en-vivo/` | `/en/lab/`, `…/sequencer/`, `…/visualizer/`, `…/scratch/`, `…/generator/`, `…/live/` |
+| Fechas | `/fechas/`, `/fechas/archivo/`, `/fechas/archivo/<año>/`, `/fechas/calendario.ics` | `/en/shows/`, `…/archive/`, `…/archive/<year>/`, `…/calendar.ics` |
+| Prensa | `/prensa/` | `/en/press/` |
+| Booking | `/booking/`, `/booking/rider-tecnico/`, `/booking/rider-hospitalidad/`, `/booking/condiciones/` | `/en/booking/`, `…/technical-rider/`, `…/hospitality-rider/`, `…/terms/` |
+| Oficio | `/estudio/`, `/servicios/`, `/clases/`, `/proyectos/`, `/proyectos/<slug>/` | `/en/studio/`, `…/services/`, `…/lessons/`, `…/projects/`, `…/projects/<slug>/` |
+| Comunidad | `/tienda/`, `/newsletter/`, `/comunidad/`, `/links/` | `/en/shop/`, `…/newsletter/`, `…/community/`, `…/links/` |
+| Legales | `/privacidad/`, `/accesibilidad/`, `/creditos/`, `/aviso-legal/` | `/en/privacy/`, `…/accessibility/`, `…/credits/`, `…/legal-notice/` |
+| Otros | `/404.html`, `/manifest.webmanifest`, `/sitemap-index.xml`, `/robots.txt`, `/downloads/**`; vistas de impresión `…/imprimir/` y `…/print/` (`noindex`) | |
 
-- Una `url` vacía oculta el botón; una lista vacía oculta la sección (salvo Fechas, que muestra "Sin fechas anunciadas por ahora.").
-- Fechas: salen solas del calendario de iCloud (ver **Cómo cargar una fecha**). En `shows.manual` se pueden sumar fechas sueltas (`date: YYYY-MM-DD`, `venue`, `city`, `country` de 2 letras, `url` opcional). Las próximas y las pasadas se separan solas al construir.
-- Solo datos verificados. Lo pendiente de la artista está comentado en el mismo archivo.
+La fuente de verdad de las rutas es `src/lib/routes-core.ts`; `tests/routes.test.ts` falla si falta la gemela en otro idioma o si hay una página sin registrar.
+
+**Navegación.** Escritorio, home: anclas Escuchar · Música · Fechas · Contacto + Prensa · Booking · Lab (`homeNav: true`). Escritorio, páginas interiores: Música · Mixes · Fechas ·
+Prensa · Booking · Lab (`main: true`). Móvil: la hoja del menú lista las secciones y, debajo, "Todo el sitio" con el índice completo por grupos; el pie repite el
+índice con los legales. El selector de idioma lleva siempre a la misma página en el otro idioma. Una página sin contenido (con el interruptor demo apagado) sale del
+menú, de la hoja y del pie, pero existe con un estado vacío y `noindex`.
+
+## Editar contenido (por dominio)
+
+Cada dominio es un YAML en `src/content/` con su esquema en `src/lib/schemas/` (se valida en el build: un campo faltante, una fecha mal escrita o una URL inválida frenan
+la compilación con el detalle). Los textos de interfaz es/en están en `src/content/ui/<paquete>.yaml` (cada clave empieza con `<paquete>_`).
+
+| Archivo | Qué contiene |
+|---|---|
+| `site.yaml` | **Datos reales**: nombre, bio, email, redes, tracks de SoundCloud, ROOM.004, proyectos, calendario de fechas, interruptor `demo_content`, textos de la home |
+| `releases.yaml`, `mixes.yaml` | Discografía y serie de mixes (ROOM.004 y los sets reales se leen de `site.yaml`; el resto es de ejemplo) |
+| `tour.yaml` | Fechas del archivo, residencias y coordenadas del mapa (ejemplo). Las fechas reales vienen del calendario de iCloud |
+| `press.yaml`, `booking.yaml` | Bios, ficha, citas, línea de tiempo / agentes, riders, condiciones, formularios |
+| `studio.yaml`, `services.yaml`, `lessons.yaml`, `videos.yaml`, `collective.yaml` | Estudio, servicios, clases, videos y proyectos / colectivo |
+| `shop.yaml`, `newsletter.yaml`, `community.yaml`, `links.yaml`, `legal.yaml` | Tienda, newsletter, comunidad, link-in-bio, textos legales y datos de la titular |
+| `lab.yaml` | Tarjetas del hub del Lab |
+
+Una `url` vacía oculta el botón; una lista vacía oculta la sección. Solo datos verificados: lo pendiente de la artista está comentado en cada archivo.
+
+## Interruptor de contenido de ejemplo
+
+Todo lo inventado lleva `demo: true` y se muestra con una marca visible ("Contenido de ejemplo"), una nota por sección y un aviso global en el pie; las páginas con ejemplo salen
+`noindex` y fuera del sitemap. **Un solo interruptor**: `demo_content` en `site.yaml` (o `DEMO_CONTENT=0|1` al construir). Apagado, desaparecen los ítems de ejemplo, los
+textos que los mencionan, las secciones que quedan vacías (tienda, estudio, servicios, clases, videos salen del menú y muestran un estado vacío), los JSON-LD/feeds de ejemplo y los PDF
+con sello (el build los borra de `dist/downloads`). `npm run verify -- <carpeta> --demo-off` falla si queda alguna marca real de ejemplo en el HTML.
+
+## Descargables
+
+- **Generados en el build** (sin binarios): ZIP del press kit, vCard, QR en SVG, isotipos, `.ics` por fecha y `fechas/calendario.ics` (solo fechas reales). Salen de `src/pages/downloads/**`.
+- **PDF** (EPK, one-sheet, riders técnico y de hospitalidad, advance sheet): se generan con Chrome headless desde las vistas de impresión y **se versionan** en
+  `public/downloads/`. Regenerarlos con `npm run downloads` (o `npm run downloads -- --only epk-es`) cada vez que cambie el contenido o el estado del interruptor.
+  Los generados con demo encendido llevan el sello "contenido de ejemplo". Con `demo_content: false` ninguna página los enlaza y el build los elimina de `dist/`; antes de publicar sin
+  ejemplos hay que regenerarlos con el interruptor apagado (`DEMO_CONTENT=0 npm run downloads`) si se quiere ofrecerlos.
+- Los `.ics` y `.vcf` escapan `;` `,` `\` y saltos de línea según RFC 5545 / 6350 (probado en `tests/downloads*.test.ts`).
+
+## Verificación y SEO
+
+`npm run verify -- dist` revisa cada HTML: título, descripción, canonical absoluta, un solo `h1`, `lang` correcto, hreflang es/en/x-default, imágenes con `alt`, JSON-LD que parsee,
+cero recursos de terceros al abrir, enlaces internos que existan y, con `--demo-off`, ninguna marca de ejemplo. Con `--base /prefijo` valida un build con `BASE_PATH`.
+El sitemap excluye las páginas `noindex` (vistas de impresión, páginas con ejemplo, kit de desarrollo). La PWA (`manifest.webmanifest`, `public/sw.js`) se registra solo en
+producción; el service worker pide siempre la página nueva a la red (las fechas se recompilan cada 3 horas) y jamás guarda audio, descargas, `blob:` ni nada de otro origen;
+`?sw=off` lo da de baja.
+
+## Cómo reemplazar cada dato de ejemplo por uno real
+
+1. **Releases y mixes**: agregar el ítem en `releases.yaml` / `mixes.yaml` sin `demo: true` (con sus links reales); borrar los de ejemplo.
+2. **Bios, ficha, citas, apoyos, línea de tiempo, statement, pronunciación**: `press.yaml` (quitar `demo: true` del texto que la artista apruebe). Fotos reales en `src/assets/media/` y en `press.photos`.
+3. **Riders, hospitalidad, condiciones, agentes**: `booking.yaml`; confirmar equipo, fee, depósito y cancelación con la artista y su contador/abogado; regenerar los PDF.
+4. **Estudio, servicios, clases, videos**: sus YAML; los ids de video de ejemplo se reemplazan por reales (la fachada `Embed` carga `youtube-nocookie` solo tras el clic).
+5. **Tienda, newsletter, comunidad**: `shop.yaml`, `newsletter.yaml`, `community.yaml`; conectar un servicio real implica revisar `/privacidad/`.
+6. **Datos de la titular** del aviso legal: `legal.yaml` (`items`, campos "a completar").
+7. **Fechas**: calendario de iCloud (ver más abajo); el archivo por año suma `tour.yaml` solo mientras haya ejemplo.
+8. Al terminar, `demo_content: false`.
+
+## Checklist antes de publicar
+
+- [ ] Decidir `demo_content` (con `true` el sitio sale como versión de prueba, `noindex`).
+- [ ] Datos reales: bios media/larga, ficha, fotos de prensa con crédito, links de Spotify/Beatport/YouTube, handle de fragmento.techno y SENKA, email de prensa.
+- [ ] Riders y condiciones revisados por la artista y un profesional; datos de la titular completos en el aviso legal; revisar privacidad y accesibilidad.
+- [ ] `SITE_URL` definitivo (y `BASE_PATH` si va en subcarpeta); íconos y OG regenerados si cambia la marca.
+- [ ] `npm test`, `npx astro check`, `npm run build`, `npm run verify -- dist`; y con `DEMO_CONTENT=0`: build + `npm run verify -- <carpeta> --demo-off`.
+- [ ] PDF regenerados con el estado del interruptor que se publica (`npm run downloads`).
+- [ ] Probar en un teléfono real: menú, dock, reproductor, Lab con sonido (iOS: silencio físico y `AudioContext`), instalación como app.
+- [ ] `git checkout src/content/shows.snapshot.json` si el build local lo reescribió con fechas que no se quieren versionar.
+- [ ] Nada se publica en `main` sin decisión de la artista.
 
 ## Cómo cargar una fecha
 

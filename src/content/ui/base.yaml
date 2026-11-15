@@ -14,11 +14,8 @@ base_nav_home: { es: "Inicio", en: "Home" }
 base_nav_all: { es: "Todo el sitio", en: "Whole site" }
 base_nav_main: { es: "Principal", en: "Main" }
 base_breadcrumbs: { es: "Ruta de navegación", en: "Breadcrumbs" }
-base_back_to: { es: "Volver a {page}", en: "Back to {page}" }
-base_page_of: { es: "{n} de {total}", en: "{n} of {total}" }
 base_footer_index: { es: "Mapa del sitio", en: "Site map" }
 base_footer_legal: { es: "Legales", en: "Legal" }
-base_dock_listen: { es: "Escuchar", en: "Listen" }
 
 # ---- Grupos del índice -----------------------------------------------------------------
 base_group_sound: { es: "Música y sonido", en: "Music & sound" }
@@ -72,7 +69,6 @@ base_soon: { es: "Próximamente", en: "Coming soon" }
 base_soon_text: { es: "Estamos terminando esta parte. Todavía no está conectada a ningún servicio.", en: "We are finishing this part. It is not connected to any service yet." }
 base_download: { es: "Descargar", en: "Download" }
 base_download_size: { es: "{kind} · {size}", en: "{kind} · {size}" }
-base_copy: { es: "Copiar", en: "Copy" }
 base_copied: { es: "Copiado", en: "Copied" }
 base_embed_play: { es: "Reproducir", en: "Play" }
 base_embed_play_video: { es: "Ver video", en: "Watch video" }

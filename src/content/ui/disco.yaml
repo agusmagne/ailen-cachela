@@ -39,7 +39,6 @@ disco_col_key: { es: "Tonalidad", en: "Key" }
 # ---- Release ---------------------------------------------------------------------
 disco_release_desc_real: { es: "{title}, {kind} de {label} ({year}). Ficha, pistas y enlaces verificados.", en: "{title}, {kind} on {label} ({year}). Spec sheet, tracks and verified links." }
 disco_release_desc_demo: { es: "{title}: {kind} de ejemplo de {label}. Ficha técnica completa de muestra.", en: "{title}: sample {kind} on {label}. Full sample spec sheet." }
-disco_cover_alt: { es: "Portada generativa de {title}", en: "Generative cover of {title}" }
 disco_spec: { es: "Ficha técnica", en: "Spec sheet" }
 disco_spec_catalog: { es: "Catálogo", en: "Catalogue no." }
 disco_spec_kind: { es: "Tipo", en: "Type" }

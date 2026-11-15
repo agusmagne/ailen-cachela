@@ -4,8 +4,7 @@ import { t, type Lang } from '../../lib/content';
 /**
  * Capa transversal del paquete fans: registro del service worker (solo producción) y detalles escondidos
  * (mensaje en consola, código Konami). Es invisible y se carga cuando el navegador está inactivo.
- * Hoy lo incluyen las páginas del paquete; para que valga en el sitio entero, el layout `Base` debería incluirlo una vez:
- *   <SiteExtras lang={lang} />    (ver el informe del paquete fans)
+ * Lo incluye una sola vez el layout `Base` (todas las páginas, incluidas las de pantalla completa y el 404): no hay que ponerlo en cada página.
  */
 interface Props { lang: Lang }
 const { lang } = Astro.props;

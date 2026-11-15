@@ -237,8 +237,6 @@ ui:
   nav_label: { es: "Principal", en: "Main" }
   menu_open: { es: "Menú", en: "Menu" }
   menu_close: { es: "Cerrar", en: "Close" }
-  menu_sections: { es: "Secciones", en: "Sections" }
-  menu_elsewhere: { es: "Redes", en: "Elsewhere" }
   dock_label: { es: "Acciones rápidas", en: "Quick actions" }
   dock_player: { es: "Volver al reproductor", en: "Back to the player" }
   dock_player_short: { es: "Reproductor", en: "Player" }
@@ -284,7 +282,6 @@ ui:
   shows_follow: { es: "Seguila en Instagram {handle}", en: "Follow her on Instagram {handle}" }
   shows_book: { es: "Booking: {email}", en: "Booking: {email}" }
   shows_upcoming: { es: "Próximas fechas", en: "Upcoming" }
-  shows_upcoming_none: { es: "Sin anuncios por ahora.", en: "Nothing announced for now." }
   shows_past: { es: "Pasados", en: "Past" }
   shows_tickets: { es: "Entradas", en: "Tickets" }
   shows_info: { es: "Info", en: "Info" }

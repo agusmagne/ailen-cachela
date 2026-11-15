@@ -5,8 +5,6 @@
 lab_synth_note: { es: "Sonido sintetizado en tu navegador, no es música de Ailén.", en: "Sound synthesized in your browser, not Ailén's music." }
 lab_needs_js: { es: "Esta herramienta necesita JavaScript para funcionar. Con JavaScript activado vas a poder usarla acá mismo.", en: "This tool needs JavaScript. With JavaScript on you can use it right here." }
 lab_unsupported_audio: { es: "Tu navegador no soporta Web Audio, así que esta herramienta no puede sonar. Probá con una versión reciente de Chrome, Firefox, Safari o Edge.", en: "Your browser does not support Web Audio, so this tool cannot make sound. Try a recent version of Chrome, Firefox, Safari or Edge." }
-lab_status: { es: "Estado", en: "Status" }
-lab_back: { es: "Volver al Lab", en: "Back to the Lab" }
 lab_sound_label: { es: "Sonido", en: "Sound" }
 lab_sound_volume: { es: "Volumen", en: "Volume" }
 lab_tags_label: { es: "Tecnología", en: "Technology" }
