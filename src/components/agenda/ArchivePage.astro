@@ -1,0 +1,80 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import Card from '../ui/Card.astro';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { computeStats, groupByYear } from '../../lib/agenda/entries';
+import GigMap from './GigMap.astro';
+import Stats from './Stats.astro';
+import { loadAgenda, mapFor } from './data';
+import { countText } from './format';
+/** /fechas/archivo/ (y /en/shows/archive/): cifras, una tarjeta por año y el mapa de todas las ciudades. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { pastEntries } = await loadAgenda();
+
+const stats = computeStats(pastEntries);
+const years = groupByYear(pastEntries);
+const hrefs = Object.fromEntries(years.map((y) => [y.year, router.path('shows-year', lang, { year: y.year })]));
+const { points, unplaced } = mapFor(pastEntries);
+const topCities = (entries: typeof pastEntries) => {
+  const n = new Map<string, number>();
+  for (const e of entries) if (e.city && e.status !== 'cancelled') n.set(e.city, (n.get(e.city) ?? 0) + 1);
+  return [...n.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 4).map(([c]) => c);
+};
+const empty = pastEntries.length === 0;
+const allDemo = !empty && pastEntries.every((e) => e.demo);
+---
+
+<PageLayout lang={lang} route="shows-archive" title={t('agenda_archive_title', lang)} description={t('agenda_archive_desc', lang)} demo={allDemo} empty={empty}>
+  <p slot="lead">{t('agenda_archive_lead', lang)}</p>
+  <Fragment slot="meta">
+    <a class="btn" href={router.path('shows', lang)}><span class="arrow" aria-hidden="true">←</span> {t('agenda_back_shows', lang)}</a>
+  </Fragment>
+
+  {
+    empty ? (
+      <EmptyState lang={lang} title={t('agenda_archive_empty_title', lang)} text={t('agenda_archive_empty_text', lang)}>
+        <a class="btn" href={router.path('shows', lang)}>{t('agenda_back_shows', lang)}</a>
+      </EmptyState>
+    ) : (
+      <LazyModule name="agenda-live" props={{ lang, labels: {} }}>
+        <section class="page-block" aria-labelledby="numeros">
+          <SectionHead lang={lang} id="numeros" title={t('agenda_stats_title', lang)} demo={allDemo} />
+          <Stats lang={lang} stats={stats} hrefs={hrefs} />
+        </section>
+
+        <section class="page-block" aria-labelledby="anios">
+          <SectionHead lang={lang} id="anios" title={t('agenda_years', lang)} />
+          <ul class="grid-cards years">
+            {years.map((y) => (
+              <Card
+                as="li"
+                lang={lang}
+                level="h3"
+                title={String(y.year)}
+                href={hrefs[y.year]}
+                kicker={countText(y.entries.filter((e) => e.status !== 'cancelled').length, lang, 'agenda_year_dates')}
+                demo={y.entries.every((e) => e.demo)}
+              >
+                <p>{topCities(y.entries).join(' · ')}</p>
+              </Card>
+            ))}
+          </ul>
+        </section>
+
+        <section class="page-block" aria-labelledby="mapa-archivo">
+          <SectionHead lang={lang} id="mapa-archivo" title={t('agenda_map_title', lang)} lead={t('agenda_map_lead', lang)} demo={points.length > 0 && points.every((p) => p.demo)} />
+          <GigMap lang={lang} points={points} unplaced={unplaced} id="map-archive" />
+        </section>
+      </LazyModule>
+    )
+  }
+</PageLayout>
+
+<style>
+  .years { list-style: none; }
+</style>

@@ -1,0 +1,88 @@
+---
+import DemoBadge from '../ui/DemoBadge.astro';
+import { t, type Lang } from '../../lib/content';
+import type { Press } from '../../lib/schemas/press';
+/**
+ * Prensa y apoyos: citas, "supported by" y testimonios de promotores. TODO es de ejemplo (medios, clubes y personas
+ * ficticios: "Medio de ejemplo", "Club Ejemplo · Ciudad"); con el interruptor apagado la sección entera desaparece.
+ */
+interface Props {
+  lang: Lang;
+  quotes: Press['quotes'];
+  supports: Press['supports'];
+  testimonials: Press['testimonials'];
+}
+const { lang, quotes, supports, testimonials } = Astro.props;
+---
+{
+  quotes.length > 0 && (
+    <div class="voices__block">
+      <h3 class="label voices__label">{t('press_quotes_title', lang)}</h3>
+      <ul class="quotes">
+        {quotes.map((q) => (
+          <li class="quote has-demo-badge is-demo">
+            <DemoBadge lang={lang} />
+            <blockquote class="quote__body">
+              <p class="quote__text">“{q.text[lang]}”</p>
+              <footer class="label quote__src">{q.outlet[lang]} · {q.year}</footer>
+            </blockquote>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+{
+  supports.length > 0 && (
+    <div class="voices__block">
+      <h3 class="label voices__label">{t('press_supports_title', lang)}</h3>
+      <ul class="supports">
+        {supports.map((s) => (
+          <li class="support has-demo-badge">
+            <DemoBadge lang={lang} />
+            <span class="support__name display">{s.name[lang]}</span>
+            <span class="label support__place">{s.place[lang]}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+{
+  testimonials.length > 0 && (
+    <div class="voices__block">
+      <h3 class="label voices__label">{t('press_testimonials_title', lang)}</h3>
+      <ul class="tests">
+        {testimonials.map((q) => (
+          <li class="test has-demo-badge is-demo">
+            <DemoBadge lang={lang} />
+            <blockquote>
+              <p class="test__text">{q.text[lang]}</p>
+              <footer class="test__who"><strong>{q.author[lang]}</strong><span class="label">{q.org[lang]}</span></footer>
+            </blockquote>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+<style>
+  .voices__block + .voices__block { margin-top: var(--space-xl); }
+  .voices__label { color: var(--accent); margin-bottom: var(--space-s); }
+  .quotes { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+  .quote { position: relative; padding: var(--space-l) var(--space-m) var(--space-m); background-color: var(--bg-raised); }
+  .quote::before { content: ''; position: absolute; left: var(--space-m); top: 0; width: 3rem; height: 2px; background: var(--iris); }
+  .quote__body { margin: 0; display: grid; gap: var(--space-s); align-content: space-between; height: 100%; }
+  .quote__text { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: var(--press-quote-size); line-height: 1.15; color: var(--chrome-50); text-wrap: balance; }
+  .quote__src { color: var(--muted); }
+  .supports { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); border-top: var(--divider); border-left: var(--divider); }
+  .support { position: relative; display: grid; gap: var(--space-3xs); padding: var(--space-xl) var(--space-s) var(--space-s); border-right: var(--divider); border-bottom: var(--divider); min-height: 9rem; align-content: end; }
+  .support__name { font-size: var(--step-1); line-height: 1.05; overflow-wrap: anywhere; }
+  .support__place { color: var(--muted); }
+  .tests { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .test { position: relative; padding: var(--space-l) var(--space-m) var(--space-m); background-color: var(--bg-raised); }
+  .test blockquote { margin: 0; display: grid; gap: var(--space-s); }
+  .test__text { font-size: var(--step-1); line-height: 1.4; color: var(--chrome-100); max-width: 44ch; }
+  .test__who { display: grid; gap: 0.15rem; color: var(--chrome-50); }
+  .test__who .label { color: var(--muted); }
+</style>

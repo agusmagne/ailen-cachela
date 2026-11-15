@@ -1,0 +1,331 @@
+# Fechas pasadas y residencias de EJEMPLO (todo `demo: true`).
+# Las fechas reales salen del calendario de iCloud (src/lib/shows.ts); nada de esto es de la artista.
+# Venues evidentemente ficticios ("Club Ejemplo"): las ciudades y las coordenadas son solo para ubicar los puntos del mapa.
+# Con el interruptor demo apagado (demo_content: false o DEMO_CONTENT=0) este archivo no aporta nada.
+
+items:
+  - id: ejemplo-2023-03-18-ba
+    date: "2023-03-18"
+    venue: "Club Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2023-05-06-cor
+    date: "2023-05-06"
+    venue: "Sala Ejemplo"
+    city: "Córdoba"
+    country: AR
+    lat: -31.42
+    lon: -64.18
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2023-07-22-ros
+    date: "2023-07-22"
+    venue: "Nave Ejemplo"
+    city: "Rosario"
+    country: AR
+    lat: -32.95
+    lon: -60.64
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2023-09-09-mvd
+    date: "2023-09-09"
+    venue: "Club Ejemplo"
+    city: "Montevideo"
+    country: UY
+    lat: -34.9
+    lon: -56.16
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2023-10-28-ba
+    date: "2023-10-28"
+    venue: "Festival Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: festival
+    status: played
+    demo: true
+  - id: ejemplo-2023-12-16-mdp
+    date: "2023-12-16"
+    venue: "Terraza Ejemplo"
+    city: "Mar del Plata"
+    country: AR
+    lat: -38.0
+    lon: -57.55
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-02-10-ba
+    date: "2024-02-10"
+    venue: "Club Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-03-23-mdz
+    date: "2024-03-23"
+    venue: "Bodega Ejemplo"
+    city: "Mendoza"
+    country: AR
+    lat: -32.89
+    lon: -68.84
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-04-27-scl
+    date: "2024-04-27"
+    venue: "Sala Ejemplo"
+    city: "Santiago"
+    country: CL
+    lat: -33.45
+    lon: -70.67
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-06-15-sao
+    date: "2024-06-15"
+    venue: "Nave Ejemplo"
+    city: "São Paulo"
+    country: BR
+    lat: -23.55
+    lon: -46.63
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-07-20-ba
+    date: "2024-07-20"
+    venue: "Galpón Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-08-31-bcn
+    date: "2024-08-31"
+    venue: "Festival Ejemplo"
+    city: "Barcelona"
+    country: ES
+    lat: 41.39
+    lon: 2.17
+    kind: festival
+    status: played
+    demo: true
+  - id: ejemplo-2024-09-14-mad
+    date: "2024-09-14"
+    venue: "Club Ejemplo"
+    city: "Madrid"
+    country: ES
+    lat: 40.42
+    lon: -3.7
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-10-12-lis
+    date: "2024-10-12"
+    venue: "Sala Ejemplo"
+    city: "Lisboa"
+    country: PT
+    lat: 38.72
+    lon: -9.14
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2024-11-30-cor
+    date: "2024-11-30"
+    venue: "Terraza Ejemplo"
+    city: "Córdoba"
+    country: AR
+    lat: -31.42
+    lon: -64.18
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-01-25-mvd
+    date: "2025-01-25"
+    venue: "Nave Ejemplo"
+    city: "Montevideo"
+    country: UY
+    lat: -34.9
+    lon: -56.16
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-03-15-ba
+    date: "2025-03-15"
+    venue: "Club Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-04-26-bog
+    date: "2025-04-26"
+    venue: "Sala Ejemplo"
+    city: "Bogotá"
+    country: CO
+    lat: 4.71
+    lon: -74.07
+    kind: club
+    status: cancelled
+    demo: true
+  - id: ejemplo-2025-06-07-mex
+    date: "2025-06-07"
+    venue: "Galpón Ejemplo"
+    city: "Ciudad de México"
+    country: MX
+    lat: 19.43
+    lon: -99.13
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-07-12-ber
+    date: "2025-07-12"
+    venue: "Nave Ejemplo"
+    city: "Berlin"
+    country: DE
+    lat: 52.52
+    lon: 13.4
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-07-19-ams
+    date: "2025-07-19"
+    venue: "Bodega Ejemplo"
+    city: "Amsterdam"
+    country: NL
+    lat: 52.37
+    lon: 4.9
+    kind: showcase
+    status: played
+    demo: true
+  - id: ejemplo-2025-09-06-lon
+    date: "2025-09-06"
+    venue: "Club Ejemplo"
+    city: "London"
+    country: GB
+    lat: 51.51
+    lon: -0.13
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-10-18-ros
+    date: "2025-10-18"
+    venue: "Terraza Ejemplo"
+    city: "Rosario"
+    country: AR
+    lat: -32.95
+    lon: -60.64
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2025-12-13-ba
+    date: "2025-12-13"
+    venue: "Festival Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: festival
+    status: soldout
+    demo: true
+  - id: ejemplo-2026-02-14-ba
+    date: "2026-02-14"
+    venue: "Sala Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2026-04-11-lim
+    date: "2026-04-11"
+    venue: "Nave Ejemplo"
+    city: "Lima"
+    country: PE
+    lat: -12.05
+    lon: -77.04
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2026-06-20-rio
+    date: "2026-06-20"
+    venue: "Galpón Ejemplo"
+    city: "Rio de Janeiro"
+    country: BR
+    lat: -22.91
+    lon: -43.17
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2026-08-22-par
+    date: "2026-08-22"
+    venue: "Club Ejemplo"
+    city: "Paris"
+    country: FR
+    lat: 48.86
+    lon: 2.35
+    kind: club
+    status: played
+    demo: true
+  - id: ejemplo-2026-10-17-mdz
+    date: "2026-10-17"
+    venue: "Bodega Ejemplo"
+    city: "Mendoza"
+    country: AR
+    lat: -32.89
+    lon: -68.84
+    kind: club
+    status: played
+    demo: true
+
+residencies:
+  - id: ejemplo-residencia-buenos-aires
+    name: { es: "Residencia Ejemplo", en: "Sample residency" }
+    venue: "Club Ejemplo"
+    city: "Buenos Aires"
+    country: AR
+    lat: -34.6
+    lon: -58.38
+    since: "2024-03-29"
+    until: ""
+    cadence: { es: "Último viernes de cada mes", en: "Last Friday of every month" }
+    demo: true
+  - id: ejemplo-ciclo-montevideo
+    name: { es: "Ciclo Ejemplo", en: "Sample series" }
+    venue: "Sala Ejemplo"
+    city: "Montevideo"
+    country: UY
+    lat: -34.9
+    lon: -56.16
+    since: "2023-09-09"
+    until: "2025-12-20"
+    cadence: { es: "Un sábado por trimestre", en: "One Saturday per quarter" }
+    demo: true
+  - id: ejemplo-verano-berlin
+    name: { es: "Verano Ejemplo", en: "Sample summer" }
+    venue: "Nave Ejemplo"
+    city: "Berlin"
+    country: DE
+    lat: 52.52
+    lon: 13.4
+    since: "2025-07-01"
+    until: "2025-08-31"
+    cadence: { es: "Dos fechas en julio y agosto", en: "Two dates in July and August" }
+    demo: true

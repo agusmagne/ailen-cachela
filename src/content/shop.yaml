@@ -1,0 +1,179 @@
+# Tienda de EJEMPLO. Todo es inventado (demo: true): nombres, tiradas y fechas. No hay precios, stock ni pagos.
+# Cuando exista una tienda real (en una plataforma externa), se reemplaza este archivo por productos reales.
+items:
+  - id: remera-anillos
+    demo: true
+    kind: apparel
+    format: tee
+    name: { es: "Remera Anillos", en: "Rings tee" }
+    collection: { es: "Colección Cromo", en: "Chrome collection" }
+    blurb:
+      es: "Estampa de aros concéntricos sobre negro. Corte recto, de uso diario."
+      en: "Concentric ring print on black. Straight cut, made for daily wear."
+    material: { es: "Algodón (a definir)", en: "Cotton (to be defined)" }
+    sizes: [S, M, L, XL]
+    status: consult
+    seed: remera-anillos
+    art: cover
+  - id: buzo-cromo
+    demo: true
+    kind: apparel
+    format: hoodie
+    name: { es: "Buzo Cromo", en: "Chrome hoodie" }
+    collection: { es: "Colección Cromo", en: "Chrome collection" }
+    blurb:
+      es: "Buzo con capucha y bordado plateado pequeño en el pecho."
+      en: "Hooded sweatshirt with a small silver embroidery on the chest."
+    material: { es: "Friza (a definir)", en: "Fleece (to be defined)" }
+    sizes: [S, M, L, XL]
+    status: consult
+    seed: buzo-cromo
+    art: cover
+  - id: tote-moire
+    demo: true
+    kind: apparel
+    format: tote
+    name: { es: "Tote Moiré", en: "Moiré tote" }
+    collection: { es: "Colección Concéntrico", en: "Concentric collection" }
+    blurb:
+      es: "Bolsa de tela con una trama moiré a una tinta. Entra una bolsa de discos."
+      en: "Canvas bag with a one-ink moiré pattern. Fits a bag of records."
+    material: { es: "Tela cruda (a definir)", en: "Raw canvas (to be defined)" }
+    status: consult
+    seed: tote-moire
+    art: cover
+  - id: poster-anillos-01
+    demo: true
+    kind: poster
+    format: print
+    name: { es: "Póster Anillos 01", en: "Rings poster 01" }
+    collection: { es: "Pósters generativos", en: "Generative posters" }
+    blurb:
+      es: "Impresión del arte generativo del sitio. Cada tirada usa una semilla distinta y queda numerada."
+      en: "Print of the site's generative art. Each run uses a different seed and is numbered."
+    material: { es: "Papel mate de 200 g (a definir)", en: "200 gsm matte paper (to be defined)" }
+    dimensions: "A2 · 42 × 59,4 cm"
+    edition: { size: 100, numbered: true }
+    status: drop
+    seed: poster-anillos-01
+    drop: drop-001
+  - id: poster-campo-02
+    demo: true
+    kind: poster
+    format: print
+    name: { es: "Póster Campo 02", en: "Field poster 02" }
+    collection: { es: "Pósters generativos", en: "Generative posters" }
+    blurb:
+      es: "Campo de metal líquido congelado en un cuadro. Formato chico para marco de escritorio."
+      en: "A liquid-metal field frozen in one frame. Small format for a desk frame."
+    material: { es: "Papel mate de 200 g (a definir)", en: "200 gsm matte paper (to be defined)" }
+    dimensions: "A3 · 29,7 × 42 cm"
+    status: consult
+    seed: poster-campo-02
+  - id: poster-noche-03
+    demo: true
+    kind: poster
+    format: print
+    name: { es: "Póster Noche 03", en: "Night poster 03" }
+    collection: { es: "Pósters generativos", en: "Generative posters" }
+    blurb:
+      es: "Variante oscura con líneas de moiré. Ejemplo de una edición ya agotada."
+      en: "Dark variant with moiré lines. An example of a sold-out edition."
+    material: { es: "Papel mate de 200 g (a definir)", en: "200 gsm matte paper (to be defined)" }
+    dimensions: "50 × 70 cm"
+    edition: { size: 50, numbered: true }
+    status: soldout
+    seed: poster-noche-03
+  - id: casete-ejemplo-01
+    demo: true
+    kind: physical
+    format: tape
+    name: { es: "Casete Ejemplo Vol. 1", en: "Example tape Vol. 1" }
+    collection: { es: "Ediciones físicas", en: "Physical editions" }
+    blurb:
+      es: "Casete de ejemplo con tirada numerada. No contiene música real."
+      en: "Example cassette with a numbered run. It contains no real music."
+    material: { es: "Casete cromo con cartulina impresa (a definir)", en: "Chrome cassette with printed card (to be defined)" }
+    edition: { size: 50, numbered: true }
+    status: drop
+    seed: casete-ejemplo-01
+    art: cover
+    drop: drop-001
+  - id: vinilo-ejemplo-01
+    demo: true
+    kind: physical
+    format: vinyl
+    name: { es: "Vinilo 12\" de ejemplo", en: "Example 12\" vinyl" }
+    collection: { es: "Ediciones físicas", en: "Physical editions" }
+    blurb:
+      es: "Maqueta de un vinilo de 12 pulgadas con tirada limitada. No es un lanzamiento real."
+      en: "Mock-up of a limited-run 12-inch record. It is not a real release."
+    material: { es: "Vinilo negro de 140 g (a definir)", en: "140 g black vinyl (to be defined)" }
+    edition: { size: 100, numbered: true }
+    status: drop
+    seed: vinilo-ejemplo-01
+    art: cover
+    drop: drop-001
+  - id: sample-pack-001
+    demo: true
+    kind: digital
+    format: pack
+    name: { es: "Sample pack Sin título 001", en: "Sample pack Untitled 001" }
+    collection: { es: "Digital", en: "Digital" }
+    blurb:
+      es: "Un pack de sonidos de ejemplo. Todavía no existe: la ficha muestra cómo se presentaría."
+      en: "A sample sound pack. It does not exist yet: the page shows how it would be presented."
+    material: { es: "Archivos WAV (a definir)", en: "WAV files (to be defined)" }
+    status: soon
+    seed: sample-pack-001
+    art: cover
+
+drops:
+  - id: drop-001
+    demo: true
+    title: { es: "Drop 001 · Anillos", en: "Drop 001 · Rings" }
+    note:
+      es: "Tres piezas en tirada numerada. La fecha es de ejemplo: no hay ningún lanzamiento previsto."
+      en: "Three pieces in a numbered run. The date is an example: no release is planned."
+    opens: "2027-03-20T18:00:00-03:00"
+
+# Plantilla de políticas: texto genérico A REVISAR por la artista y un profesional antes de vender algo real.
+policies:
+  - id: envios
+    demo: true
+    title: { es: "Envíos", en: "Shipping" }
+    body:
+      es:
+        - "Plantilla a revisar. Todavía no hay envíos porque no hay ventas."
+        - "Cuando existan, acá van los países y zonas, los plazos estimados y el costo, que se confirma por mail antes de pagar."
+      en:
+        - "Template to review. There is no shipping yet because nothing is for sale."
+        - "Once there is, this will list countries and zones, estimated times and cost, confirmed by email before paying."
+  - id: devoluciones
+    demo: true
+    title: { es: "Cambios y devoluciones", en: "Exchanges and returns" }
+    body:
+      es:
+        - "Plantilla a revisar. Acá va el plazo para pedir un cambio, el estado en que debe volver el producto y quién paga el envío."
+        - "Los plazos y derechos del consumidor se definen con asesoramiento profesional antes de vender."
+      en:
+        - "Template to review. This will state the window to request an exchange, the condition a product must come back in, and who pays shipping."
+        - "Deadlines and consumer rights are defined with professional advice before selling."
+  - id: pedidos
+    demo: true
+    title: { es: "Cómo se confirma un pedido", en: "How an order is confirmed" }
+    body:
+      es:
+        - "Plantilla a revisar. El pedido es una consulta por mail: se responde con disponibilidad, precio final y forma de pago."
+        - "Nada se cobra desde el sitio. Una consulta no reserva el producto."
+      en:
+        - "Template to review. An order is an email enquiry: the reply gives availability, final price and payment method."
+        - "Nothing is charged from the site. An enquiry does not reserve the product."
+  - id: ediciones
+    demo: true
+    title: { es: "Ediciones limitadas", en: "Limited editions" }
+    body:
+      es:
+        - "Plantilla a revisar. Una tirada numerada no se reimprime; el número de copia se asigna al confirmar el pedido."
+      en:
+        - "Template to review. A numbered run is not reprinted; the copy number is assigned when the order is confirmed."

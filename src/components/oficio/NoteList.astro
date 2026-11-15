@@ -1,0 +1,85 @@
+---
+import { formatDate, type Lang } from '../../lib/content';
+import DemoBadge from '../ui/DemoBadge.astro';
+/**
+ * Lista de notas fechadas (notas de proceso del estudio, bitácora de SENKA). Cada nota es un <details>: el resumen siempre
+ * se lee y el texto completo se abre con teclado o toque. Funciona sin JS. Las notas de ejemplo llevan su marca.
+ */
+export interface Note {
+  id: string;
+  date: string;
+  title: string;
+  summary: string;
+  tags?: string[];
+  body: string[];
+  demo?: boolean;
+}
+interface Props {
+  lang: Lang;
+  notes: Note[];
+  readLabel: string;
+}
+const { lang, notes, readLabel } = Astro.props;
+---
+
+<ol class="notes">
+  {
+    notes.map((n, i) => (
+      <li class:list={['note', { 'has-demo-badge': n.demo }]} data-reveal style={`--reveal-delay:${i * 60}ms`}>
+        {n.demo && <DemoBadge lang={lang} />}
+        <details class="note__details">
+          <summary class="note__summary">
+            <time class="label note__date" datetime={n.date}>{formatDate(n.date, lang, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+            <span class="note__main">
+              <span class="note__title display">{n.title}</span>
+              <span class="note__sum">{n.summary}</span>
+              {n.tags && n.tags.length > 0 && (
+                <span class="note__tags">{n.tags.map((tag) => <span class="label note__tag">{tag}</span>)}</span>
+              )}
+            </span>
+            <span class="note__open label"><span class="note__open-text">{readLabel}</span><span class="note__icon" aria-hidden="true"></span></span>
+          </summary>
+          <div class="note__body prose">
+            {n.body.map((p) => <p>{p}</p>)}
+          </div>
+        </details>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .notes { border-top: var(--divider); }
+  .note { position: relative; border-bottom: var(--divider); }
+  .note__summary {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) auto;
+    gap: var(--space-s) var(--space-m);
+    align-items: start;
+    padding-block: var(--space-l) var(--space-m);
+    list-style: none;
+    cursor: pointer;
+  }
+  .note__summary::-webkit-details-marker { display: none; }
+  .note__summary:focus-visible { outline-offset: -2px; }
+  .note__date { padding-top: 0.35rem; color: var(--subtle); }
+  .note__main { display: grid; gap: var(--space-2xs); }
+  .note__title { font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .note__sum { max-width: 60ch; color: var(--muted); }
+  .note__tags { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .note__tag { padding: 0.1rem 0.5rem; border: var(--stroke) solid var(--chrome-600); }
+  .note__open { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap); color: var(--accent); }
+  .note__icon { position: relative; width: 1rem; height: 1rem; }
+  .note__icon::before, .note__icon::after { content: ''; position: absolute; inset: 50% 0 auto 0; height: var(--stroke); background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
+  .note__icon::after { transform: rotate(90deg); }
+  .note__details[open] .note__icon::after { transform: rotate(0deg); }
+  @media (hover: hover) { .note__summary:hover .note__title { color: var(--chrome-50); text-decoration: underline; text-decoration-thickness: var(--stroke); text-underline-offset: 0.2em; } }
+  .note__summary:active { background: var(--press-bg); }
+  .note__body { padding: 0 0 var(--space-l) calc(8.5rem + var(--space-m)); }
+  @media (max-width: 52rem) {
+    .note__summary { grid-template-columns: minmax(0, 1fr) auto; padding-top: var(--space-xl); }
+    .note__date { grid-column: 1 / -1; padding-top: 0; }
+    .note__body { padding-left: 0; }
+    .note__open-text { display: none; }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+/**
+ * Control de sonido siempre visible: botón de silencio (aria-pressed) y volumen. Lo conecta bindSoundBar (scripts/lab/audio.ts).
+ * Sin JS no hace nada (la herramienta tampoco): se muestra solo dentro de `[data-app]`, que aparece cuando el módulo arranca.
+ */
+import { t, type Lang } from '../../lib/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<div class="lab-sound" data-sound>
+  <button type="button" class="lab-toggle" data-mute aria-pressed="false">
+    <svg class="lab-ico-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <svg class="lab-ico-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span data-mute-label>{t('base_sound_mute', lang)}</span>
+  </button>
+  <label class="lab-ctl__vol">
+    <span class="sr-only">{t('lab_sound_volume', lang)}</span>
+    <input class="lab-range" type="range" min="0" max="100" step="1" value="80" data-volume />
+  </label>
+</div>

@@ -1,0 +1,116 @@
+# Textos de Música (discografía, releases, mixes y feed). Prefijo obligatorio: disco_.
+
+# ---- Música: índice -------------------------------------------------------------
+disco_music_title: { es: "Música", en: "Music" }
+disco_music_desc: { es: "Discografía de Ailén Cachela: lanzamientos con sello, año y formato, ficha técnica de cada release y tracks del mes.", en: "Ailén Cachela's discography: releases with label, year and format, a spec sheet for every release and tracks of the month." }
+disco_music_lead: { es: "Todo lo que salió, y lo que viene, con su ficha completa. Lo marcado como ejemplo es inventado; ROOM.004 es el único lanzamiento verificado.", en: "Everything that is out, and what is coming, with its full spec sheet. Anything marked as sample is made up; ROOM.004 is the only verified release." }
+disco_music_lead_real: { es: "Lo que salió, con su ficha completa: sello, catálogo, fecha, formato y enlaces verificados.", en: "What is out, with its full spec sheet: label, catalogue number, date, format and verified links." }
+disco_discography: { es: "Discografía", en: "Discography" }
+disco_discography_lead: { es: "Del más nuevo al más viejo. Filtrá por tipo, año o sello; el filtro queda en el enlace para compartirlo.", en: "Newest first. Filter by type, year or label; the filter stays in the link so you can share it." }
+disco_filter_label: { es: "Filtrar la discografía", en: "Filter the discography" }
+disco_filter_kind: { es: "Tipo", en: "Type" }
+disco_filter_year: { es: "Año", en: "Year" }
+disco_filter_label_group: { es: "Sello", en: "Label" }
+disco_filter_all: { es: "Todos", en: "All" }
+disco_filter_count: { es: "{shown} de {total} lanzamientos", en: "{shown} of {total} releases" }
+disco_filter_none: { es: "Ningún lanzamiento coincide con estos filtros.", en: "No release matches these filters." }
+disco_filter_reset: { es: "Quitar filtros", en: "Clear filters" }
+disco_list_label: { es: "Lanzamientos", en: "Releases" }
+
+disco_kind_album: { es: "Álbum", en: "Album" }
+disco_kind_ep: { es: "EP", en: "EP" }
+disco_kind_single: { es: "Single", en: "Single" }
+disco_kind_remix: { es: "Remix", en: "Remix" }
+disco_kind_compilation: { es: "Compilación", en: "Compilation" }
+disco_status_upcoming: { es: "Próximamente", en: "Coming soon" }
+disco_out_on: { es: "Sale el {date}", en: "Out {date}" }
+
+# ---- Charts ---------------------------------------------------------------------
+disco_charts_title: { es: "Tracks del mes", en: "Tracks of the month" }
+disco_charts_lead: { es: "Una selección mensual de lo que suena en cabina. Ejemplo de cómo se vería; los títulos y artistas son inventados.", en: "A monthly pick of what is playing in the booth. A sample of how it would look; titles and artists are made up." }
+disco_charts_caption: { es: "Tracks del mes, {month}", en: "Tracks of the month, {month}" }
+disco_col_pos: { es: "N.º", en: "No." }
+disco_col_title: { es: "Título", en: "Title" }
+disco_col_artist: { es: "Artista", en: "Artist" }
+disco_col_label: { es: "Sello", en: "Label" }
+disco_col_bpm: { es: "BPM", en: "BPM" }
+disco_col_key: { es: "Tonalidad", en: "Key" }
+
+# ---- Release ---------------------------------------------------------------------
+disco_release_desc_real: { es: "{title}, {kind} de {label} ({year}). Ficha, pistas y enlaces verificados.", en: "{title}, {kind} on {label} ({year}). Spec sheet, tracks and verified links." }
+disco_release_desc_demo: { es: "{title}: {kind} de ejemplo de {label}. Ficha técnica completa de muestra.", en: "{title}: sample {kind} on {label}. Full sample spec sheet." }
+disco_cover_alt: { es: "Portada generativa de {title}", en: "Generative cover of {title}" }
+disco_spec: { es: "Ficha técnica", en: "Spec sheet" }
+disco_spec_catalog: { es: "Catálogo", en: "Catalogue no." }
+disco_spec_kind: { es: "Tipo", en: "Type" }
+disco_spec_bpm: { es: "BPM", en: "BPM" }
+disco_spec_key: { es: "Tonalidad (Camelot)", en: "Key (Camelot)" }
+disco_spec_upc: { es: "UPC", en: "UPC" }
+disco_spec_isrc: { es: "ISRC", en: "ISRC" }
+disco_spec_tracks: { es: "Pistas", en: "Tracks" }
+disco_spec_duration: { es: "Duración", en: "Duration" }
+disco_remix_of: { es: "Remix de «{title}», de {artist}", en: "Remix of “{title}” by {artist}" }
+disco_compilation_note: { es: "Ailén participa con una pista de esta compilación. Las demás pistas no se detallan acá.", en: "Ailén appears with one track on this compilation. The other tracks are not detailed here." }
+disco_tracklist: { es: "Pistas", en: "Tracklist" }
+disco_tracklist_caption: { es: "Pistas de {title}", en: "Tracks of {title}" }
+disco_track_label: { es: "Pista {n}", en: "Track {n}" }
+disco_track_own: { es: "Pista de Ailén", en: "Ailén's track" }
+disco_credits: { es: "Créditos", en: "Credits" }
+disco_supported_by: { es: "Apoyado por", en: "Supported by" }
+disco_supported_lead: { es: "Quiénes pincharon o difundieron el lanzamiento (ejemplo).", en: "Who played or promoted the release (sample)." }
+disco_links_title: { es: "Escuchar y comprar", en: "Listen and buy" }
+disco_links_lead_real: { es: "Enlaces verificados del lanzamiento.", en: "Verified links for this release." }
+disco_links_pending: { es: "Los enlaces a plataformas se suman cuando estén verificados. Hasta entonces no hay botones.", en: "Platform links are added once they are verified. Until then there are no buttons." }
+disco_presave_title: { es: "Pre-guardar", en: "Pre-save" }
+disco_presave_lead: { es: "Ejemplo del bloque de pre-guardado: cuenta regresiva y botones deshabilitados, porque no hay enlaces reales.", en: "Example of the pre-save block: a countdown and disabled buttons, since there are no real links." }
+disco_presave_button: { es: "Pre-guardar en {platform}", en: "Pre-save on {platform}" }
+disco_presave_pending: { es: "Enlace pendiente", en: "Link pending" }
+disco_countdown_label: { es: "Faltan", en: "Time left" }
+disco_countdown_days: { es: "días", en: "days" }
+disco_countdown_hours: { es: "h", en: "h" }
+disco_countdown_minutes: { es: "min", en: "min" }
+disco_countdown_seconds: { es: "s", en: "s" }
+disco_countdown_done: { es: "Ya salió", en: "Out now" }
+disco_countdown_tz: { es: "Hora de Buenos Aires (00:00)", en: "Buenos Aires time (00:00)" }
+disco_wave_label: { es: "Forma de onda de ejemplo de {title}. Generada por código; no es audio real.", en: "Sample waveform of {title}. Generated by code; not real audio." }
+disco_wave_note: { es: "Onda generada por código a partir de una semilla. No hay audio real.", en: "Waveform generated by code from a seed. There is no real audio." }
+disco_neighbours: { es: "Más lanzamientos", en: "More releases" }
+disco_prev: { es: "Anterior", en: "Previous" }
+disco_next: { es: "Siguiente", en: "Next" }
+disco_back_music: { es: "Toda la discografía", en: "Full discography" }
+
+# ---- Mixes ---------------------------------------------------------------------------
+disco_mixes_title: { es: "Mixes", en: "Mixes" }
+disco_mixes_desc: { es: "Serie de mixes numerada de Ailén Cachela con tracklist, lugar y duración, más los sets publicados en SoundCloud. Con feed RSS.", en: "Ailén Cachela's numbered mix series with tracklists, place and length, plus the sets published on SoundCloud. With an RSS feed." }
+disco_mixes_lead: { es: "Una serie numerada, con tracklist, lugar y duración de cada mix. La serie es de ejemplo; los sets de SoundCloud son los reales.", en: "A numbered series, with the tracklist, place and length of every mix. The series is sample content; the SoundCloud sets are the real ones." }
+disco_mixes_lead_real: { es: "Los sets y tracks publicados en el perfil de SoundCloud de Ailén, con su página y feed RSS.", en: "The sets and tracks published on Ailén's SoundCloud profile, each with its own page and an RSS feed." }
+disco_series_title: { es: "Serie numerada", en: "Numbered series" }
+disco_series_lead: { es: "Del más nuevo al más viejo. Cada mix tiene su página con tracklist para copiar.", en: "Newest first. Every mix has its own page with a tracklist you can copy." }
+disco_series_tag: { es: "Serie", en: "Series" }
+disco_mix_code: { es: "Mix {code}", en: "Mix {code}" }
+disco_rss: { es: "Suscribirse por RSS", en: "Subscribe via RSS" }
+disco_rss_note: { es: "El feed solo incluye mixes reales (no los de ejemplo).", en: "The feed only includes real mixes (not the sample ones)." }
+disco_soundcloud_title: { es: "En SoundCloud", en: "On SoundCloud" }
+disco_soundcloud_lead: { es: "Lo que está publicado en el perfil de Ailén. Todavía no se indicó cuáles son tracks y cuáles sets, por eso no se clasifican.", en: "What is published on Ailén's profile. It has not been specified which are tracks and which are sets, so they are not classified." }
+disco_unclassified: { es: "En SoundCloud", en: "On SoundCloud" }
+disco_mix_desc_series: { es: "Mix {code} de la serie de ejemplo: «{title}», grabado en {venue}, {duration}. Tracklist de muestra.", en: "Mix {code} of the sample series: “{title}”, recorded at {venue}, {duration}. Sample tracklist." }
+disco_mix_desc_sc: { es: "{title}: publicado en el perfil de SoundCloud de Ailén Cachela.", en: "{title}: published on Ailén Cachela's SoundCloud profile." }
+disco_mix_spec: { es: "Ficha del mix", en: "Mix details" }
+disco_mix_number: { es: "N.º de serie", en: "Series no." }
+disco_mix_date: { es: "Fecha", en: "Date" }
+disco_mix_venue: { es: "Lugar", en: "Place" }
+disco_mix_duration: { es: "Duración", en: "Length" }
+disco_mix_tags: { es: "Estilo", en: "Style" }
+disco_mix_player: { es: "Reproductor", en: "Player" }
+disco_mix_player_demo: { es: "Es un mix de ejemplo: no existe grabación. El reproductor queda inactivo.", en: "This is a sample mix: no recording exists. The player stays inactive." }
+disco_mix_unclassified_note: { es: "Todavía no se indicó si es un track o un set.", en: "It has not been specified whether this is a track or a set." }
+disco_mix_open_sc: { es: "Escuchar en SoundCloud", en: "Listen on SoundCloud" }
+disco_tracklist_mix: { es: "Tracklist", en: "Tracklist" }
+disco_tracklist_mix_lead: { es: "Lo que suena, en orden. Artistas, títulos y sellos de ejemplo.", en: "What plays, in order. Sample artists, titles and labels." }
+disco_tracklist_mix_caption: { es: "Tracklist de {title}", en: "Tracklist of {title}" }
+disco_tracklist_copy: { es: "Copiar tracklist", en: "Copy tracklist" }
+disco_tracklist_copied: { es: "Tracklist copiada", en: "Tracklist copied" }
+disco_tracklist_id: { es: "ID es una pista sin identificar.", en: "ID is an unidentified track." }
+disco_all_mixes: { es: "Toda la serie", en: "Whole series" }
+disco_back_mixes: { es: "Todos los mixes", en: "All mixes" }
+disco_feed_desc: { es: "Mixes de Ailén Cachela publicados en SoundCloud.", en: "Ailén Cachela mixes published on SoundCloud." }

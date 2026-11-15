@@ -1,0 +1,28 @@
+/* Tokens del paquete booking: diagrama de cabina / stage plot y formulario por pasos.
+   Se importan solos (Base y PrintLayout). En papel (.sheet) el diagrama pasa a tinta oscura sobre blanco. */
+:root {
+  --bd-bg: var(--bg);
+  --bd-table: color-mix(in srgb, var(--chrome-700) 55%, var(--bg));
+  --bd-fill: var(--bg-raised);
+  --bd-ink: var(--chrome-100);
+  --bd-line: var(--chrome-600);
+  --bd-muted: var(--chrome-300);
+  --bd-text: var(--chrome-200);
+  --bd-accent: var(--accent-b);
+
+  --mf-step-line: var(--chrome-600);
+  --mf-step-on: var(--chrome-50);
+  --mf-error: #ff9a8a; /* 8.6:1 sobre --bg: error legible sin ser un rojo saturado */
+  --mf-error-line: #d9604f;
+}
+
+.sheet {
+  --bd-bg: var(--paper);
+  --bd-table: #f1f2f4;
+  --bd-fill: var(--paper);
+  --bd-ink: var(--paper-ink);
+  --bd-line: var(--paper-line);
+  --bd-muted: var(--paper-muted);
+  --bd-text: var(--paper-ink);
+  --bd-accent: var(--paper-accent);
+}

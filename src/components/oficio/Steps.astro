@@ -1,0 +1,71 @@
+---
+/**
+ * Pasos numerados (flujo de trabajo, proceso de un servicio). Lista ordenada semántica: en escritorio corre en
+ * columnas con una línea de cromo que une los números; en móvil es una columna con la línea a la izquierda.
+ */
+export interface Step {
+  title: string;
+  text: string;
+  output?: string;
+}
+interface Props {
+  steps: Step[];
+  /** Etiqueta del campo "output" (p. ej. "Entregable"). */
+  outputLabel?: string;
+  cols?: 3 | 4 | 6;
+}
+const { steps, outputLabel = '', cols = 3 } = Astro.props;
+---
+
+<ol class={`steps steps--${cols}`}>
+  {
+    steps.map((s, i) => (
+      <li class="steps__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+        <span class="steps__n label" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="steps__title display">{s.title}</h3>
+        <p class="steps__text">{s.text}</p>
+        {s.output && (
+          <p class="steps__out">
+            <span class="label">{outputLabel}</span>
+            <span>{s.output}</span>
+          </p>
+        )}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps { display: grid; gap: var(--space-l) var(--oficio-gap); counter-reset: step; }
+  .steps__item { position: relative; display: grid; gap: var(--space-2xs); align-content: start; padding-top: var(--space-m); border-top: var(--oficio-line); }
+  .steps__item::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--oficio-step-dot) / -2);
+    left: 0;
+    width: var(--oficio-step-dot);
+    height: var(--oficio-step-dot);
+    background: var(--bg);
+    border: var(--stroke) solid var(--accent);
+    transform: rotate(45deg);
+  }
+  .steps__n { color: var(--accent); }
+  .steps__title { font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .steps__text { color: var(--muted); max-width: 46ch; }
+  .steps__out { display: grid; gap: var(--space-3xs); margin-top: var(--space-2xs); padding: var(--space-2xs) var(--space-xs); background: var(--oficio-spec-bg); border-left: var(--stroke) solid var(--chrome-400); color: var(--chrome-100); }
+  @media (min-width: 40rem) {
+    .steps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .steps--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .steps--6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 62rem) {
+    .steps--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .steps--6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 39.99rem) {
+    /* Móvil: una columna con la línea a la izquierda */
+    .steps__item { padding: 0 0 var(--space-m) var(--space-m); border-top: 0; border-left: var(--oficio-line); }
+    .steps__item::before { top: 0.25rem; left: calc(var(--oficio-step-dot) / -2); }
+    .steps__item:last-child { padding-bottom: 0; }
+  }
+</style>

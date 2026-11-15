@@ -1,0 +1,102 @@
+---
+import Card from '../ui/Card.astro';
+import Chip from '../ui/Chip.astro';
+import DataList from '../ui/DataList.astro';
+import Media from '../Media.astro';
+import { site, t, pick, type Lang } from '../../lib/content';
+import { buildMailto } from '../../lib/mailto';
+import { shopDraft } from '../../lib/fans/mail.ts';
+import type { Product } from '../../lib/schemas/shop.ts';
+
+/**
+ * Ficha de producto de la tienda de ejemplo. Arte generativo por semilla (Media), etiquetas, ficha técnica
+ * desplegable y consulta por mail. Sin JS: cada ficha trae su propio enlace `mailto:`. Con JS (fans-shop) se suma
+ * el botón "Sumar a la consulta" para armar un solo mail con varias piezas.
+ */
+interface Props {
+  lang: Lang;
+  product: Product;
+}
+const { lang, product: p } = Astro.props;
+const name = pick(p.name, lang);
+const collection = pick(p.collection, lang);
+const formatLabel = t(`fans_format_${p.format}`, lang);
+const kindLabel = t(`fans_kind_${p.kind}`, lang);
+const edition = p.edition ? t(p.edition.numbered ? 'fans_p_edition_numbered' : 'fans_p_edition_open', lang, { n: p.edition.size }) : '';
+const available = p.status !== 'soldout';
+const mailHref = buildMailto(
+  shopDraft(
+    {
+      to: site.contact.email,
+      subject: t('fans_mail_shop_subject', lang),
+      hello: t('fans_mail_shop_hello', lang),
+      intro: t('fans_mail_shop_intro', lang),
+      nameLabel: t('fans_mail_shop_name', lang),
+      signoff: t('fans_mail_shop_signoff', lang),
+    },
+    [`${name} (${collection})`],
+  ),
+);
+const facts = [
+  { label: t('fans_p_format', lang), value: formatLabel },
+  ...(pick(p.material, lang) ? [{ label: t('fans_p_material', lang), value: pick(p.material, lang) }] : []),
+  ...(p.sizes.length ? [{ label: t('fans_p_sizes', lang), value: p.sizes.join(' · ') }] : []),
+  ...(p.dimensions ? [{ label: t('fans_p_dims', lang), value: p.dimensions }] : []),
+  ...(edition ? [{ label: t('fans_p_edition', lang), value: edition }] : []),
+  { label: t('fans_p_art', lang), value: t('fans_p_art_text', lang) },
+  { label: t('fans_p_price', lang), value: t('fans_p_price_tbd', lang) },
+];
+const portrait = p.art === 'portrait';
+---
+
+<li class="prod" id={`p-${p.id}`} data-product data-kind={p.kind} data-id={p.id} data-name={`${name} (${collection})`} data-available={available ? '1' : '0'}>
+  <Card as="div" title={name} kicker={collection} demo={p.demo} lang={lang} level="h3" class="prod__card">
+    <Media slot="media" variant={p.art} seed={`shop:${p.seed}`} kicker={formatLabel} ratio={portrait ? 'var(--fans-poster-ratio)' : '1 / 1'} sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 45vw, 100vw" />
+    <div class="prod__tags">
+      <Chip tone={p.status === 'drop' ? 'accent' : 'default'}>{t(`fans_status_${p.status}`, lang)}</Chip>
+      <Chip>{kindLabel}</Chip>
+      {p.edition && <Chip>{`1/${p.edition.size}`}</Chip>}
+    </div>
+    <p class="prod__blurb">{pick(p.blurb, lang)}</p>
+    <details class="prod__spec">
+      <summary class="prod__summary"><span class="label">{t('fans_p_spec', lang)}</span><span class="prod__icon" aria-hidden="true"></span></summary>
+      <DataList items={facts} layout="rows" />
+    </details>
+    <div slot="footer" class="prod__actions">
+      {
+        available ? (
+          <>
+            <a class="btn" href={mailHref}>{p.status === 'soon' ? t('fans_p_notify', lang) : t('fans_p_ask', lang)}</a>
+            <button type="button" class="btn prod__add" data-add aria-pressed="false" hidden data-label-add={t('fans_p_add', lang)} data-label-remove={t('fans_p_remove', lang)}>
+              {t('fans_p_add', lang)}
+            </button>
+          </>
+        ) : (
+          <span class="label prod__gone">{t('fans_p_unavailable', lang)}</span>
+        )
+      }
+    </div>
+  </Card>
+</li>
+
+<style>
+  .prod { display: flex; }
+  .prod[hidden] { display: none; }
+  .prod :global(.prod__card) { flex: 1; }
+  .prod[data-available='0'] :global(.media) { filter: grayscale(1) brightness(0.8); }
+  .prod__tags { display: flex; flex-wrap: wrap; gap: var(--space-3xs); }
+  .prod__blurb { color: var(--chrome-200); }
+  .prod__spec { border-top: var(--divider); }
+  .prod__summary { display: flex; align-items: center; justify-content: space-between; min-height: var(--tap); list-style: none; cursor: pointer; }
+  .prod__summary::-webkit-details-marker { display: none; }
+  .prod__summary:focus-visible { outline-offset: -2px; }
+  .prod__icon { position: relative; width: 0.9rem; height: 0.9rem; }
+  .prod__icon::before, .prod__icon::after { content: ''; position: absolute; inset: 50% 0 auto 0; height: var(--stroke); background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
+  .prod__icon::after { transform: rotate(90deg); }
+  .prod__spec[open] .prod__icon::after { transform: rotate(0deg); }
+  .prod__spec :global(.facts) { padding-bottom: var(--space-xs); }
+  .prod__actions { margin-top: auto; padding-top: var(--space-xs); }
+  .prod__gone { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .prod__add[hidden] { display: none; }
+  .prod__add[aria-pressed='true'] { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
+</style>

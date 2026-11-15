@@ -1,0 +1,145 @@
+# Dominio `mixes`: serie numerada y sets de SoundCloud.
+# - Los sets de SoundCloud son REALES: se referencian con `ref` (id de site.yaml > listen.tracks) y no se copian. Quedan sin clasificar.
+# - La serie 001-00N es contenido de EJEMPLO (`demo: true`): lugares, artistas y sellos de la tracklist son ficticios.
+items:
+  - id: mesdar
+    ref: mesdar
+  - id: dubbin-rain
+    ref: dubbin-rain
+  - id: sophie
+    ref: sophie
+  - id: worlds-tears
+    ref: worlds-tears
+
+  - id: serie-001-cuarto-oscuro
+    demo: true
+    number: 1
+    title: "Cuarto Oscuro"
+    date: "2026-01-17"
+    venue: "Estudio Ejemplo · Ciudad"
+    duration: "1:02:14"
+    description:
+      es: "Primer mix de la serie de ejemplo: una hora de pulso constante grabada en el estudio, sin público."
+      en: "First mix of the sample series: an hour of steady pulse recorded in the studio, with no audience."
+    tags: ["Techno", "Estudio"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo F", title: "Vapor Ficticio", label: "Ejemplo Discos", bpm: 129, key: "5A" }
+      - { n: 2, artist: "Artista Ejemplo K", title: "Cruce Ficticio", label: "Colectivo Ejemplo", bpm: 132, key: "6A" }
+      - { n: 3, artist: "Artista Ejemplo P", title: "Pulso Ficticio", label: "Etiqueta Ficticia", bpm: 135, key: "7A" }
+      - { n: 4, artist: "Artista Ejemplo U", title: "Luz de Ejemplo", label: "Sello Ejemplo", bpm: 127, key: "8A" }
+      - { n: 5, artist: "Artista Ejemplo B", title: "Marea Simulada", label: "Ejemplo Discos", bpm: 130, key: "9A" }
+      - { n: 6, artist: "Artista Ejemplo G", title: "Metal Falso", label: "Colectivo Ejemplo", bpm: 133, key: "10A" }
+      - { n: 7, artist: "Artista Ejemplo L", title: "Reflejo Simulado", label: "Etiqueta Ficticia", bpm: 136, key: "8A" }
+      - { n: 8, artist: "Artista Ejemplo Q", title: "Corte Seco (Ejemplo)", label: "Sello Ejemplo", bpm: 128, key: "5A" }
+      - { n: 9, artist: "Artista Ejemplo V", title: "Neblina de Ejemplo", label: "Ejemplo Discos", bpm: 131, key: "4A" }
+
+  - id: serie-002-noche-de-muestra
+    demo: true
+    number: 2
+    title: "Noche de Muestra"
+    date: "2026-03-14"
+    venue: "Club Ejemplo · Ciudad"
+    duration: "1:11:40"
+    description:
+      es: "Set de ejemplo grabado en una noche inventada: arranque lento, cierre más duro."
+      en: "Sample set recorded on an invented night: slow start, harder finish."
+    tags: ["Techno", "En vivo"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo C", title: "Reflejo Simulado", label: "Colectivo Ejemplo", bpm: 134, key: "6A" }
+      - { n: 2, artist: "Artista Ejemplo H", title: "Corte Seco (Ejemplo)", label: "Etiqueta Ficticia", bpm: 126, key: "7A" }
+      - { n: 3, artist: "Artista Ejemplo M", title: "Neblina de Ejemplo", label: "Sello Ejemplo", bpm: 129, key: "8A" }
+      - { n: 4, artist: "Artista Ejemplo R", title: "Capa Doble", label: "Ejemplo Discos", bpm: 132, key: "9A" }
+      - { n: 5, artist: "ID", title: "ID", bpm: 135, key: "10A" }
+      - { n: 6, artist: "Artista Ejemplo D", title: "Frecuencia Inventada", label: "Etiqueta Ficticia", bpm: 127, key: "8A" }
+      - { n: 7, artist: "Artista Ejemplo I", title: "Aguja Inventada", label: "Sello Ejemplo", bpm: 130, key: "5A" }
+      - { n: 8, artist: "Artista Ejemplo N", title: "Eco de Muestra", label: "Ejemplo Discos", bpm: 133, key: "4A" }
+      - { n: 9, artist: "Artista Ejemplo S", title: "Ruido de Prueba", label: "Colectivo Ejemplo", bpm: 136, key: "5A" }
+
+  - id: serie-003-espiral-simulada
+    demo: true
+    number: 3
+    title: "Espiral Simulada"
+    date: "2026-05-09"
+    venue: "Estudio Ejemplo · Ciudad"
+    duration: "0:58:03"
+    description:
+      es: "Mix de ejemplo más hipnótico, con mezclas largas y pocas palabras."
+      en: "A more hypnotic sample mix, with long blends and few words."
+    tags: ["Techno", "Hipnótico"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo X", title: "Aguja Inventada", label: "Etiqueta Ficticia", bpm: 128, key: "7A" }
+      - { n: 2, artist: "Artista Ejemplo E", title: "Eco de Muestra", label: "Sello Ejemplo", bpm: 131, key: "8A" }
+      - { n: 3, artist: "Artista Ejemplo J", title: "Ruido de Prueba", label: "Ejemplo Discos", bpm: 134, key: "9A" }
+      - { n: 4, artist: "Artista Ejemplo O", title: "Hierro Simulado", label: "Colectivo Ejemplo", bpm: 126, key: "10A" }
+      - { n: 5, artist: "Artista Ejemplo T", title: "Humo de Prueba", label: "Etiqueta Ficticia", bpm: 129, key: "8A" }
+      - { n: 6, artist: "Artista Ejemplo A", title: "Órbita Falsa", label: "Sello Ejemplo", bpm: 132, key: "5A" }
+      - { n: 7, artist: "Artista Ejemplo F", title: "Salto de Muestra", label: "Ejemplo Discos", bpm: 135, key: "4A" }
+      - { n: 8, artist: "Artista Ejemplo K", title: "Cinta de Muestra", label: "Colectivo Ejemplo", bpm: 127, key: "5A" }
+      - { n: 9, artist: "Artista Ejemplo P", title: "Cable Inventado", label: "Etiqueta Ficticia", bpm: 130, key: "6A" }
+
+  - id: serie-004-escenario-ficticio
+    demo: true
+    number: 4
+    title: "Escenario Ficticio"
+    date: "2026-07-04"
+    venue: "Festival Ejemplo · Ciudad"
+    duration: "1:15:22"
+    description:
+      es: "Grabación de ejemplo de un festival inventado, pensada para probar la página de un mix largo."
+      en: "Sample recording from an invented festival, meant to test the page of a long mix."
+    tags: ["Techno", "Festival"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo U", title: "Salto de Muestra", label: "Sello Ejemplo", bpm: 133, key: "8A" }
+      - { n: 2, artist: "Artista Ejemplo B", title: "Cinta de Muestra", label: "Ejemplo Discos", bpm: 136, key: "9A" }
+      - { n: 3, artist: "Artista Ejemplo G", title: "Cable Inventado", label: "Colectivo Ejemplo", bpm: 128, key: "10A" }
+      - { n: 4, artist: "Artista Ejemplo L", title: "Sombra Calibrada", label: "Etiqueta Ficticia", bpm: 131, key: "8A" }
+      - { n: 5, artist: "ID", title: "ID", bpm: 134, key: "5A" }
+      - { n: 6, artist: "Artista Ejemplo V", title: "Nodo Falso", label: "Ejemplo Discos", bpm: 126, key: "4A" }
+      - { n: 7, artist: "Artista Ejemplo C", title: "Vapor Ficticio", label: "Colectivo Ejemplo", bpm: 129, key: "5A" }
+      - { n: 8, artist: "Artista Ejemplo H", title: "Cruce Ficticio", label: "Etiqueta Ficticia", bpm: 132, key: "6A" }
+      - { n: 9, artist: "Artista Ejemplo M", title: "Pulso Ficticio", label: "Sello Ejemplo", bpm: 135, key: "7A" }
+
+  - id: serie-005-acido-de-prueba
+    demo: true
+    number: 5
+    title: "Ácido de Prueba"
+    date: "2026-08-29"
+    venue: "Club Ejemplo · Ciudad"
+    duration: "1:06:48"
+    description:
+      es: "Mix de ejemplo con líneas ácidas y bombos secos."
+      en: "Sample mix with acid lines and dry kicks."
+    tags: ["Techno", "Acid"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo R", title: "Vapor Ficticio", label: "Ejemplo Discos", bpm: 127, key: "9A" }
+      - { n: 2, artist: "Artista Ejemplo W", title: "Cruce Ficticio", label: "Colectivo Ejemplo", bpm: 130, key: "10A" }
+      - { n: 3, artist: "Artista Ejemplo D", title: "Pulso Ficticio", label: "Etiqueta Ficticia", bpm: 133, key: "8A" }
+      - { n: 4, artist: "Artista Ejemplo I", title: "Luz de Ejemplo", label: "Sello Ejemplo", bpm: 136, key: "5A" }
+      - { n: 5, artist: "Artista Ejemplo N", title: "Marea Simulada", label: "Ejemplo Discos", bpm: 128, key: "4A" }
+      - { n: 6, artist: "Artista Ejemplo S", title: "Metal Falso", label: "Colectivo Ejemplo", bpm: 131, key: "5A" }
+      - { n: 7, artist: "Artista Ejemplo X", title: "Reflejo Simulado", label: "Etiqueta Ficticia", bpm: 134, key: "6A" }
+      - { n: 8, artist: "Artista Ejemplo E", title: "Corte Seco (Ejemplo)", label: "Sello Ejemplo", bpm: 126, key: "7A" }
+      - { n: 9, artist: "Artista Ejemplo J", title: "Neblina de Ejemplo", label: "Ejemplo Discos", bpm: 129, key: "8A" }
+
+  - id: serie-006-cierre-de-temporada
+    demo: true
+    number: 6
+    title: "Cierre de Temporada"
+    date: "2026-10-24"
+    venue: "Estudio Ejemplo · Ciudad"
+    duration: "1:04:10"
+    description:
+      es: "Último mix de la serie de ejemplo hasta ahora: cierre de temporada ficticia."
+      en: "Latest mix of the sample series so far: fictional season finale."
+    tags: ["Techno", "Estudio"]
+    tracklist:
+      - { n: 1, artist: "Artista Ejemplo O", title: "Reflejo Simulado", label: "Colectivo Ejemplo", bpm: 132, key: "10A" }
+      - { n: 2, artist: "Artista Ejemplo T", title: "Corte Seco (Ejemplo)", label: "Etiqueta Ficticia", bpm: 135, key: "8A" }
+      - { n: 3, artist: "Artista Ejemplo A", title: "Neblina de Ejemplo", label: "Sello Ejemplo", bpm: 127, key: "5A" }
+      - { n: 4, artist: "Artista Ejemplo F", title: "Capa Doble", label: "Ejemplo Discos", bpm: 130, key: "4A" }
+      - { n: 5, artist: "ID", title: "ID", bpm: 133, key: "5A" }
+      - { n: 6, artist: "Artista Ejemplo P", title: "Frecuencia Inventada", label: "Etiqueta Ficticia", bpm: 136, key: "6A" }
+      - { n: 7, artist: "Artista Ejemplo U", title: "Aguja Inventada", label: "Sello Ejemplo", bpm: 128, key: "7A" }
+      - { n: 8, artist: "Artista Ejemplo B", title: "Eco de Muestra", label: "Ejemplo Discos", bpm: 131, key: "8A" }
+      - { n: 9, artist: "Artista Ejemplo G", title: "Ruido de Prueba", label: "Colectivo Ejemplo", bpm: 134, key: "9A" }
+

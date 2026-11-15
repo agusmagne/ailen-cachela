@@ -1,0 +1,41 @@
+---
+import Card from '../ui/Card.astro';
+import Media from '../Media.astro';
+import Waveform from './Waveform.astro';
+import { t, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import type { Mix } from '../../lib/disco/mixes';
+
+/** Tarjeta de un mix: de la serie numerada (de ejemplo) o un set real de SoundCloud. */
+interface Props { lang: Lang; mix: Mix }
+const { lang, mix: m } = Astro.props;
+const series = m.kind === 'series';
+const kicker = series ? `${t('disco_series_tag', lang)} · ${t('disco_mix_code', lang, { code: m.code })}` : t('disco_unclassified', lang);
+---
+
+<li class="mc">
+  <Card lang={lang} as="div" level="h3" title={m.title} href={router.path('mix', lang, { slug: m.slug })} kicker={kicker} demo={m.demo}>
+    <Media slot="media" label={series ? m.code : ''} kicker={series ? 'MIX' : 'SoundCloud'} variant="cover" seed={m.slug} ratio="16 / 10" sizes="(min-width: 60rem) 30vw, (min-width: 40rem) 45vw, 90vw" />
+    {
+      series ? (
+        <>
+          <p class="label mc__meta">
+            <time datetime={m.date}>{formatDate(m.date, lang, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+            <span aria-hidden="true"> · </span>{m.duration}
+          </p>
+          <p class="mc__venue">{m.venue}</p>
+          <Waveform seed={m.waveSeed} shape="mix" count={120} label={t('disco_wave_label', lang, { title: m.title })} />
+        </>
+      ) : (
+        <p class="label mc__meta">{t('disco_mix_unclassified_note', lang)}</p>
+      )
+    }
+  </Card>
+</li>
+
+<style>
+  .mc { list-style: none; display: grid; }
+  .mc > :global(.card) { height: 100%; }
+  .mc__meta { color: var(--muted); }
+  .mc__venue { color: var(--chrome-200); overflow-wrap: anywhere; }
+</style>

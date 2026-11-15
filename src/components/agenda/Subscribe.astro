@@ -1,0 +1,75 @@
+---
+import { t, absolute, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import QrCode from '../ui/QrCode.astro';
+/**
+ * Suscripción al calendario completo: enlace webcal:// (abre la app de calendario), descarga https del mismo
+ * .ics, dirección para copiar y QR. El feed (src/pages/fechas/calendario.ics.ts) solo tiene fechas reales.
+ * Son enlaces y un botón de copiar que ya resuelve la base: no necesita JS propio.
+ */
+interface Props {
+  lang: Lang;
+  origin: URL | string;
+  id?: string;
+}
+const { lang, origin, id = 'calendario' } = Astro.props;
+const https = absolute(router.endpointHref('calendar', lang), origin);
+const webcal = https.replace(/^https?:/i, 'webcal:');
+const inputId = `${id}-url`;
+---
+
+<div class="sub" id={id}>
+  <div class="sub__main">
+    <p class="sub__lead">{t('agenda_sub_lead', lang)}</p>
+    <div class="sub__actions">
+      <a class="btn btn--primary" href={webcal}>{t('agenda_sub_btn', lang)} <span class="arrow" aria-hidden="true">↗</span></a>
+      <a class="btn" href={https} download>
+        <span class="arrow" data-dir="down" aria-hidden="true">↓</span> {t('agenda_sub_download', lang)}
+      </a>
+    </div>
+    <div class="sub__url field">
+      <label for={inputId}>{t('agenda_sub_url_label', lang)}</label>
+      <div class="sub__row">
+        <input id={inputId} class="input" type="text" readonly value={https} spellcheck="false" autocomplete="off" />
+        <button class="btn" type="button" data-copy={https} data-done={t('agenda_sub_copied', lang)}>
+          <span data-copy-label>{t('agenda_sub_copy', lang)}</span>
+        </button>
+      </div>
+    </div>
+    <p class="sub__note">{t('agenda_sub_note', lang)}</p>
+    <details class="sub__help">
+      <summary class="label sub__help-summary">{t('agenda_sub_help_title', lang)}</summary>
+      <ul>
+        <li>{t('agenda_sub_help_apple', lang)}</li>
+        <li>{t('agenda_sub_help_google', lang)}</li>
+        <li>{t('agenda_sub_help_other', lang)}</li>
+      </ul>
+    </details>
+  </div>
+  <div class="sub__qr">
+    <QrCode text={webcal} label={t('agenda_sub_qr', lang)} size="9.5rem" />
+    <p class="label">{t('agenda_sub_qr_hint', lang)}</p>
+  </div>
+</div>
+
+<style>
+  .sub { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-l); align-items: start; padding: var(--space-m); border: var(--divider); background: var(--card-bg); scroll-margin-top: calc(var(--header-h) + var(--space-s)); }
+  .sub__main { display: grid; gap: var(--space-s); min-width: 0; }
+  .sub__lead { max-width: var(--measure); font-size: var(--step-1); color: var(--chrome-100); }
+  .sub__actions { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .sub__row { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .sub__row .input { flex: 1 1 18rem; min-width: 0; font-family: var(--font-ui); font-size: max(1rem, var(--step--1)); }
+  .sub__note { max-width: var(--measure); font-size: var(--step--1); color: var(--muted); }
+  .sub__help-summary { display: flex; align-items: center; min-height: var(--tap); cursor: pointer; color: var(--fg); list-style: none; }
+  .sub__help-summary::-webkit-details-marker { display: none; }
+  .sub__help-summary::before { content: '+'; display: inline-block; width: 1.25em; color: var(--accent); }
+  .sub__help[open] > .sub__help-summary::before { content: '–'; }
+  .sub__help ul { display: grid; gap: var(--space-2xs); padding-bottom: var(--space-2xs); max-width: var(--measure); font-size: var(--step--1); color: var(--chrome-200); }
+  .sub__qr { display: grid; gap: var(--space-2xs); justify-items: center; text-align: center; }
+  @media (max-width: 52rem) {
+    .sub { grid-template-columns: minmax(0, 1fr); padding: var(--space-s); gap: var(--space-m); }
+    .sub__actions .btn { flex: 1 1 100%; min-height: var(--tap-lg); }
+  }
+  /* En el celular el QR no sirve (ya estás ahí): se oculta */
+  @media (max-width: 52rem), (pointer: coarse) { .sub__qr { display: none; } }
+</style>

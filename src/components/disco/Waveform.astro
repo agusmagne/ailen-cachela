@@ -1,0 +1,35 @@
+---
+import { makePeaks } from '../../lib/disco/peaks';
+/**
+ * Forma de onda de EJEMPLO dibujada en SVG: los picos se generan en build desde una semilla (src/lib/disco/peaks.ts),
+ * porque no hay audio propio. Siempre se rotula como ejemplo (`label` es el texto accesible, con la aclaración).
+ * Es una imagen decorativa con alternativa textual: no es interactiva y no reproduce nada.
+ */
+interface Props {
+  seed: string;
+  label: string;
+  count?: number;
+  shape?: 'track' | 'mix';
+  size?: 'sm' | 'lg';
+  class?: string;
+}
+const { seed, label, count = 96, shape = 'track', size = 'sm', class: cls } = Astro.props;
+const peaks = makePeaks(seed, { count, shape });
+const H = 40; // alto del viewBox; las barras se espejan sobre el centro
+const mid = H / 2;
+// Un solo <path> con una línea vertical por barra (liviano: ~100 segmentos)
+const d = peaks.map((p, i) => `M${i + 0.5} ${(mid - (p * (H - 4)) / 2).toFixed(2)}V${(mid + (p * (H - 4)) / 2).toFixed(2)}`).join('');
+---
+
+<svg class:list={['wave', `wave--${size}`, cls]} viewBox={`0 0 ${count} ${H}`} preserveAspectRatio="none" role="img" aria-label={label} focusable="false">
+  <title>{label}</title>
+  <line class="wave__base" x1="0" y1={mid} x2={count} y2={mid}></line>
+  <path class="wave__bars" d={d}></path>
+</svg>
+
+<style>
+  .wave { display: block; width: 100%; height: var(--disco-wave-h); color: var(--disco-wave-bar); overflow: visible; }
+  .wave--lg { height: var(--disco-wave-h-lg); }
+  .wave__base { stroke: var(--disco-wave-base); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .wave__bars { fill: none; stroke: currentColor; stroke-width: 0.62; stroke-linecap: butt; }
+</style>

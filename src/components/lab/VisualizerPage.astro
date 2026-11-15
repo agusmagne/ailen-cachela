@@ -1,0 +1,22 @@
+---
+/** /lab/visualizador/ y /en/lab/visualizer/ */
+import LabPage from './LabPage.astro';
+import VizStage from './VizStage.astro';
+import Card from '../ui/Card.astro';
+import Button from '../ui/Button.astro';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<LabPage lang={lang} route="lab-visualizer" title={t('lab_viz_title', lang)} description={t('lab_viz_desc', lang)} lead={t('lab_viz_lead', lang)}>
+  <VizStage lang={lang} mode="page" />
+  <section class="page-block">
+    <Card lang={lang} title={t('lab_viz_tip_title', lang)} level="h2">
+      <p>{t('lab_viz_tip_text', lang)}</p>
+      <Button slot="footer" href={router.path('lab-live', lang)} variant="primary" arrow>{t('lab_viz_tip_cta', lang)}</Button>
+    </Card>
+  </section>
+</LabPage>

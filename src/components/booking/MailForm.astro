@@ -1,0 +1,194 @@
+---
+import { t, site, type Lang } from '../../lib/content';
+import LazyModule from '../ui/LazyModule.astro';
+import { FORMS, buildTemplate, buildMailto, type FieldDef } from '../../lib/booking/form';
+import { fieldLabelKey, formLabels, hint, optionKey, sectionKey, snake } from './ui';
+
+/**
+ * Formulario por pasos que arma un correo (sin backend). Sin JavaScript todos los pasos se ven apilados y el botón
+ * final abre el cliente de correo con los campos en texto plano (formulario `mailto:` de texto) o con una plantilla
+ * para completar. Con JavaScript (módulo booking-form) es por pasos: progreso "Paso 2 de 4", foco en el encabezado de
+ * cada paso, errores asociados con aria-describedby, resumen previo, "Abrir en mi correo" y "Copiar texto".
+ */
+interface Props {
+  lang: Lang;
+  form: 'booking' | 'advance';
+  /** Prefijo de ids (varias instancias en una página). */
+  id?: string;
+}
+const { lang, form: formId, id: uid = formId } = Astro.props;
+const form = FORMS[formId];
+const to = site.contact.email;
+const labels = formLabels(form, lang);
+const template = buildMailto(buildTemplate(form, labels, to));
+const subject = labels.subject;
+const action = `mailto:${to}?subject=${encodeURIComponent(subject)}`;
+const fid = (f: FieldDef) => `${uid}-${snake(f.id)}`;
+const errorKeys = ['required', 'email', 'date', 'past', 'time', 'number', 'range', 'url', 'option', 'long'] as const;
+const ui = {
+  progress: t('booking_progress', lang),
+  next: t('booking_next', lang),
+  review: t('booking_review', lang),
+  back: t('booking_back', lang),
+  errorsTitle: t('booking_errors_title', lang),
+  summaryEmpty: t('booking_summary_empty', lang),
+  copied: t('booking_copied', lang),
+  copyFailed: t('booking_copy_failed', lang),
+  openedAfterCopy: t('booking_opened_after_copy', lang),
+  errors: Object.fromEntries(errorKeys.map((k) => [k, t(`booking_err_${k}`, lang)])),
+};
+const stepsTotal = form.steps;
+const summaryStep = form.fieldSteps + 1;
+const byStep = (n: number) => form.fields.filter((f) => f.step === n);
+---
+
+<LazyModule name="booking-form" class="mf" props={{ form: formId, to, labels, ui }}>
+  <form class="mf__form" method="post" action={action} enctype="text/plain" data-mf-form aria-label={t(`booking_form_label_${formId}`, lang)}>
+    <div class="mf__top" data-mf-top hidden>
+      <ol class="mf__bar" aria-hidden="true">
+        {Array.from({ length: stepsTotal }, (_, i) => <li class="mf__seg" data-seg={i + 1}></li>)}
+      </ol>
+      <p class="label mf__progress" data-mf-progress aria-live="polite"></p>
+    </div>
+    <div class="mf__alert" role="alert" tabindex="-1" data-mf-alert hidden></div>
+
+    {
+      Array.from({ length: form.fieldSteps }, (_, i) => i + 1).map((n) => (
+        <fieldset class="mf__step" data-step={n}>
+          <legend class="mf__legend"><h3 class="mf__title display" tabindex="-1" data-mf-title>{t(sectionKey(form, n), lang)}</h3></legend>
+          <p class="mf__intro">{t(`booking_si_${formId === 'booking' ? 'b' : 'a'}_${n}`, lang)}</p>
+          <div class="mf__grid">
+            {byStep(n).map((f) => {
+              const hid = `${fid(f)}-hint`;
+              const eid = `${fid(f)}-err`;
+              const h = hint(form, f.id, lang);
+              const described = [h ? hid : '', eid].filter(Boolean).join(' ');
+              const label = t(fieldLabelKey(form, f.id), lang);
+              const wide = f.kind === 'textarea' || f.id === 'links' || f.id === 'lineup' || f.id === 'venue' || f.id === 'address' || f.id === 'eventName' || f.id === 'transport' || f.id === 'payment';
+              return (
+                <div class:list={['field', 'mf__field', { 'mf__field--wide': wide, 'mf__field--check': f.kind === 'checkbox' }]} data-field={f.id}>
+                  {f.kind === 'checkbox' ? (
+                    <label class="mf__check" for={fid(f)}>
+                      <input class="mf__box" type="checkbox" id={fid(f)} name={f.id} value="on" aria-describedby={described} />
+                      <span>{label}</span>
+                    </label>
+                  ) : (
+                    <label for={fid(f)}>
+                      {label}
+                      {f.required ? <><span class="mf__req" aria-hidden="true"> *</span><span class="sr-only"> ({t('booking_required', lang)})</span></> : null}
+                    </label>
+                  )}
+                  {f.kind === 'textarea' ? (
+                    <textarea class="input" id={fid(f)} name={f.id} rows="4" maxlength={f.maxLength} aria-describedby={described} />
+                  ) : f.kind === 'select' ? (
+                    <select class="input" id={fid(f)} name={f.id} required={f.required} aria-required={f.required ? 'true' : undefined} aria-describedby={described}>
+                      <option value="">{t('booking_choose', lang)}</option>
+                      {(f.options ?? []).map((o) => <option value={o}>{t(optionKey(form, f.id, o), lang)}</option>)}
+                    </select>
+                  ) : f.kind !== 'checkbox' ? (
+                    <input
+                      class="input"
+                      id={fid(f)}
+                      name={f.id}
+                      type={f.kind}
+                      required={f.required}
+                      aria-required={f.required ? 'true' : undefined}
+                      autocomplete={f.autocomplete}
+                      inputmode={f.inputmode}
+                      maxlength={f.maxLength}
+                      min={f.kind === 'number' ? f.min : undefined}
+                      max={f.kind === 'number' ? f.max : undefined}
+                      aria-describedby={described}
+                    />
+                  ) : null}
+                  {h && <p class="mf__hint" id={hid}>{h}</p>}
+                  <p class="mf__error" id={eid} data-mf-error hidden></p>
+                </div>
+              );
+            })}
+          </div>
+        </fieldset>
+      ))
+    }
+
+    <section class="mf__step mf__summary" data-step={summaryStep} aria-labelledby={`${uid}-summary-title`} hidden>
+      <h3 class="mf__title display" id={`${uid}-summary-title`} tabindex="-1" data-mf-title>{t('booking_summary_title', lang)}</h3>
+      <p class="mf__intro">{t('booking_summary_intro', lang)}</p>
+      <dl class="mf__dl" data-mf-summary></dl>
+      <p class="mf__trim" data-mf-trim hidden>{t('booking_trim_warning', lang)}</p>
+      <div class="mf__actions">
+        <a class="btn btn--primary btn--xl" href={template} data-mf-open>{t('booking_open_mail', lang)}<span class="arrow" aria-hidden="true">↗</span></a>
+        <button class="btn btn--xl" type="button" data-mf-copy><span data-mf-copy-label>{t('booking_copy_text', lang)}</span></button>
+      </div>
+      <p class="mf__status label" role="status" aria-live="polite" data-mf-status></p>
+      <div class="field mf__raw">
+        <label for={`${uid}-raw`}>{t('booking_raw_label', lang)}</label>
+        <textarea class="input" id={`${uid}-raw`} rows="9" readonly data-mf-raw></textarea>
+      </div>
+    </section>
+
+    <div class="mf__nav" data-mf-nav hidden>
+      <button class="btn btn--xl" type="button" data-mf-back hidden>{t('booking_back', lang)}</button>
+      <button class="btn btn--primary btn--xl" type="button" data-mf-next>{t('booking_next', lang)}</button>
+    </div>
+
+    <div class="mf__nojs" data-mf-nojs>
+      <button class="btn btn--primary btn--xl" type="submit">{t('booking_nojs_submit', lang)}<span class="arrow" aria-hidden="true">↗</span></button>
+      <p class="mf__hint">{t('booking_nojs_hint', lang)} <a class="link" href={template}>{t('booking_nojs_template', lang)}</a></p>
+    </div>
+  </form>
+</LazyModule>
+
+<style>
+  :global(.mf) { max-width: 60rem; }
+  .mf__form { display: grid; gap: var(--space-l); }
+  .mf__top { display: grid; gap: var(--space-xs); }
+  .mf__bar { display: grid; grid-template-columns: repeat(var(--mf-count, 4), 1fr); gap: var(--space-3xs); }
+  .mf__seg { height: 3px; background: var(--mf-step-line); }
+  .mf__seg.is-done { background: var(--chrome-300); }
+  .mf__seg.is-current { background: var(--mf-step-on); }
+  .mf__progress { color: var(--chrome-200); }
+  .mf__step { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: var(--space-m); }
+  .mf__step[hidden] { display: none; }
+  .mf__step + .mf__step { border-top: var(--divider); padding-top: var(--space-l); }
+  :global(.mf.is-enhanced) .mf__step + .mf__step { border-top: 0; padding-top: 0; }
+  .mf__legend { padding: 0; margin-bottom: var(--space-2xs); width: 100%; }
+  .mf__title { font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); }
+  .mf__title:focus-visible { outline-offset: 6px; }
+  .mf__intro { color: var(--muted); max-width: var(--measure); }
+  .mf__grid { display: grid; gap: var(--space-m) var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); align-items: start; }
+  .mf__field--wide { grid-column: 1 / -1; }
+  .mf__field > label { text-wrap: balance; }
+  .mf__req { color: var(--accent); }
+  select.input { appearance: none; padding-right: 2.2rem; background-image: linear-gradient(45deg, transparent 50%, var(--chrome-300) 50%), linear-gradient(135deg, var(--chrome-300) 50%, transparent 50%); background-position: calc(100% - 1.15rem) 55%, calc(100% - 0.8rem) 55%; background-size: 0.35rem 0.35rem, 0.35rem 0.35rem; background-repeat: no-repeat; }
+  .mf__hint { font-size: var(--step--1); color: var(--muted); max-width: 52ch; }
+  .mf__error { font-size: var(--step--1); color: var(--mf-error); }
+  .mf__error::before { content: '× '; font-family: var(--font-ui); }
+  .mf__field.has-error .input { border-color: var(--mf-error-line); }
+  .mf__check { display: flex; gap: var(--space-xs); align-items: center; min-height: var(--tap); cursor: pointer; font-family: var(--font-body); letter-spacing: normal; text-transform: none; font-size: var(--step-0); color: var(--chrome-100); }
+  .mf__box { appearance: none; flex: none; width: 1.5rem; height: 1.5rem; margin: 0; background: var(--bg-raised); border: var(--stroke) solid var(--chrome-500); display: grid; place-items: center; cursor: pointer; }
+  .mf__box::after { content: ''; width: 0.7rem; height: 0.7rem; background: var(--chrome-50); transform: scale(0); transition: transform var(--dur-fast, 120ms) var(--ease-out, ease-out); }
+  .mf__box:checked::after { transform: scale(1); }
+  .mf__box:focus-visible { outline-offset: 2px; }
+  .mf__alert { padding: var(--space-s) var(--space-m); border: var(--stroke) solid var(--mf-error-line); background: color-mix(in srgb, var(--mf-error-line) 10%, var(--bg)); display: grid; gap: var(--space-2xs); }
+  .mf__alert[hidden] { display: none; }
+  .mf__alert :global(ul) { list-style: none; display: grid; gap: var(--space-3xs); }
+  .mf__alert :global(a) { color: var(--chrome-50); text-decoration: underline; text-underline-offset: 0.2em; }
+  .mf__alert:focus-visible { outline-offset: 3px; }
+  .mf__dl { display: grid; gap: 0; border-top: var(--divider); }
+  .mf__dl > :global(div) { display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr; gap: var(--space-xs); padding-block: var(--space-2xs); border-bottom: var(--divider); }
+  .mf__dl :global(dd) { overflow-wrap: anywhere; }
+  .mf__dl > :global(.mf__sec) { grid-template-columns: 1fr; padding-top: var(--space-s); border-bottom: 0; }
+  .mf__trim { padding: var(--space-xs) var(--space-s); border-left: 2px solid var(--accent); background: var(--demo-bg); }
+  .mf__actions, .mf__nav, .mf__nojs { display: flex; flex-wrap: wrap; gap: var(--space-s); align-items: center; }
+  .mf__nojs { flex-direction: column; align-items: flex-start; }
+  .mf__status { min-height: 1.5em; color: var(--chrome-100); }
+  .mf__raw textarea { font-family: var(--font-ui); font-size: var(--step--1); min-height: 10rem; }
+  .mf__nav { justify-content: space-between; }
+  .mf__nav .btn[hidden], .mf__top[hidden], .mf__nav[hidden], .mf__nojs[hidden] { display: none; }
+  @media (max-width: 40rem) {
+    .mf__dl > :global(div) { grid-template-columns: 1fr; gap: 0; }
+    .mf__nav .btn, .mf__actions .btn { flex: 1 1 100%; }
+    .mf__nav { flex-direction: column-reverse; align-items: stretch; }
+  }
+</style>

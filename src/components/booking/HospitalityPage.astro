@@ -1,0 +1,107 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import Download from '../ui/Download.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/booking';
+import { t, withBase, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { demoOn } from '../../lib/demo';
+import { publicFileSize } from '../../lib/downloads/response';
+import { dl, dlPath } from './ui';
+
+/** Rider de hospitalidad (versión para artista emergente): lo imprescindible separado de lo "si está disponible". */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const empty = data.hospitality.length === 0;
+const pdfFile = dl.hospitality(lang);
+const pdfSize = publicFileSize(dlPath(pdfFile)) ?? undefined;
+const principles = ['proportion', 'flexible', 'written', 'after'] as const;
+---
+
+<PageLayout lang={lang} route="booking-hospitality" title={t('booking_hosp_title', lang)} description={t('booking_hosp_desc', lang)} kicker={t('booking_hosp_kicker', lang)} demo={!empty} empty={empty}>
+  <p slot="lead">{t('booking_hosp_lead', lang)}</p>
+  <Fragment slot="meta">
+    <Button href={router.path('booking', lang) + '#consulta'} variant="primary">{t('booking_cta_form', lang)}</Button>
+    <Button href={router.path('booking-tech', lang)}>{t('booking_route_tech', lang)}</Button>
+  </Fragment>
+
+  {
+    empty ? (
+      <EmptyState lang={lang} title={t('booking_empty_title', lang)} text={t('booking_empty_text', lang)}>
+        <Button href={router.path('booking', lang)} variant="primary">{t('booking_back_to_booking', lang)}</Button>
+      </EmptyState>
+    ) : (
+      <>
+        <section class="page-block" id="principios" aria-labelledby="principios-h">
+          <SectionHead lang={lang} id="principios-h" title={t('booking_hosp_principles_title', lang)} kicker={t('booking_hosp_principles_kicker', lang)} demo />
+          <ul class="hp-principles">
+            {principles.map((p, i) => (
+              <li>
+                <span class="label">{String(i + 1).padStart(2, '0')}</span>
+                <p>{t(`booking_hosp_p_${p}`, lang)}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="page-block" id="lista" aria-labelledby="lista-h">
+          <SectionHead lang={lang} id="lista-h" title={t('booking_hosp_list_title', lang)} kicker={t('booking_hosp_list_kicker', lang)} lead={t('booking_hosp_list_lead', lang)} demo />
+          <div class="hp-groups">
+            {data.hospitality.map((g) => (
+              <article class="hp-group has-demo-badge">
+                <DemoBadge lang={lang} />
+                <header>
+                  <h3 class="hp-group__title display">{g.title[lang]}</h3>
+                  <p class="hp-group__intro">{g.intro[lang]}</p>
+                </header>
+                <ul class="hp-lines">
+                  {g.lines.map((l) => (
+                    <li class={`hp-line hp-line--${l.priority}`}>
+                      <Chip tone={l.priority === 'must' ? 'accent' : undefined}>{t(`booking_hosp_${l.priority}`, lang)}</Chip>
+                      <span>{l.text[lang]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="page-block" id="descargas" aria-labelledby="desc-h">
+          <SectionHead lang={lang} id="desc-h" title={t('booking_hosp_dl_title', lang)} kicker={t('booking_tech_dl_kicker', lang)} />
+          <div class="hp-dl">
+            {demoOn && <Download lang={lang} href={withBase(`/${dlPath(pdfFile)}`)} label={t('booking_hosp_pdf', lang)} kind="PDF" size={pdfSize} description={t('booking_hosp_pdf_desc', lang)} filename={pdfFile} demo />}
+            <div class="hp-dl__links">
+              <Button href={router.path('booking-tech', lang)}>{t('booking_route_tech', lang)}</Button>
+              <Button href={router.path('booking-terms', lang)}>{t('booking_route_terms', lang)}</Button>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
+</PageLayout>
+
+<style>
+  .hp-principles { list-style: none; padding: 0; display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  .hp-principles li { display: grid; gap: var(--space-2xs); padding-top: var(--space-s); border-top: var(--divider); align-content: start; color: var(--chrome-200); }
+  .hp-groups { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
+  .hp-group { position: relative; display: grid; gap: var(--space-m); align-content: start; padding: var(--space-m); border: var(--card-border); background: var(--card-bg); }
+  .hp-group header { padding-right: 7rem; }
+  .hp-group__title { font-size: var(--step-1); color: var(--chrome-50); }
+  .hp-group__intro { color: var(--muted); margin-top: var(--space-3xs); }
+  .hp-lines { list-style: none; padding: 0; display: grid; gap: var(--space-s); }
+  .hp-line { display: grid; gap: var(--space-3xs); justify-items: start; padding-top: var(--space-xs); border-top: var(--divider); }
+  .hp-line--nice span:last-child { color: var(--chrome-200); }
+  .hp-dl { display: grid; gap: var(--space-m); max-width: 44rem; }
+  .hp-dl__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  @media (max-width: 40rem) { .hp-group header { padding-right: 0; padding-top: var(--space-m); } }
+</style>

@@ -1,0 +1,35 @@
+---
+/**
+ * Franja del Lab para la home (la integra el paquete de integración; no se usa en ninguna página mientras tanto).
+ * Barras decorativas que "bailan" solo con CSS (sin JS, sin WebGL, sin audio: nunca suena nada acá) y un enlace al hub.
+ */
+import './lab.css';
+import Button from '../ui/Button.astro';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+
+interface Props { lang: Lang; class?: string }
+const { lang, class: cls } = Astro.props;
+const bars = [34, 62, 48, 86, 40, 72, 55, 94, 44, 68, 38, 80, 52, 60];
+---
+
+<section class:list={['lab-teaser', cls]} aria-labelledby="lab-teaser-title">
+  <div class="lab-teaser__text">
+    <p class="label lab-teaser__kicker">{t('lab_teaser_kicker', lang)}</p>
+    <h2 id="lab-teaser-title" class="display lab-teaser__title">{t('lab_teaser_title', lang)}</h2>
+    <p class="lab-teaser__lead">{t('lab_teaser_text', lang)}</p>
+    <Button href={router.path('lab', lang)} variant="primary" arrow>{t('lab_teaser_cta', lang)}</Button>
+  </div>
+  <div class="lab-eq" role="img" aria-label={t('lab_teaser_bars', lang)}>
+    {bars.map((h, i) => <i style={`--h:${h};--i:${i}`}></i>)}
+  </div>
+</section>
+
+<style>
+  .lab-teaser { display: grid; gap: var(--space-l); align-items: end; padding-block: var(--space-xl); border-block: var(--divider); }
+  @media (min-width: 52.01rem) { .lab-teaser { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-xl); } }
+  .lab-teaser__text { display: grid; gap: var(--space-s); justify-items: start; }
+  .lab-teaser__kicker { color: var(--accent); }
+  .lab-teaser__title { font-size: var(--step-4); line-height: var(--lh-display); color: var(--chrome-50); }
+  .lab-teaser__lead { max-width: var(--measure); color: var(--chrome-200); font-size: var(--step-1); }
+</style>

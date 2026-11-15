@@ -1,0 +1,148 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Card from '../ui/Card.astro';
+import Button from '../ui/Button.astro';
+import DataList from '../ui/DataList.astro';
+import Download from '../ui/Download.astro';
+import QrCode from '../ui/QrCode.astro';
+import MailForm from './MailForm.astro';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/booking';
+import { t, site, absolute, withBase, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { demoOn } from '../../lib/demo';
+import { publicFileSize } from '../../lib/downloads/response';
+import { bookingVCard, dl, dlPath } from './ui';
+
+/** Página /booking/ (y /en/booking/): proceso, documentos, formulario por pasos, contacto, representación y advance. */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const email = site.contact.email;
+const pageUrl = absolute(router.path('booking', lang), origin);
+const hasDemo = data.process.length + data.items.length + data.rigs.length + data.hospitality.length + data.terms.length > 0;
+const vcard = bookingVCard(lang, absolute(router.home(lang), origin));
+const pdf = (file: string) => ({ href: withBase(`/${dlPath(file)}`), size: publicFileSize(dlPath(file)) ?? undefined });
+const docs = [
+  { id: 'booking-tech', show: data.rigs.length > 0, key: 'tech' },
+  { id: 'booking-hospitality', show: data.hospitality.length > 0, key: 'hospitality' },
+  { id: 'booking-terms', show: data.terms.length > 0, key: 'terms' },
+].filter((d) => d.show);
+const advancePdf = pdf(dl.advance(lang));
+---
+
+<PageLayout lang={lang} route="booking" title={t('booking_title', lang)} description={t('booking_desc', lang)} kicker={t('booking_kicker', lang)} demo={hasDemo}>
+  <p slot="lead">{t('booking_lead', lang)}</p>
+  <Fragment slot="meta">
+    <Button href="#consulta" variant="primary">{t('booking_cta_form', lang)}</Button>
+    <Button href={`mailto:${email}`}>{email}</Button>
+  </Fragment>
+
+  {
+    data.process.length > 0 && (
+      <section class="page-block" id="proceso" aria-labelledby="proceso-h">
+        <SectionHead lang={lang} id="proceso-h" title={t('booking_process_title', lang)} kicker={t('booking_process_kicker', lang)} lead={t('booking_process_lead', lang)} demo />
+        <ol class="grid-cards bk-steps">
+          {data.process.map((p, i) => (
+            <Card lang={lang} as="li" title={p.title[lang]} kicker={String(i + 1).padStart(2, '0')} demo={p.demo}>
+              <p>{p.text[lang]}</p>
+            </Card>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    docs.length > 0 && (
+      <section class="page-block" id="documentos" aria-labelledby="documentos-h">
+        <SectionHead lang={lang} id="documentos-h" title={t('booking_docs_title', lang)} kicker={t('booking_docs_kicker', lang)} lead={t('booking_docs_lead', lang)} demo />
+        <div class="grid-cards">
+          {docs.map((d) => (
+            <Card lang={lang} title={t(`booking_doc_${d.key}_title`, lang)} href={router.path(d.id, lang)} kicker={t(`booking_doc_${d.key}_kicker`, lang)} demo>
+              <p>{t(`booking_doc_${d.key}_text`, lang)}</p>
+            </Card>
+          ))}
+          <Card lang={lang} title={t('booking_doc_advance_title', lang)} href="#advance" kicker={t('booking_doc_advance_kicker', lang)} demo>
+            <p>{t('booking_doc_advance_text', lang)}</p>
+          </Card>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="page-block" id="consulta" aria-labelledby="consulta-h">
+    <SectionHead lang={lang} id="consulta-h" title={t('booking_form_title', lang)} kicker={t('booking_form_kicker', lang)} lead={t('booking_form_lead', lang)} />
+    <MailForm lang={lang} form="booking" />
+  </section>
+
+  <section class="page-block" id="contacto" aria-labelledby="contacto-h">
+    <SectionHead lang={lang} id="contacto-h" title={t('booking_contact_title', lang)} kicker={t('booking_contact_kicker', lang)} lead={t('booking_contact_lead', lang)} />
+    <div class="bk-contact">
+      <div class="bk-contact__main">
+        <DataList
+          layout="rows"
+          items={[
+            { label: t('booking_contact_email', lang), value: email, href: `mailto:${email}`, wide: true },
+            { label: t('booking_contact_base', lang), value: `${site.artist.city}, ${site.artist.country}` },
+            { label: t('booking_contact_tz', lang), value: t('booking_contact_tz_value', lang) },
+          ]}
+        />
+        <div class="bk-contact__actions">
+          <Button variant="primary" href={`mailto:${email}`}>{t('booking_contact_write', lang)}</Button>
+          <Button data-copy={email} data-done={t('base_copied', lang)} aria-label={t('booking_contact_copy_aria', lang)}><span data-copy-label>{t('booking_contact_copy', lang)}</span></Button>
+        </div>
+        <p class="label" role="status" data-copy-status aria-live="polite"></p>
+        <Download lang={lang} href={withBase(`/downloads/booking/${dl.vcard(lang)}`)} label={t('booking_vcard_label', lang)} kind="VCF" size={Buffer.byteLength(vcard)} description={t('booking_vcard_desc', lang)} filename={dl.vcard(lang)} />
+      </div>
+      <figure class="bk-contact__qr">
+        <QrCode text={pageUrl} label={t('booking_qr_label', lang)} size="9.5rem" />
+        <figcaption class="label">{t('booking_qr_caption', lang)}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  {
+    data.items.length > 0 && (
+      <section class="page-block" id="representacion" aria-labelledby="representacion-h">
+        <SectionHead lang={lang} id="representacion-h" title={t('booking_rep_title', lang)} kicker={t('booking_rep_kicker', lang)} lead={t('booking_rep_lead', lang)} demo />
+        <ul class="grid-cards bk-agents">
+          {data.items.map((a) => (
+            <Card lang={lang} as="li" title={a.agency[lang]} kicker={a.region[lang]} demo={a.demo}>
+              <p>{a.note[lang]}</p>
+            </Card>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="page-block" id="advance" aria-labelledby="advance-h">
+    <SectionHead lang={lang} id="advance-h" title={t('booking_advance_title', lang)} kicker={t('booking_advance_kicker', lang)} lead={t('booking_advance_lead', lang)} />
+    <MailForm lang={lang} form="advance" id="advance-form" />
+    {
+      demoOn && data.rigs.length > 0 && (
+        <div class="bk-advance-dl">
+          <Download lang={lang} href={advancePdf.href} label={t('booking_advance_pdf', lang)} kind="PDF" size={advancePdf.size} description={t('booking_advance_pdf_desc', lang)} filename={dl.advance(lang)} demo />
+        </div>
+      )
+    }
+  </section>
+</PageLayout>
+
+<style>
+  .bk-steps, .bk-agents { list-style: none; padding: 0; }
+  .bk-steps { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); counter-reset: none; }
+  .bk-contact { display: grid; gap: var(--space-l); grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+  .bk-contact__main { display: grid; gap: var(--space-m); max-width: 40rem; }
+  .bk-contact__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .bk-contact__qr { margin: 0; display: grid; gap: var(--space-2xs); justify-items: start; }
+  .bk-advance-dl { margin-top: var(--space-l); max-width: 40rem; }
+  @media (max-width: 40rem) {
+    .bk-contact { grid-template-columns: 1fr; }
+  }
+</style>

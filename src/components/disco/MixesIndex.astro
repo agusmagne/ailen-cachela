@@ -1,0 +1,51 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Button from '../ui/Button.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import MixCard from './MixCard.astro';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { series, soundcloudMixes } from '../../lib/disco/data';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hasFeed = router.endpointExists('feed-mixes', lang);
+const empty = series.length + soundcloudMixes.length === 0;
+---
+
+<PageLayout lang={lang} route="mixes" title={t('disco_mixes_title', lang)} description={t('disco_mixes_desc', lang)} demo={series.length > 0} empty={empty}>
+  <p slot="lead">{t(series.length > 0 ? 'disco_mixes_lead' : 'disco_mixes_lead_real', lang)}</p>
+  {hasFeed && (
+    <Fragment slot="meta">
+      <Button href={router.endpointHref('feed-mixes', lang)} variant="primary" arrow>{t('disco_rss', lang)}</Button>
+    </Fragment>
+  )}
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    series.length > 0 && (
+      <section class="page-block" aria-labelledby="series-title">
+        <SectionHead lang={lang} id="series-title" title={t('disco_series_title', lang)} kicker={`001–${String(series.length).padStart(3, '0')}`} lead={t('disco_series_lead', lang)} demo />
+        <ul class="mx">{series.map((m) => <MixCard lang={lang} mix={m} />)}</ul>
+      </section>
+    )
+  }
+
+  {
+    soundcloudMixes.length > 0 && (
+      <section class="page-block" aria-labelledby="sc-title">
+        <SectionHead lang={lang} id="sc-title" title={t('disco_soundcloud_title', lang)} lead={t('disco_soundcloud_lead', lang)} />
+        <ul class="mx">{soundcloudMixes.map((m) => <MixCard lang={lang} mix={m} />)}</ul>
+      </section>
+    )
+  }
+
+  {hasFeed && <p class="page-block mx__rss label">{t('disco_rss_note', lang)}</p>}
+</PageLayout>
+
+<style>
+  .mx { display: grid; gap: var(--space-m); padding: 0; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+  .mx__rss { color: var(--muted); }
+</style>

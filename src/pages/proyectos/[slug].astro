@@ -1,0 +1,14 @@
+---
+import ProjectPage from '../../components/oficio/ProjectPage.astro';
+import { site } from '../../lib/content';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/collective';
+import { mergeProjects } from '../../lib/oficio/projects';
+
+export function getStaticPaths() {
+  return mergeProjects(site.projects, domain('collective', schema).items).map((p) => ({ params: { slug: p.slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<ProjectPage lang="es" slug={slug as string} />

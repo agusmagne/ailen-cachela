@@ -1,0 +1,239 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DataList from '../ui/DataList.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import Media from '../Media.astro';
+import Flyer from '../Flyer.astro';
+import NoteList from './NoteList.astro';
+import Inquiry from './Inquiry.astro';
+import { site, t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/collective';
+import { mergeProjects, editionShow } from '../../lib/oficio/projects';
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const L = (k: string) => t(k, lang);
+const all = mergeProjects(site.projects, domain('collective', schema).items);
+const found = all.find((p) => p.slug === slug);
+if (!found) throw new Error(`Proyecto desconocido "${slug}"`);
+const { project, extra } = found;
+const others = all.filter((p) => p.slug !== slug);
+const hasDemo = extra.manifesto.length + extra.editions.length + extra.residents.length + extra.log.length + extra.calls.length > 0;
+const isLabel = extra.kind === 'label';
+const release = isLabel ? site.releases.find((r) => r.label.name === project.name) : undefined;
+const musicHref = router.listed('music') ? router.path('music', lang) : '';
+const status = pick(project.status, lang);
+const facts = [
+  { label: L('oficio_f_type'), value: L(`oficio_pkind_${extra.kind}`) },
+  { label: L('oficio_f_relation'), value: pick(extra.relation, lang) },
+  ...(status ? [{ label: L('oficio_f_status'), value: status }] : []),
+  ...(project.handle ? [{ label: L('oficio_f_profile'), value: `${project.handle} · ${project.platform}`, ...(project.url ? { href: project.url, external: true } : {}) }] : []),
+  ...(release ? [{ label: L('oficio_f_release'), value: release.title, href: release.url || undefined, external: !!release.url }] : []),
+  ...(release ? [{ label: L('oficio_f_released'), value: formatDate(release.date, lang, { day: 'numeric', month: 'long', year: 'numeric' }) }] : []),
+  ...(release && release.own_tracks[0] ? [{ label: L('oficio_f_track'), value: `${release.own_tracks[0].title} · ${release.own_tracks[0].duration}` }] : []),
+];
+const dateOpts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+const call = extra.calls[0];
+const callFields = call
+  ? [
+      { key: 'name', label: L('oficio_f_artist'), type: 'text' as const, autocomplete: 'name' },
+      { key: 'email', label: `${L('oficio_f_email')} *`, type: 'email' as const, required: true, autocomplete: 'email' },
+      { key: 'city', label: L('oficio_f_city'), type: 'text' as const },
+      { key: 'link', label: `${L('oficio_f_dl')} *`, type: 'url' as const, required: true, hint: L('oficio_f_dl_hint') },
+      { key: 'message', label: L('oficio_f_about'), type: 'textarea' as const },
+    ]
+  : [];
+---
+
+<PageLayout lang={lang} route="project" params={{ slug }} title={project.name} crumbTail={project.name} kicker={L(`oficio_pkind_${extra.kind}`)} description={`${pick(project.text, lang)} ${pick(extra.relation, lang)}.`} demo={hasDemo}>
+  <div slot="lead">
+    <p>{pick(project.text, lang)}</p>
+    <p class="plead__rel label">{pick(extra.relation, lang)}</p>
+  </div>
+  <Fragment slot="meta">
+    {project.url && <Button href={project.url} variant="primary" external lang={lang}>{t('projects_open', lang, { platform: project.platform })}</Button>}
+    {!project.url && project.handle && <Chip>{project.handle} · {t('projects_nolink', lang)}</Chip>}
+    <Button href={router.path('projects', lang)}>{L('oficio_all_projects')}</Button>
+  </Fragment>
+
+  <section class="page-block" aria-labelledby="pj-facts">
+    <h2 class="sr-only" id="pj-facts">{L('oficio_facts_title')}</h2>
+    <div class="facts-grid">
+      <div class="facts-grid__art"><Media seed={extra.seed} kicker={L(`oficio_pkind_${extra.kind}`)} label={project.name} ratio="4 / 3" /></div>
+      <div class="facts-grid__data">
+        <DataList items={facts} layout="rows" />
+        {isLabel && <p class="note-label">{L('oficio_room_note')}</p>}
+        {isLabel && musicHref && <p class="facts-grid__link"><a class="link" href={musicHref}>{L('oficio_room_music')}</a></p>}
+      </div>
+    </div>
+  </section>
+
+  {
+    extra.manifesto.length > 0 && (
+      <section class="page-block" aria-labelledby="pj-manifesto">
+        <SectionHead lang={lang} id="pj-manifesto" kicker={L('oficio_kicker_manifesto')} title={L('oficio_manifesto_title')} demo />
+        <div class="manifesto">
+          {extra.manifesto.map((m, i) => (
+            <p class="manifesto__p display" data-reveal style={`--reveal-delay:${i * 90}ms`}>{pick(m.text, lang)}</p>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    extra.editions.length > 0 && (
+      <section class="page-block" id="ediciones" aria-labelledby="pj-editions">
+        <SectionHead lang={lang} id="pj-editions" kicker={L('oficio_kicker_archive')} title={L('oficio_editions_title')} lead={L('oficio_editions_lead')} demo />
+        <ul class="eds">
+          {[...extra.editions].sort((a, b) => b.date.localeCompare(a.date)).map((ed, i) => (
+            <li class:list={['ed', { 'has-demo-badge': ed.demo }]} data-gen-host data-reveal style={`--reveal-delay:${(i % 4) * 70}ms`}>
+              {ed.demo && <DemoBadge lang={lang} />}
+              <div class="ed__art" aria-hidden="true"><Flyer show={editionShow(ed, slug)} tier="card" /></div>
+              <div class="ed__body">
+                <time class="label ed__date" datetime={ed.date}>{formatDate(ed.date, lang, dateOpts)}</time>
+                <h3 class="ed__title display">{pick(ed.title, lang)}</h3>
+                <p class="ed__venue">{pick(ed.venue, lang)}</p>
+                <p class="label ed__h">{L('oficio_lineup')}</p>
+                <ul class="ed__lineup">{ed.lineup.map((a) => <li>{a}</li>)}</ul>
+                {pick(ed.note, lang) && <p class="ed__note">{pick(ed.note, lang)}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    extra.residents.length > 0 && (
+      <section class="page-block" aria-labelledby="pj-residents">
+        <SectionHead lang={lang} id="pj-residents" kicker={L('oficio_kicker_roster')} title={L('oficio_residents_title')} lead={L('oficio_residents_lead')} demo />
+        <ul class="residents">
+          {extra.residents.map((r, i) => (
+            <li class:list={['res', { 'has-demo-badge': r.demo }]} data-reveal style={`--reveal-delay:${i * 80}ms`}>
+              {r.demo && <DemoBadge lang={lang} />}
+              <div class="res__art"><Media variant="portrait" seed={`res-${slug}-${r.id}`} kicker={String(r.since)} label={r.alias} ratio="4 / 5" /></div>
+              <h3 class="res__name display">{r.alias}</h3>
+              <p class="label res__role">{pick(r.role, lang)} · {L('oficio_since')} {r.since}</p>
+              <p class="res__bio">{pick(r.bio, lang)}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    call && (
+      <section class="page-block" id="convocatoria" aria-labelledby="pj-call">
+        <SectionHead lang={lang} id="pj-call" kicker={L('oficio_kicker_call')} title={pick(call.title, lang)} lead={pick(call.intro, lang)} demo />
+        <div class="call">
+          <div class="call__rules">
+            <h3 class="label call__h">{L('oficio_call_rules')}</h3>
+            <ul class="call__ul">{call.rules.map((r) => <li>{pick(r, lang)}</li>)}</ul>
+            <p class="call__format"><span class="label">{L('oficio_call_format')}</span> {pick(call.format, lang)}</p>
+          </div>
+          <Inquiry lang={lang} id="call" title={L('oficio_call_form_title')} lead={L('oficio_call_form_lead')} fields={callFields} subject={t('oficio_call_subject', lang, { name: project.name })} greeting={L('oficio_call_greeting')} closing={L('oficio_call_closing')} messageKey="message" demo={call.demo} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    extra.log.length > 0 && (
+      <section class="page-block" aria-labelledby="pj-log">
+        <SectionHead lang={lang} id="pj-log" kicker={L('oficio_kicker_log')} title={L('oficio_log_title')} lead={L('oficio_log_lead')} demo />
+        <NoteList
+          lang={lang}
+          readLabel={L('oficio_read_note')}
+          notes={extra.log.map((n) => ({ id: n.id, date: n.date, demo: n.demo, title: pick(n.title, lang), summary: pick(n.summary, lang), body: n.body.map((b) => pick(b, lang)) }))}
+        />
+      </section>
+    )
+  }
+
+  {
+    !hasDemo && !isLabel && (
+      <section class="page-block" aria-label={L('oficio_more_soon_title')}>
+        <p class="more-soon label">{L('oficio_more_soon')}</p>
+      </section>
+    )
+  }
+
+  {
+    others.length > 0 && (
+      <nav class="page-block others" aria-labelledby="pj-others">
+        <h2 class="others__title display" id="pj-others">{L('oficio_others_title')}</h2>
+        <ul class="others__list">
+          {others.map((o) => (
+            <li>
+              <a class="others__link" href={router.path('project', lang, { slug: o.slug })}>
+                <span class="others__name display">{o.project.name}</span>
+                <span class="label">{L(`oficio_pkind_${o.extra.kind}`)}</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</PageLayout>
+
+<style>
+  .plead__rel { color: var(--accent); }
+  .facts-grid { display: grid; gap: var(--space-l); align-items: start; }
+  @media (min-width: 62rem) { .facts-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); } }
+  .facts-grid__art :global(.media) { border: var(--card-border); width: 100%; }
+  .facts-grid__data { display: grid; gap: var(--space-m); }
+  .facts-grid__link .link { display: inline-block; padding-block: 0.7rem; }
+  .note-label { max-width: var(--measure); padding: var(--space-xs) var(--space-s); border-left: 2px solid var(--accent); color: var(--chrome-200); background: var(--oficio-spec-bg); }
+
+  .manifesto { display: grid; gap: var(--space-l); max-width: 60rem; }
+  .manifesto__p { font-size: var(--step-3); line-height: 1.12; text-transform: none; font-weight: 600; color: var(--chrome-100); }
+  .manifesto__p:first-child { color: var(--chrome-50); }
+
+  .eds { display: grid; gap: var(--space-l) var(--oficio-gap); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+  .ed { position: relative; display: grid; gap: var(--space-s); align-content: start; }
+  .ed__art { position: relative; aspect-ratio: var(--oficio-ratio-flyer); border: var(--card-border); overflow: hidden; }
+  .ed__body { display: grid; gap: var(--space-2xs); }
+  .ed__date { color: var(--accent); }
+  .ed__title { font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); }
+  .ed__venue { color: var(--chrome-200); }
+  .ed__h { margin-top: var(--space-2xs); color: var(--subtle); }
+  .ed__lineup { display: flex; flex-wrap: wrap; gap: var(--space-3xs) var(--space-s); color: var(--chrome-100); }
+  .ed__lineup li + li::before { content: '/'; margin-right: var(--space-s); color: var(--chrome-500); }
+  .ed__note { color: var(--muted); font-size: var(--step--1); }
+
+  .residents { display: grid; gap: var(--space-l) var(--oficio-gap); grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+  .res { position: relative; display: grid; gap: var(--space-2xs); align-content: start; }
+  .res__art :global(.media) { width: 100%; border: var(--card-border); }
+  .res__name { font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); margin-top: var(--space-2xs); }
+  .res__role { color: var(--accent); }
+  .res__bio { color: var(--muted); }
+
+  .call { display: grid; gap: var(--space-l); align-items: start; }
+  @media (min-width: 62rem) { .call { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-xl); } }
+  .call__rules { display: grid; gap: var(--space-s); }
+  .call__h { padding-bottom: var(--space-2xs); border-bottom: var(--divider); color: var(--chrome-300); }
+  .call__ul { display: grid; gap: var(--space-xs); color: var(--chrome-200); }
+  .call__ul li { position: relative; padding-left: 1.1rem; }
+  .call__ul li::before { content: ''; position: absolute; left: 0; top: 0.65em; width: 0.4rem; height: var(--stroke); background: var(--accent); }
+  .call__format { color: var(--chrome-200); }
+  .call__format .label { display: block; color: var(--subtle); }
+
+  .more-soon { max-width: var(--measure); padding: var(--space-m); border: var(--stroke) dashed var(--chrome-600); color: var(--muted); }
+
+  .others__title { font-size: var(--step-2); margin-bottom: var(--space-s); color: var(--chrome-50); }
+  .others__list { display: grid; border-top: var(--divider); }
+  .others__link { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-s); align-items: center; min-height: var(--tap-lg); padding-block: var(--space-xs); border-bottom: var(--divider); }
+  .others__name { font-size: var(--step-1); color: var(--chrome-50); overflow-wrap: anywhere; }
+  @media (hover: hover) { .others__link:hover .others__name { text-decoration: underline; text-decoration-thickness: var(--stroke); text-underline-offset: 0.2em; } }
+  .others__link:active { background: var(--press-bg); }
+</style>

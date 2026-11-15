@@ -1,0 +1,162 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Accordion from '../ui/Accordion.astro';
+import Chip from '../ui/Chip.astro';
+import Media from '../Media.astro';
+import Inquiry from './Inquiry.astro';
+import { t, pick, formatDate, type Lang } from '../../lib/content';
+import { domain } from '../../lib/data';
+import { schema, KINDS, LEVELS, MODALITIES } from '../../lib/schemas/lessons';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const les = domain('lessons', schema);
+const empty = les.items.length === 0;
+const anyDemo = [...les.items, ...les.levels, ...les.faq].some((i) => i.demo);
+const L = (k: string) => t(k, lang);
+const kinds = KINDS.map((kind) => ({ kind, list: les.items.filter((p) => p.kind === kind) })).filter((g) => g.list.length > 0);
+const fields = [
+  { key: 'name', label: L('oficio_f_name'), type: 'text' as const, autocomplete: 'name' },
+  { key: 'email', label: `${L('oficio_f_email')} *`, type: 'email' as const, required: true, autocomplete: 'email' },
+  { key: 'program', label: L('oficio_f_program'), type: 'select' as const, options: [...les.items.map((p) => ({ value: p.id, label: pick(p.title, lang) })), { value: 'other', label: L('oficio_f_other') }] },
+  { key: 'level', label: L('oficio_f_level'), type: 'select' as const, options: LEVELS.map((v) => ({ value: v, label: L(`oficio_level_${v}`) })) },
+  { key: 'modality', label: L('oficio_f_modality'), type: 'select' as const, options: MODALITIES.map((v) => ({ value: v, label: L(`oficio_mod_${v}`) })) },
+  { key: 'message', label: `${L('oficio_f_experience')} *`, type: 'textarea' as const, required: true, hint: L('oficio_f_experience_hint') },
+];
+const dateOpts: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+---
+
+<PageLayout lang={lang} route="lessons" title={L('oficio_lessons_title')} description={L('oficio_lessons_desc')} demo={anyDemo} empty={empty}>
+  <p slot="lead">{L('oficio_lessons_lead')}</p>
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    les.levels.length > 0 && (
+      <section class="page-block" aria-labelledby="les-levels">
+        <SectionHead lang={lang} id="les-levels" kicker={L('oficio_kicker_levels')} title={L('oficio_levels_title')} lead={L('oficio_levels_lead')} demo />
+        <ol class="levels">
+          {les.levels.map((v, i) => (
+            <li class="level" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+              <span class="level__bars" aria-hidden="true">{LEVELS.map((_, b) => <i class:list={{ on: b <= i }}></i>)}</span>
+              <h3 class="level__title display">{pick(v.title, lang)}</h3>
+              <p class="level__text">{pick(v.text, lang)}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    kinds.map((g) => (
+      <section class="page-block" aria-labelledby={`les-${g.kind}`}>
+        <SectionHead lang={lang} id={`les-${g.kind}`} kicker={L(`oficio_kind_${g.kind}_kicker`)} title={L(`oficio_kind_${g.kind}`)} lead={L(`oficio_kind_${g.kind}_lead`)} demo />
+        <div class="progs">
+          {g.list.map((p, i) => (
+            <article class:list={['prog', { 'has-demo-badge': p.demo }]} id={`clase-${p.id}`} data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {p.demo && <DemoBadge lang={lang} />}
+              <div class="prog__media"><Media seed={p.seed} kicker={L(`oficio_level_${p.level}`)} label={pick(p.title, lang)} ratio="16 / 7" /></div>
+              <div class="prog__body">
+                <p class="prog__chips">
+                  <Chip tone="accent">{L(`oficio_kind_${p.kind}_one`)}</Chip>
+                  <Chip>{L(`oficio_level_${p.level}`)}</Chip>
+                  <Chip>{L(`oficio_mod_${p.modality}`)}</Chip>
+                </p>
+                <h3 class="prog__title display">{pick(p.title, lang)}</h3>
+                <p class="prog__summary">{pick(p.summary, lang)}</p>
+                <section aria-labelledby={`${p.id}-topics`}>
+                  <h4 class="label prog__h" id={`${p.id}-topics`}>{L('oficio_topics')}</h4>
+                  <ul class="prog__ul">{p.topics.map((x) => <li>{pick(x, lang)}</li>)}</ul>
+                </section>
+                <dl class="prog__facts">
+                  <div><dt class="label">{L('oficio_duration')}</dt><dd>{pick(p.duration, lang)}</dd></div>
+                  <div><dt class="label">{L('oficio_price')}</dt><dd>{L('oficio_on_request')}</dd></div>
+                </dl>
+                {p.sessions.length > 0 && (
+                  <section aria-labelledby={`${p.id}-dates`}>
+                    <h4 class="label prog__h" id={`${p.id}-dates`}>{L('oficio_dates')}</h4>
+                    <ul class="sess">
+                      {p.sessions.map((s) => (
+                        <li class="sess__row">
+                          <time class="sess__date" datetime={`${s.date}T${s.time}`}>{formatDate(s.date, lang, dateOpts)}</time>
+                          <span class="sess__time">{s.time}</span>
+                          <span class="sess__place">{pick(s.place, lang)}</span>
+                          <span class="label sess__spots">{L('oficio_spots')}: {s.spots}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p class="label sess__note">{L('oficio_spots_note')}</p>
+                  </section>
+                )}
+                <p class="prog__cta"><a class="link" href="#consulta">{L('oficio_ask_about')} {pick(p.title, lang)}</a></p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    les.faq.length > 0 && (
+      <section class="page-block" aria-labelledby="les-faq">
+        <SectionHead lang={lang} id="les-faq" kicker={L('oficio_kicker_faq')} title={L('oficio_faq_title')} demo />
+        <Accordion items={les.faq.map((f) => ({ id: f.id, title: pick(f.q, lang) }))} exclusive>
+          {les.faq.map((f) => <p slot={f.id}>{pick(f.a, lang)}</p>)}
+        </Accordion>
+      </section>
+    )
+  }
+
+  {
+    !empty && (
+      <section class="page-block" id="consulta" aria-label={L('oficio_les_form_title')}>
+        <Inquiry lang={lang} id="les" title={L('oficio_les_form_title')} lead={L('oficio_les_form_lead')} fields={fields} subject={L('oficio_les_subject')} greeting={L('oficio_les_greeting')} closing={L('oficio_les_closing')} messageKey="message" demo={anyDemo} />
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .levels { display: grid; gap: var(--oficio-gap); }
+  @media (min-width: 52rem) { .levels { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .level { display: grid; gap: var(--space-xs); align-content: start; padding: var(--card-pad); border: var(--card-border); background: var(--card-bg); }
+  .level__bars { display: inline-flex; gap: 0.3rem; }
+  .level__bars i { width: 1.6rem; height: 0.35rem; background: var(--chrome-700); }
+  .level__bars i.on { background: var(--accent); }
+  .level__title { font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); }
+  .level__text { color: var(--muted); }
+
+  .progs { display: grid; gap: var(--oficio-gap); }
+  .prog { position: relative; isolation: isolate; display: grid; border: var(--card-border); background: var(--card-bg); }
+  .prog__media { border-bottom: var(--card-border); }
+  .prog__media :global(.media) { width: 100%; }
+  .prog__body { display: grid; gap: var(--space-s); align-content: start; padding: var(--space-m) var(--card-pad) var(--space-s); }
+  .prog__chips { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .prog__title { font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .prog__summary { max-width: 60ch; color: var(--chrome-200); }
+  .prog__h { margin-bottom: var(--space-2xs); padding-bottom: var(--space-2xs); border-bottom: var(--divider); color: var(--chrome-300); }
+  .prog__ul { display: grid; gap: var(--space-3xs); color: var(--chrome-200); }
+  .prog__ul li { position: relative; padding-left: 1.1rem; }
+  .prog__ul li::before { content: ''; position: absolute; left: 0; top: 0.65em; width: 0.4rem; height: var(--stroke); background: var(--accent); }
+  .prog__facts { display: grid; gap: var(--space-xs) var(--space-m); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .prog__facts dd { margin: 0; color: var(--chrome-100); }
+  .sess { display: grid; }
+  .sess__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 var(--space-s); padding-block: var(--space-xs); border-bottom: var(--divider); }
+  .sess__date { color: var(--chrome-50); font-weight: 600; }
+  .sess__time { text-align: right; font-family: var(--font-ui); color: var(--chrome-200); }
+  .sess__place { color: var(--muted); }
+  .sess__spots { text-align: right; color: var(--accent); }
+  .sess__note { margin-top: var(--space-2xs); color: var(--subtle); }
+  .prog__cta .link { display: inline-block; padding-block: 0.7rem; }
+  @media (min-width: 62rem) {
+    .prog { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+    .prog__media { border-bottom: 0; border-right: var(--card-border); }
+    .prog__media :global(.media) { height: 100%; aspect-ratio: auto; min-height: 16rem; }
+    .prog__body { padding: var(--space-l) var(--space-l) var(--space-m); }
+  }
+</style>

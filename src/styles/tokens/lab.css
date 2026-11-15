@@ -1,0 +1,15 @@
+/* Tokens del Lab (paquete lab): solo variables derivadas de los de la base. */
+:root {
+  --lab-cell: var(--tap);
+  --lab-cell-gap: 0.1875rem;
+  --lab-head-w: 7.25rem;
+  --lab-cell-bg: color-mix(in srgb, var(--chrome-800) 78%, var(--bg-raised));
+  --lab-cell-beat-bg: color-mix(in srgb, var(--chrome-700) 70%, var(--bg-raised));
+  --lab-cell-on: linear-gradient(165deg, var(--chrome-50), var(--chrome-200));
+  --lab-now: var(--accent);
+  --lab-bar-bg: color-mix(in srgb, var(--bg) 84%, transparent);
+  --lab-panel-border: var(--stroke) solid var(--chrome-700);
+  --lab-track-h: 0.25rem;
+  --lab-thumb: 1.25rem;
+  --lab-stage-ratio: 16 / 9;
+}

@@ -1,0 +1,306 @@
+---
+import { t, withBase, absolute, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { linkify, showDate, type Show } from '../../lib/show-map';
+import { showStartMs, showEndMs } from '../../lib/show-list';
+import { showSlug } from '../../lib/agenda/entries';
+import { showIcsFile } from '../../lib/agenda/calendar';
+import { ZONES, EVENT_TZ, convert, formatOffset, zoneLabel, zoneOffsetMinutes } from '../../lib/agenda/time';
+import Flyer from '../Flyer.astro';
+import DataTable from '../ui/DataTable.astro';
+import { dateParts, longDate, placeOfShow, statusText, timeOfShow } from './format';
+/**
+ * Ficha de una fecha real de la página /fechas/: el mismo lenguaje que la home (flyer generativo, día gigante, estado
+ * con texto + forma) más las herramientas: cuenta regresiva (solo la destacada), agregar al calendario (.ics por
+ * fecha), compartir (Web Share si existe) y copiar enlace, y la hora de inicio en otras zonas (tabla estática;
+ * con JS se suma tu zona y un selector, ver src/scripts/modules/agenda-live.ts).
+ */
+interface Props {
+  show: Show;
+  lang: Lang;
+  /** La próxima fecha: flyer a todo el ancho y cuenta regresiva. */
+  featured?: boolean;
+  index?: number;
+  origin: URL | string;
+  artist: string;
+}
+const { show: s, lang, featured = false, index = 0, origin, artist } = Astro.props;
+
+const slug = showSlug(s);
+const p = dateParts(showDate(s), lang);
+const place = placeOfShow(s, lang);
+const time = timeOfShow(s, lang);
+const status = statusText(s.status, lang);
+const notes = s.notes ? linkify(s.notes) : [];
+const ticket = s.url && s.status === 'scheduled';
+const info = s.url && s.status === 'soldout';
+const startMs = showStartMs(s);
+const endMs = showEndMs(s);
+const timed = !s.allDay;
+const tz = s.tz || EVENT_TZ;
+const cancelled = s.status === 'cancelled';
+
+const pageUrl = absolute(`${router.path('shows', lang)}#${slug}`, origin);
+const icsHref = withBase(`/downloads/agenda/${showIcsFile(s, lang)}.ics`);
+const shareText = t('agenda_share_text', lang, { artist, title: s.title, date: longDate(showDate(s), lang) });
+
+const zoneList = [...(ZONES.some((z) => z.tz === tz) ? [] : [{ tz, es: zoneLabel(tz, 'es'), en: zoneLabel(tz, 'en') }]), ...ZONES];
+const baseOffset = formatOffset(zoneOffsetMinutes(startMs, tz));
+const zoneRows = timed
+  ? zoneList
+      .map((z) => convert(startMs, z.tz, tz, lang, z[lang]))
+      .map((v) => ({
+        city: v.label,
+        day: v.dayDelta === 0 ? v.date : `${v.date} · ${v.dayDelta > 0 ? t('agenda_day_next', lang) : t('agenda_day_prev', lang)}`,
+        time: v.time,
+        offset: v.offset,
+      }))
+  : [];
+
+const cdUnits = [
+  ['days', t('agenda_cd_days', lang)],
+  ['hours', t('agenda_cd_hours', lang)],
+  ['minutes', t('agenda_cd_minutes', lang)],
+  ['seconds', t('agenda_cd_seconds', lang)],
+] as const;
+const H = 'h3';
+---
+
+<li
+  id={slug}
+  class:list={['show', `show--${s.status}`, { 'show--featured': featured }]}
+  data-gen-host
+  data-reveal
+  style={`--reveal-delay:${Math.min(index, 5) * 90}ms`}
+>
+  <div class="show__art" aria-hidden="true">
+    <Flyer show={s} tier={featured ? 'next' : 'card'} />
+  </div>
+  <time class="when" datetime={p.iso}>
+    <span class="when__wd label">{p.wd}</span>
+    <span class="when__day display">{p.day}</span>
+    <span class="when__mon label">{p.mon} <span class="when__year">{p.year}</span></span>
+  </time>
+  <div class="show__body">
+    {
+      (featured || status) && (
+        <p class="show__tags">
+          {featured && <span class="tag-next label">{t('agenda_next_label', lang)}</span>}
+          {status && <span class={`chip chip--${s.status}`}>{status}</span>}
+        </p>
+      )
+    }
+    <H class="show__title display">{s.title}</H>
+    {place && <p class="show__place">{place}</p>}
+    {s.address && s.city && <p class="show__address label">{s.address}</p>}
+    <p class="show__time label">
+      {time}
+      {featured && timed && <span class="show__tz"> · {t('agenda_when_tz', lang, { zone: zoneLabel(tz, lang), offset: baseOffset })}</span>}
+    </p>
+    {
+      featured && !cancelled && (
+        <div class="cd" data-countdown data-start={startMs} data-end={endMs} data-tz={tz} role="group" aria-label={t('agenda_cd_label', lang, { title: s.title })}>
+          <p class="cd__state label" data-cd-state hidden></p>
+          <div class="cd__grid" data-cd-grid hidden aria-hidden="true">
+            {cdUnits.map(([k, label]) => (
+              <div class="cd__cell" data-cd-cell={k}>
+                <span class="cd__num display" data-cd={k}>00</span>
+                <span class="cd__unit label">{label}</span>
+              </div>
+            ))}
+          </div>
+          <p class="sr-only" data-cd-sr role="timer" aria-live="off"></p>
+        </div>
+      )
+    }
+    {
+      notes.length > 0 && (
+        <p class="show__notes">
+          {notes.map((line, li) => (
+            <>
+              {li > 0 && <br />}
+              {line.map((tok) =>
+                tok.type === 'link' ? (
+                  <a class="link" href={tok.href} target="_blank" rel="noopener noreferrer">
+                    {tok.text}
+                    <span class="sr-only"> {t('new_tab', lang)}</span>
+                  </a>
+                ) : (
+                  tok.text
+                ),
+              )}
+            </>
+          ))}
+        </p>
+      )
+    }
+  </div>
+  {
+    (ticket || info || s.mapUrl) && (
+      <div class="show__actions">
+        {ticket && (
+          <a class="btn btn--primary" href={s.url!} target="_blank" rel="noopener noreferrer">
+            {t('shows_tickets', lang)} <span class="arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
+          </a>
+        )}
+        {info && (
+          <a class="btn" href={s.url!} target="_blank" rel="noopener noreferrer">
+            {t('shows_info', lang)} <span class="arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
+          </a>
+        )}
+        {s.mapUrl && (
+          <a class="btn" href={s.mapUrl} target="_blank" rel="noopener noreferrer">
+            {t('shows_directions', lang)} <span class="arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">: {s.title} {t('new_tab', lang)}</span>
+          </a>
+        )}
+      </div>
+    )
+  }
+  <div class="show__tools">
+    <p class="label show__tools-title">{t('agenda_tools', lang)}</p>
+    <div class="show__tool-row">
+      {
+        !cancelled && (
+          <a class="btn" href={icsHref} download aria-label={t('agenda_add_cal_aria', lang, { title: s.title })}>
+            <span class="arrow" data-dir="down" aria-hidden="true">↓</span> {t('agenda_add_cal', lang)}
+          </a>
+        )
+      }
+      <button class="btn" type="button" data-share data-share-title={`${artist} @ ${s.title}`} data-share-text={shareText} data-share-url={pageUrl} aria-label={t('agenda_share_aria', lang, { title: s.title })} hidden>
+        {t('agenda_share', lang)}
+      </button>
+      <button class="btn" type="button" data-copy={pageUrl} data-done={t('agenda_copied', lang)} aria-label={t('agenda_copy_link_aria', lang, { title: s.title })}>
+        <span data-copy-label>{t('agenda_copy_link', lang)}</span>
+      </button>
+    </div>
+    {
+      timed && !cancelled && (
+        <details class="zones" data-zones data-start={startMs} data-base={tz}>
+          <summary class="zones__summary label">{t('agenda_zones', lang)}</summary>
+          <div class="zones__body">
+            <p class="zones__intro">{t('agenda_zones_intro', lang)}</p>
+            <div class="zones__live field" data-zones-live hidden></div>
+            <DataTable
+              lang={lang}
+              caption={t('agenda_zones_caption', lang, { title: s.title })}
+              columns={[
+                { key: 'city', label: t('agenda_zones_col_city', lang) },
+                { key: 'day', label: t('agenda_zones_col_day', lang) },
+                { key: 'time', label: t('agenda_zones_col_time', lang), numeric: true, nowrap: true },
+                { key: 'offset', label: t('agenda_zones_col_offset', lang), nowrap: true },
+              ]}
+              rows={zoneRows}
+            />
+          </div>
+        </details>
+      )
+    }
+  </div>
+</li>
+
+<style>
+  [hidden] { display: none !important; }
+
+  .show {
+    --when-w: 9.5rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--when-w) minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+    border: var(--divider);
+    background: var(--agenda-panel-bg);
+  }
+  .show::before { content: ''; position: absolute; inset: calc(var(--stroke) * -1) 0 auto 0; height: var(--stroke); background: var(--glint); pointer-events: none; z-index: 2; }
+  .show--featured { --when-w: clamp(11rem, 26vw, 20rem); border-color: var(--line-strong); }
+  .show--featured::before { height: 2px; background: var(--iris); }
+  .show { scroll-margin-top: calc(var(--header-h) + var(--space-s)); }
+
+  .show__art { grid-column: 1; grid-row: 1; position: relative; overflow: hidden; border-right: var(--divider); min-height: 8.5rem; }
+  /* La destacada: el flyer ocupa toda la ficha y el texto va encima */
+  .show--featured .show__art { grid-area: 1 / 1 / 3 / -1; border-right: 0; min-height: 0; }
+  .when { grid-column: 1; grid-row: 1; position: relative; z-index: 1; display: grid; align-content: center; justify-items: start; gap: var(--space-3xs); padding: var(--space-m); color: var(--fg); }
+  .when__wd { color: var(--accent); }
+  .when__day { font-size: clamp(3.25rem, 6vw, 5rem); line-height: var(--lh-display); letter-spacing: var(--tracking-display); font-stretch: var(--stretch-display); font-variant-numeric: tabular-nums; }
+  .show--featured .when__day { font-size: clamp(4.5rem, 10vw, 8rem); }
+  .when__mon { color: var(--fg); white-space: nowrap; }
+  .when__year { color: var(--muted); }
+
+  .show__body { grid-column: 2; grid-row: 1; position: relative; z-index: 1; display: grid; align-content: center; gap: var(--space-2xs); min-width: 0; padding: var(--space-m); }
+  .show__tags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs); }
+  .tag-next { color: var(--accent); }
+  .tag-next::before { content: ''; display: inline-block; width: 0.5em; height: 0.5em; margin-right: 0.6em; background: var(--accent); }
+  .show__title { font-size: var(--step-2); line-height: var(--lh-title); overflow-wrap: anywhere; text-wrap: balance; }
+  .show--featured .show__title { font-size: var(--step-3); }
+  .show__place { font-weight: 600; font-stretch: var(--stretch-title); overflow-wrap: anywhere; }
+  .show__address, .show__time { overflow-wrap: anywhere; }
+  .show__time { color: var(--fg); }
+  .show__tz { color: var(--muted); }
+  .show__notes { max-width: 52ch; margin-top: var(--space-2xs); padding-left: var(--space-xs); border-left: var(--stroke) solid var(--chrome-500); font-size: var(--step--1); color: var(--muted); overflow-wrap: anywhere; }
+  .show__notes :global(a) { color: var(--fg); position: relative; }
+  @media (max-width: 52rem), (pointer: coarse) { .show__notes :global(a)::before { content: ''; position: absolute; inset: -0.85rem -0.35rem; } }
+
+  .show__actions { grid-column: 3; grid-row: 1; position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-2xs); padding: var(--space-m); border-left: var(--divider); }
+  .show__actions .btn { justify-content: space-between; min-width: 11rem; }
+
+  /* Herramientas */
+  .show__tools { grid-column: 1 / -1; grid-row: 2; position: relative; z-index: 1; display: grid; gap: var(--space-xs); padding: var(--space-s) var(--space-m) var(--space-m); border-top: var(--divider); background: color-mix(in srgb, var(--bg) 55%, transparent); }
+  .show__tools-title { color: var(--subtle); }
+  .show__tool-row { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .zones { border-top: var(--divider); padding-top: var(--space-2xs); }
+  .zones__summary { display: flex; align-items: center; min-height: var(--tap); cursor: pointer; color: var(--fg); list-style: none; }
+  .zones__summary::-webkit-details-marker { display: none; }
+  .zones__summary::before { content: '+'; display: inline-block; width: 1.25em; color: var(--accent); }
+  .zones[open] > .zones__summary::before { content: '–'; }
+  .zones__body { display: grid; gap: var(--space-s); padding-bottom: var(--space-xs); }
+  .zones__intro { max-width: var(--measure); color: var(--muted); font-size: var(--step--1); }
+  .zones__live { max-width: 26rem; gap: var(--space-2xs); }
+  .zones__live :global(.zones__out) { font-family: var(--font-ui); font-size: var(--step--1); letter-spacing: var(--tracking-ui); color: var(--chrome-50); }
+  .zones__live :global(.zones__select) { max-width: 100%; }
+
+  /* Cuenta regresiva */
+  .cd { display: grid; gap: var(--space-2xs); margin-top: var(--space-xs); }
+  .cd__state { color: var(--accent); }
+  .cd__state[data-phase='live']::before { content: ''; display: inline-block; width: 0.6em; height: 0.6em; margin-right: 0.6em; background: var(--accent); }
+  .cd__grid { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); justify-content: start; gap: var(--space-s) clamp(1rem, 3vw, 2.25rem); }
+  .cd__cell { display: grid; gap: var(--space-3xs); padding-top: var(--space-2xs); border-top: var(--stroke) solid var(--chrome-500); min-width: 0; }
+  .cd__num { font-size: var(--agenda-cd-size); line-height: var(--lh-display); letter-spacing: var(--tracking-display); font-stretch: var(--stretch-display); font-variant-numeric: tabular-nums; color: var(--chrome-50); }
+
+  /* Estado: texto + forma + trazo, nunca solo color */
+  .chip { display: inline-flex; align-items: center; gap: 0.55em; min-height: 1.75rem; padding: 0.15rem 0.7rem; font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); line-height: 1.2; border: var(--stroke) solid var(--chrome-200); white-space: nowrap; }
+  .chip::before { content: ''; flex: none; width: 0.7em; height: 0.7em; }
+  .chip--soldout { background: var(--chrome-100); border-color: var(--chrome-100); color: var(--bg); }
+  .chip--soldout::before { background: currentColor; }
+  .chip--cancelled { border-style: dashed; color: var(--fg); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--chrome-600) 5px 6px); }
+  .chip--cancelled::before { background: linear-gradient(45deg, transparent 44%, currentColor 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, currentColor 44% 56%, transparent 56%); }
+  .show--cancelled { border-style: dashed; }
+  .show--cancelled::before { background: none; }
+  .show--cancelled .show__title, .show--cancelled .when__day, .show--cancelled .show__place { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 0.07em; }
+  .show--cancelled .when__wd { color: var(--muted); }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .show { transition: border-color var(--dur-base) var(--ease); }
+    .show:hover { border-color: var(--chrome-400); }
+  }
+
+  @media (max-width: 52rem) {
+    .show { --when-w: 6.75rem; grid-template-columns: var(--when-w) minmax(0, 1fr); grid-template-rows: auto auto auto; }
+    .show--featured { --when-w: 8rem; }
+    .show--featured .show__art { grid-area: 1 / 1 / 4 / -1; }
+    .when { padding: var(--space-s); align-content: start; }
+    .when__day { font-size: clamp(2.75rem, 13vw, 3.5rem); }
+    .show--featured .when__day { font-size: clamp(3.25rem, 16vw, 4.5rem); }
+    .show__art { min-height: 0; }
+    .show__body { padding: var(--space-s); align-content: start; }
+    .show__title, .show--featured .show__title { font-size: var(--step-1); }
+    .show__actions { grid-column: 1 / -1; grid-row: 2; padding: var(--space-s); border-left: 0; border-top: var(--divider); background: color-mix(in srgb, var(--bg) 55%, transparent); }
+    .show__actions .btn { min-height: var(--tap-lg); width: 100%; }
+    .show__tools { grid-row: 3; padding: var(--space-s); }
+    .show__tool-row .btn { flex: 1 1 100%; }
+    .cd__grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--space-xs); }
+    .cd__num { font-size: var(--agenda-cd-size-sm); }
+  }
+</style>

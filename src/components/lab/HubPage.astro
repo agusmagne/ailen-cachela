@@ -1,0 +1,49 @@
+---
+/** /lab/ y /en/lab/: hub con una tarjeta por herramienta. Las herramientas salen de src/content/lab.yaml. */
+import LabPage from './LabPage.astro';
+import Card from '../ui/Card.astro';
+import Chip from '../ui/Chip.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/lab';
+import { t, pick, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const lab = domain('lab', schema);
+---
+
+<LabPage lang={lang} route="lab" title={t('lab_title', lang)} description={t('lab_desc', lang)} lead={t('lab_lead', lang)}>
+  <section class="page-block">
+    <SectionHead lang={lang} title={t('lab_hub_tools', lang)} />
+    {
+      lab.items.length === 0 ? (
+        <EmptyState lang={lang} title={t('lab_title', lang)} text={t('lab_desc', lang)} />
+      ) : (
+        <div class="lab-tools">
+          {lab.items.map((it) => (
+            <Card lang={lang} title={pick(it.title, lang)} href={router.path(it.route, lang)} kicker={t('lab_hub_open', lang)} demo={it.demo}>
+              <p>{pick(it.text, lang)}</p>
+              {it.tags.length > 0 && (
+                <ul class="lab-tags" aria-label={t('lab_tags_label', lang)}>
+                  {it.tags.map((tag) => <li><Chip>{pick(tag, lang)}</Chip></li>)}
+                </ul>
+              )}
+            </Card>
+          ))}
+        </div>
+      )
+    }
+  </section>
+
+  <section class="page-block">
+    <SectionHead lang={lang} title={t('lab_hub_how', lang)} />
+    <div class="lab-how">
+      <div><h3>{t('lab_hub_how_1_title', lang)}</h3><p>{t('lab_hub_how_1_text', lang)}</p></div>
+      <div><h3>{t('lab_hub_how_2_title', lang)}</h3><p>{t('lab_hub_how_2_text', lang)}</p></div>
+      <div><h3>{t('lab_hub_how_3_title', lang)}</h3><p>{t('lab_hub_how_3_text', lang)}</p></div>
+    </div>
+  </section>
+</LabPage>

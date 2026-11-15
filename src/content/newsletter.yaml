@@ -1,0 +1,78 @@
+# Newsletter. Los temas del alta son reales (opciones del formulario); los números, las ventajas y el envío de muestra son
+# de EJEMPLO (demo: true). No hay ningún servicio de envío conectado.
+topics:
+  - { id: fechas, label: { es: "Fechas y shows", en: "Dates and shows" } }
+  - { id: lanzamientos, label: { es: "Lanzamientos", en: "Releases" } }
+  - { id: mixes, label: { es: "Mixes y sets", en: "Mixes and sets" } }
+  - { id: proyectos, label: { es: "Proyectos (SENKA, fragmento.techno, ROOM)", en: "Projects (SENKA, fragmento.techno, ROOM)" } }
+
+perks:
+  - id: primero
+    demo: true
+    title: { es: "Primero en enterarte", en: "First to know" }
+    text:
+      es: "Las fechas y los lanzamientos llegan al mail antes de que se difundan en redes."
+      en: "Dates and releases reach your inbox before they are shared on social media."
+  - id: incentivo
+    demo: true
+    title: { es: "Un regalo de bienvenida", en: "A welcome gift" }
+    text:
+      es: "Ejemplo de incentivo de alta: un track inédito o un mix exclusivo. Hoy no existe ninguno."
+      en: "Example sign-up incentive: an unreleased track or an exclusive mix. None exists today."
+  - id: ritmo
+    demo: true
+    title: { es: "Sin ruido", en: "No noise" }
+    text:
+      es: "Frecuencia de ejemplo: un mail por mes, a lo sumo, siempre a la misma hora y con baja en un clic."
+      en: "Example frequency: at most one email a month, always at the same time, with one-click unsubscribe."
+
+samples:
+  - id: muestra-01
+    demo: true
+    subject: { es: "Nuevo mix + fechas de noviembre", en: "New mix + November dates" }
+    lines:
+      es:
+        - "Hola,"
+        - "Esta semana: el mix nuevo, grabado en una sala de ejemplo. Escuchar: [enlace]"
+        - "Próximas fechas:"
+        - "· 22 de noviembre · Club Ejemplo, Ciudad · entradas [enlace]"
+        - "Nuevo lanzamiento: [título] en [sello] (pre-save: [enlace])"
+        - "Respondé a este mail y te leo."
+        - "[firma]"
+      en:
+        - "Hi,"
+        - "This week: the new mix, recorded in an example room. Listen: [link]"
+        - "Upcoming dates:"
+        - "· 22 November · Example Club, City · tickets [link]"
+        - "New release: [title] on [label] (pre-save: [link])"
+        - "Reply to this email and I'll read it."
+        - "[signature]"
+
+items:
+  - id: numero-003
+    demo: true
+    number: 3
+    date: "2026-09-12"
+    subject: { es: "Número de ejemplo: el mes de los ensayos", en: "Sample issue: the month of rehearsals" }
+    preview: { es: "Un resumen inventado de lo que podría contar un envío.", en: "An invented summary of what an issue could cover." }
+    bullets:
+      es: ["Un mix de ejemplo grabado en casa", "Dos fechas de ejemplo en la agenda", "Una nota sobre el estudio (inventada)"]
+      en: ["An example mix recorded at home", "Two example dates on the schedule", "A note about the studio (invented)"]
+  - id: numero-002
+    demo: true
+    number: 2
+    date: "2026-08-08"
+    subject: { es: "Número de ejemplo: archivo y cambios", en: "Sample issue: archive and changes" }
+    preview: { es: "Otro resumen inventado, para mostrar el archivo.", en: "Another invented summary, to show the archive." }
+    bullets:
+      es: ["Una novedad de sello de ejemplo", "Un enlace a un mix de ejemplo"]
+      en: ["An example label update", "A link to an example mix"]
+  - id: numero-001
+    demo: true
+    number: 1
+    date: "2026-07-04"
+    subject: { es: "Número de ejemplo: bienvenida", en: "Sample issue: welcome" }
+    preview: { es: "El primer envío de una lista imaginaria.", en: "The first send of an imaginary list." }
+    bullets:
+      es: ["Qué esperar de esta lista (de ejemplo)", "Cómo darse de baja"]
+      en: ["What to expect from this list (example)", "How to unsubscribe"]

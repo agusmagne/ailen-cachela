@@ -1,0 +1,67 @@
+---
+import DemoBadge from '../ui/DemoBadge.astro';
+import type { Lang } from '../../lib/content';
+import type { TimelineEntry } from '../../lib/press/model';
+/**
+ * Línea de tiempo vertical (lista ordenada). Cada hito: año en contorno gigante, punto sobre el riel, título y lugar.
+ * El hito real lleva el año relleno; los de ejemplo, en contorno y con su marca.
+ */
+interface Props {
+  lang: Lang;
+  entries: TimelineEntry[];
+}
+const { lang, entries } = Astro.props;
+---
+<ol class="tl">
+  {
+    entries.map((e) => (
+      <li class:list={['tl__item', { 'is-real': !e.demo, 'has-demo-badge': e.demo }]} data-reveal>
+        <span class="tl__year display">{e.year}</span>
+        <span class="tl__dot" aria-hidden="true"></span>
+        <div class="tl__body">
+          {e.demo && <DemoBadge lang={lang} />}
+          <h3 class="tl__title">{e.title}</h3>
+          <p class="label tl__place">{e.place}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+<style>
+  .tl { --tl-year: 11rem; position: relative; display: grid; gap: 0; }
+  .tl__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--tl-year) 1.25rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--space-s);
+    padding-block: var(--space-m);
+  }
+  .tl__item + .tl__item { border-top: var(--divider); }
+  .tl__year {
+    font-size: clamp(1.9rem, 1.2rem + 2.2vw, 2.9rem);
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: var(--stroke) var(--press-year-stroke);
+    font-variant-numeric: tabular-nums;
+  }
+  .is-real .tl__year { color: var(--chrome-50); -webkit-text-stroke: 0; }
+  .tl__dot { position: relative; justify-self: center; width: 0.7rem; height: 0.7rem; margin-top: 0.6rem; border: var(--stroke) solid var(--chrome-300); border-radius: var(--radius-round); background: var(--bg); z-index: 1; }
+  .is-real .tl__dot { background: var(--accent); border-color: var(--accent); }
+  .tl__item::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(var(--tl-year) + var(--space-s) + 0.625rem - 0.5px); width: var(--stroke); background: var(--press-rail); z-index: 0; }
+  .tl__item:first-child::after { top: 2.2rem; }
+  .tl__item:last-child::after { bottom: calc(100% - 2.2rem); }
+  .tl__body { position: relative; display: grid; gap: var(--space-3xs); padding-right: 3.5rem; }
+  .tl__title { font-weight: 600; font-size: var(--step-1); line-height: 1.2; color: var(--chrome-50); max-width: 40ch; }
+  .tl__place { color: var(--muted); }
+  @media (max-width: 52rem) {
+    .tl__item { grid-template-columns: 1.25rem minmax(0, 1fr); row-gap: var(--space-2xs); }
+    .tl__year { grid-column: 2; font-size: clamp(1.9rem, 9vw, 2.6rem); }
+    .tl__dot { grid-column: 1; grid-row: 1; margin-top: 0.35rem; }
+    .tl__body { grid-column: 2; padding-right: 0; }
+    .tl__item::after { left: 0.625rem; }
+    .tl__item:first-child::after { top: 1.6rem; }
+    .tl__item:last-child::after { bottom: calc(100% - 1.6rem); }
+    .tl__body :global(.demo-badge--item) { position: static; justify-self: start; order: -1; }
+  }
+</style>

@@ -1,0 +1,11 @@
+---
+import YearPage from '../../../components/agenda/YearPage.astro';
+import { archiveYears } from '../../../components/agenda/data';
+
+export async function getStaticPaths() {
+  return (await archiveYears()).map((y) => ({ params: { year: String(y) } }));
+}
+const { year } = Astro.params;
+---
+
+<YearPage lang="es" year={Number(year)} />

@@ -1,0 +1,86 @@
+---
+import LazyModule from '../ui/LazyModule.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import { t, pick, type Lang } from '../../lib/content';
+import type { Shop } from '../../lib/schemas/shop.ts';
+
+/**
+ * Drop con cuenta regresiva. El marcado base (título, nota y fecha escrita) se ve sin JS; el reloj lo agrega
+ * fans-countdown. El reloj es role="timer": no se anuncia en cada segundo. La fecha de la maqueta es de ejemplo.
+ */
+interface Props {
+  lang: Lang;
+  drop: Shop['drops'][number];
+  pieces: { id: string; name: string }[];
+}
+const { lang, drop, pieces } = Astro.props;
+const opens = new Date(drop.opens);
+const when = new Intl.DateTimeFormat(lang === 'es' ? 'es-AR' : 'en-GB', {
+  timeZone: 'America/Argentina/Buenos_Aires',
+  dateStyle: 'long',
+  timeStyle: 'short',
+}).format(opens);
+const tz = lang === 'es' ? 'hora de Buenos Aires' : 'Buenos Aires time';
+const units = ['days', 'hours', 'minutes', 'seconds'] as const;
+---
+
+<LazyModule name="fans-countdown" when="idle" class:list={['fans-drop', { 'has-demo-badge is-demo': drop.demo }]} props={{ target: drop.opens }}>
+  {drop.demo && <DemoBadge lang={lang} />}
+  <div class="drop__edge" aria-hidden="true"></div>
+  <p class="label drop__kicker">{t('fans_drop_kicker', lang)}</p>
+  <h3 class="drop__title display">{pick(drop.title, lang)}</h3>
+  <p class="drop__note">{pick(drop.note, lang)}</p>
+
+  <div class="drop__clock" role="timer" aria-label={t('fans_drop_aria', lang)} data-clock hidden>
+    {
+      units.map((u, i) => (
+        <>
+          {i > 0 && <span class="drop__sep" aria-hidden="true">:</span>}
+          <span class="drop__cell">
+            <span class="drop__num" data-unit={u}>--</span>
+            <span class="label drop__unit">{t(`fans_drop_${u}`, lang)}</span>
+          </span>
+        </>
+      ))
+    }
+  </div>
+  <div class="drop__open" data-open hidden>
+    <p class="drop__open-title display">{t('fans_drop_open_now', lang)}</p>
+    <p class="drop__note">{t('fans_drop_open_text', lang)}</p>
+  </div>
+
+  <p class="label drop__when"><time datetime={drop.opens}>{t('fans_drop_opens', lang, { date: `${when} · ${tz}` })}</time></p>
+
+  {
+    pieces.length > 0 && (
+      <div class="drop__pieces">
+        <p class="label">{t('fans_drop_pieces', lang)}</p>
+        <ul class="drop__list">
+          {pieces.map((pc) => <li><a class="link" href={`#p-${pc.id}`}>{pc.name}</a></li>)}
+        </ul>
+      </div>
+    )
+  }
+</LazyModule>
+
+<style>
+  :global(.fans-drop) { position: relative; isolation: isolate; display: grid; gap: var(--space-s); justify-items: start; padding: var(--space-l) var(--card-pad); border: var(--card-border); background: var(--card-bg); overflow: hidden; }
+  :global(.fans-drop)::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--halftone); background-size: var(--halftone-size) var(--halftone-size); opacity: 0.12; -webkit-mask-image: radial-gradient(80% 80% at 100% 0%, #000, transparent 70%); mask-image: radial-gradient(80% 80% at 100% 0%, #000, transparent 70%); }
+  .drop__edge { position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--iris); }
+  .drop__kicker { color: var(--accent); }
+  .drop__title { font-size: var(--step-3); line-height: var(--lh-title); }
+  .drop__note { max-width: var(--measure); color: var(--chrome-200); }
+  .drop__clock { display: flex; align-items: flex-start; gap: var(--fans-digit-gap); margin-block: var(--space-xs); font-family: var(--font-ui); font-variant-numeric: tabular-nums; }
+  .drop__clock[hidden] { display: none; }
+  .drop__cell { display: grid; gap: var(--space-3xs); justify-items: center; min-width: 0; }
+  .drop__num { font-size: var(--fans-digit-size); font-weight: 500; line-height: 1; letter-spacing: -0.04em; color: var(--chrome-50); }
+  .drop__sep { font-size: var(--fans-digit-size); line-height: 1; color: var(--chrome-500); }
+  .drop__unit { color: var(--muted); }
+  .drop__open-title { font-size: var(--step-2); color: var(--accent); }
+  .drop__open[hidden] { display: none; }
+  .drop__when { color: var(--chrome-200); }
+  .drop__pieces { display: grid; gap: var(--space-2xs); padding-top: var(--space-s); border-top: var(--divider); width: 100%; }
+  .drop__list { display: flex; flex-wrap: wrap; gap: 0 var(--space-m); }
+  .drop__list .link { display: inline-flex; align-items: center; min-height: var(--tap); }
+  @media (max-width: 30rem) { .drop__sep { display: none; } .drop__clock { width: 100%; justify-content: space-between; } }
+</style>

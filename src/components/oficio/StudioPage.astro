@@ -1,0 +1,159 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DataList from '../ui/DataList.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Button from '../ui/Button.astro';
+import Media from '../Media.astro';
+import Steps from './Steps.astro';
+import NoteList from './NoteList.astro';
+import { t, pick, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema, GEAR_CATEGORIES } from '../../lib/schemas/studio';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const studio = domain('studio', schema);
+const empty = studio.gear.length === 0 && studio.notes.length === 0;
+const anyDemo = [...studio.gear, ...studio.tour, ...studio.workflow, ...studio.notes].some((i) => i.demo);
+const groups = GEAR_CATEGORIES.map((category) => ({ category, list: studio.gear.filter((g) => g.category === category) })).filter((g) => g.list.length > 0);
+const ratio = { wide: 'var(--oficio-ratio-wide)', narrow: 'var(--oficio-ratio-narrow)', full: 'var(--oficio-ratio-full)' } as const;
+const next = (['services', 'lessons', 'booking'] as const).filter((id) => router.listed(id));
+---
+
+<PageLayout lang={lang} route="studio" title={t('oficio_studio_title', lang)} description={t('oficio_studio_desc', lang)} demo={anyDemo} empty={empty}>
+  <p slot="lead">{t('oficio_studio_lead', lang)}</p>
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    studio.tour.length > 0 && (
+      <section class="page-block" aria-labelledby="estudio-tour">
+        <SectionHead lang={lang} id="estudio-tour" kicker={t('oficio_kicker_tour', lang)} title={t('oficio_tour_title', lang)} lead={t('oficio_tour_lead', lang)} demo />
+        <ul class="tour">
+          {studio.tour.map((p, i) => (
+            <li class={`tour__item tour__item--${p.layout}`} data-reveal style={`--reveal-delay:${i * 80}ms`}>
+              <figure class="tour__fig has-demo-badge" style={`--tour-ratio:${ratio[p.layout]}`}>
+                <DemoBadge lang={lang} />
+                <Media seed={p.seed} kicker={`${String(i + 1).padStart(2, '0')} / ${String(studio.tour.length).padStart(2, '0')}`} label={pick(p.title, lang)} />
+                <figcaption class="tour__cap">
+                  <strong class="tour__title">{pick(p.title, lang)}</strong>
+                  <span>{pick(p.caption, lang)}</span>
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+        <p class="label tour__note">{t('oficio_tour_note', lang)}</p>
+      </section>
+    )
+  }
+
+  {
+    groups.length > 0 && (
+      <section class="page-block" aria-labelledby="estudio-gear">
+        <SectionHead lang={lang} id="estudio-gear" kicker={t('oficio_kicker_gear', lang)} title={t('oficio_gear_title', lang)} lead={t('oficio_gear_lead', lang)} demo />
+        <div class="gear-groups">
+          {groups.map((g, gi) => (
+            <section class="gear-group" aria-labelledby={`gear-${g.category}`}>
+              <h3 class="gear-group__title display" id={`gear-${g.category}`}>
+                <span class="label gear-group__n" aria-hidden="true">{String(gi + 1).padStart(2, '0')}</span>
+                {t(`oficio_cat_${g.category}`, lang)}
+                <span class="label gear-group__count">{g.list.length}</span>
+              </h3>
+              <ul class="gear-grid">
+                {g.list.map((it, i) => (
+                  <li class:list={['gear', { 'has-demo-badge': it.demo }]} data-reveal style={`--reveal-delay:${i * 60}ms`}>
+                    {it.demo && <DemoBadge lang={lang} />}
+                    <p class="label gear__code" aria-hidden="true">{g.category.slice(0, 3).toUpperCase()}-{String(i + 1).padStart(2, '0')}</p>
+                    <h4 class="gear__name display">{pick(it.name, lang)}</h4>
+                    <p class="gear__role">{pick(it.role, lang)}</p>
+                    {it.specs.length > 0 && <DataList layout="rows" items={it.specs.map((s) => ({ label: pick(s.label, lang), value: pick(s.value, lang) }))} />}
+                    <p class="label gear__model">{t('oficio_gear_model', lang)}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    studio.workflow.length > 0 && (
+      <section class="page-block" aria-labelledby="estudio-flow">
+        <SectionHead lang={lang} id="estudio-flow" kicker={t('oficio_kicker_flow', lang)} title={t('oficio_flow_title', lang)} lead={t('oficio_flow_lead', lang)} demo />
+        <Steps cols={6} outputLabel={t('oficio_output', lang)} steps={studio.workflow.map((s) => ({ title: pick(s.title, lang), text: pick(s.text, lang), output: pick(s.output, lang) }))} />
+      </section>
+    )
+  }
+
+  {
+    studio.notes.length > 0 && (
+      <section class="page-block" aria-labelledby="estudio-notes">
+        <SectionHead lang={lang} id="estudio-notes" kicker={t('oficio_kicker_notes', lang)} title={t('oficio_notes_title', lang)} lead={t('oficio_notes_lead', lang)} demo />
+        <NoteList
+          lang={lang}
+          readLabel={t('oficio_read_note', lang)}
+          notes={studio.notes.map((n) => ({ id: n.id, date: n.date, demo: n.demo, title: pick(n.title, lang), summary: pick(n.summary, lang), tags: n.tags.map((x) => pick(x, lang)), body: n.body.map((b) => pick(b, lang)) }))}
+        />
+      </section>
+    )
+  }
+
+  {
+    next.length > 0 && !empty && (
+      <section class="page-block next" aria-labelledby="estudio-next">
+        <h2 class="next__title display" id="estudio-next">{t('oficio_studio_next', lang)}</h2>
+        <p class="next__text">{t('oficio_studio_next_text', lang)}</p>
+        <div class="next__actions">
+          {next.map((id, i) => <Button href={router.path(id, lang)} variant={i === 0 ? 'primary' : 'default'} arrow>{t(`base_route_${id}`, lang)}</Button>)}
+        </div>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .tour { display: grid; gap: var(--oficio-gap); grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .tour__item { position: relative; grid-column: 1 / -1; }
+  @media (min-width: 52.01rem) {
+    .tour__item--wide { grid-column: span var(--oficio-tour-wide); }
+    .tour__item--narrow { grid-column: span var(--oficio-tour-narrow); }
+  }
+  .tour__fig { position: relative; display: grid; gap: var(--space-xs); height: 100%; align-content: start; }
+  .tour__fig :global(.media) { aspect-ratio: var(--tour-ratio); width: 100%; border: var(--card-border); }
+  .tour__cap { display: grid; gap: var(--space-3xs); max-width: 54ch; color: var(--muted); }
+  .tour__title { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); color: var(--chrome-50); }
+  .tour__note { margin-top: var(--space-s); color: var(--subtle); }
+
+  .gear-groups { display: grid; gap: var(--space-xl); }
+  .gear-group__title { display: flex; align-items: baseline; gap: var(--space-s); margin-bottom: var(--space-m); padding-bottom: var(--space-xs); border-bottom: var(--divider); font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); }
+  .gear-group__n { color: var(--accent); }
+  .gear-group__count { margin-left: auto; padding: 0.05rem 0.5rem; border: var(--stroke) solid var(--chrome-600); }
+  .gear-grid { display: grid; gap: var(--oficio-gap); grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--oficio-cell-min)), 1fr)); }
+  .gear {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--card-pad);
+    padding-top: var(--space-l);
+    border: var(--card-border);
+    background: var(--card-bg);
+  }
+  .gear__code { color: var(--accent); }
+  .gear__name { font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .gear__role { color: var(--muted); flex: 1; }
+  .gear :global(.facts--rows > div) { grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr); padding-block: var(--space-2xs); }
+  .gear__model { margin-top: var(--space-2xs); color: var(--subtle); }
+
+  .next { display: grid; gap: var(--space-s); justify-items: start; padding: var(--space-l) var(--card-pad); border: var(--card-border); background: var(--card-bg); }
+  .next__title { font-size: var(--step-3); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .next__text { max-width: var(--measure); color: var(--muted); }
+  .next__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+</style>

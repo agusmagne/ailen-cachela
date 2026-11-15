@@ -1,0 +1,24 @@
+/* Tokens del paquete oficio (estudio, servicios, clases, videos, proyectos). Solo valores nuevos; todo lo demás sale de tokens.css. */
+:root {
+  --oficio-gap: var(--space-m);
+  --oficio-cell-min: 17rem;
+  --oficio-line: var(--stroke) solid var(--chrome-600);
+  --oficio-step-dot: 0.7rem;
+  --oficio-tour-wide: 7;
+  --oficio-tour-narrow: 5;
+  --oficio-ratio-wide: 7 / 4;
+  --oficio-ratio-narrow: 5 / 4;
+  --oficio-ratio-full: 21 / 8;
+  --oficio-ratio-video: 16 / 9;
+  --oficio-ratio-flyer: 4 / 5;
+  --oficio-ratio-portrait: 4 / 5;
+  --oficio-spec-bg: color-mix(in srgb, var(--chrome-800) 55%, transparent);
+}
+@media (max-width: 52rem) {
+  :root {
+    --oficio-ratio-wide: 4 / 3;
+    --oficio-ratio-narrow: 4 / 3;
+    --oficio-ratio-full: 16 / 9;
+    --oficio-gap: var(--space-s);
+  }
+}

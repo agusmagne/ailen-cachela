@@ -1,0 +1,158 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SiteExtras from './SiteExtras.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import ComingSoon from '../ui/ComingSoon.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import Card from '../ui/Card.astro';
+import Choice from './Choice.astro';
+import { site, t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/newsletter.ts';
+import { buildMailto } from '../../lib/mailto';
+import { newsletterDraft } from '../../lib/fans/mail.ts';
+
+/** Cuerpo de /newsletter/ y /en/newsletter/. Alta por mail armado: sin servicio conectado, nada se guarda ni se envía solo. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const nl = domain('newsletter', schema);
+const hasDemo = nl.items.length + nl.perks.length + nl.samples.length > 0;
+const langNames = { es: t('fans_nl_lang_es', lang), en: t('fans_nl_lang_en', lang), both: t('fans_nl_lang_both', lang) };
+const strings = {
+  to: site.contact.email,
+  subject: t('fans_mail_nl_subject', lang),
+  hello: t('fans_mail_nl_hello', lang),
+  nameLabel: t('fans_mail_nl_name', lang),
+  langLabel: t('fans_mail_nl_lang', lang),
+  topicsLabel: t('fans_mail_nl_topics', lang),
+  anyTopic: t('fans_nl_any_topic', lang),
+  signoff: t('fans_mail_nl_signoff', lang),
+};
+const initialHref = buildMailto(newsletterDraft(strings, { lang: langNames[lang], topics: [] }));
+const privacyHref = router.exists('privacy') ? router.path('privacy', lang) : '';
+const sample = nl.samples[0];
+---
+
+<PageLayout lang={lang} route="newsletter" title={t('fans_nl_title', lang)} description={t('fans_nl_desc', lang)} demo={hasDemo}>
+  <p slot="lead">{t('fans_nl_lead', lang)}</p>
+
+  <section class="page-block" aria-labelledby="nl-soon">
+    <h2 class="sr-only" id="nl-soon">{t('fans_nl_soon_title', lang)}</h2>
+    <ComingSoon lang={lang} title={t('fans_nl_soon_title', lang)} text={t('fans_nl_soon_text', lang)} />
+  </section>
+
+  <section class="page-block" aria-labelledby="alta">
+    <SectionHead lang={lang} id="alta" title={t('fans_nl_form_title', lang)} lead={t('fans_nl_form_lead', lang)} />
+    <LazyModule name="fans-mailform" when="idle" class="fans-nlform" props={{ strings, langNames, anyTopic: strings.anyTopic, kind: 'newsletter' }}>
+      <form class="nl" data-mailform onsubmit="return false">
+        <div class="field">
+          <label for="nl-name">{t('fans_nl_name', lang)}</label>
+          <input class="input" id="nl-name" name="name" type="text" autocomplete="name" data-field="name" />
+        </div>
+        <fieldset class="field nl__group">
+          <legend>{t('fans_nl_lang', lang)}</legend>
+          <div class="nl__choices">
+            {(['es', 'en', 'both'] as const).map((v) => <Choice type="radio" name="lang" value={v} label={langNames[v]} checked={v === lang} data-field="lang" />)}
+          </div>
+        </fieldset>
+        {
+          nl.topics.length > 0 && (
+            <fieldset class="field nl__group">
+              <legend>{t('fans_nl_topics', lang)}</legend>
+              <div class="nl__choices nl__choices--col">
+                {nl.topics.map((tp) => <Choice type="checkbox" name="topic" value={tp.id} label={pick(tp.label, lang)} data-field="topic" />)}
+              </div>
+            </fieldset>
+          )
+        }
+        <div class="nl__actions">
+          <a class="btn btn--primary btn--xl" href={initialHref} data-mail-link>{t('fans_nl_send', lang)}</a>
+          <button type="button" class="btn btn--xl" data-copy="" data-done={t('base_copied', lang)} hidden><span data-copy-label>{t('fans_nl_copy', lang)}</span></button>
+        </div>
+        <p class="nl__note">
+          {t('fans_nl_note', lang)}
+          {privacyHref && <> <a class="link" href={privacyHref}>{t('fans_nl_privacy_link', lang)}</a>.</>}
+        </p>
+      </form>
+    </LazyModule>
+  </section>
+
+  {
+    nl.perks.length > 0 && (
+      <section class="page-block" aria-labelledby="perks">
+        <SectionHead lang={lang} id="perks" title={t('fans_nl_perks_title', lang)} lead={t('fans_nl_perks_lead', lang)} demo />
+        <ul class="grid-cards">
+          {nl.perks.map((p) => <Card as="li" lang={lang} title={pick(p.title, lang)} demo={p.demo} level="h3"><p>{pick(p.text, lang)}</p></Card>)}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    sample && (
+      <section class="page-block" aria-labelledby="muestra">
+        <SectionHead lang={lang} id="muestra" title={t('fans_nl_sample_title', lang)} lead={t('fans_nl_sample_lead', lang)} demo />
+        <figure class="mail has-demo-badge is-demo">
+          <DemoBadge lang={lang} />
+          <figcaption class="mail__head">
+            <span class="label">{site.artist.name} · {site.contact.email}</span>
+            <span class="mail__subject"><span class="label">{t('fans_nl_sample_subject', lang)}</span> {pick(sample.subject, lang)}</span>
+          </figcaption>
+          <div class="mail__body">
+            {sample.lines[lang].map((line) => <p>{line}</p>)}
+          </div>
+        </figure>
+      </section>
+    )
+  }
+
+  <section class="page-block" aria-labelledby="archivo">
+    <SectionHead lang={lang} id="archivo" title={t('fans_nl_archive_title', lang)} lead={t('fans_nl_archive_lead', lang)} demo={nl.items.length > 0} />
+    {
+      nl.items.length === 0 ? (
+        <EmptyState lang={lang} title={t('fans_nl_archive_empty_title', lang)} text={t('fans_nl_archive_empty_text', lang)} />
+      ) : (
+        <ol class="archive">
+          {
+            nl.items.map((i) => (
+              <li class="archive__item has-demo-badge is-demo">
+                <DemoBadge lang={lang} />
+                <p class="label archive__meta">{t('fans_nl_issue', lang, { n: String(i.number).padStart(3, '0') })} · <time datetime={i.date}>{formatDate(i.date, lang, { dateStyle: 'long' })}</time></p>
+                <h3 class="archive__title display">{pick(i.subject, lang)}</h3>
+                <p class="archive__preview">{pick(i.preview, lang)}</p>
+                <ul class="archive__list">{i.bullets[lang].map((b) => <li>{b}</li>)}</ul>
+              </li>
+            ))
+          }
+        </ol>
+      )
+    }
+  </section>
+  <SiteExtras lang={lang} />
+</PageLayout>
+
+<style>
+  :global(.fans-nlform) { max-width: 40rem; }
+  .nl { display: grid; gap: var(--space-m); }
+  .nl__group { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .nl__group > :global(legend) { padding: 0; margin-bottom: var(--space-3xs); float: left; width: 100%; }
+  .nl__choices { clear: both; display: flex; flex-wrap: wrap; column-gap: var(--space-s); }
+  .nl__choices--col { flex-direction: column; }
+  .nl__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .nl__actions [hidden] { display: none; }
+  .nl__note { max-width: var(--measure); font-size: var(--step--1); color: var(--muted); }
+  .nl__note .link { color: var(--chrome-100); }
+  .mail { position: relative; max-width: 40rem; border: var(--stroke) solid var(--chrome-600); background: var(--bg-raised); }
+  .mail__head { display: grid; gap: var(--space-3xs); padding: var(--space-s) var(--space-m); padding-right: 7rem; border-bottom: var(--divider); background: var(--chrome-800); }
+  .mail__subject { font-weight: 600; color: var(--chrome-50); }
+  .mail__subject .label { margin-right: 0.5em; }
+  .mail__body { display: grid; gap: var(--space-xs); padding: var(--space-m); color: var(--chrome-200); }
+  .archive { display: grid; gap: var(--space-m); max-width: 52rem; }
+  .archive__item { position: relative; display: grid; gap: var(--space-2xs); padding: var(--space-m); padding-top: var(--space-l); border: var(--card-border); }
+  .archive__title { font-size: var(--step-1); color: var(--chrome-50); }
+  .archive__preview { color: var(--chrome-200); }
+  .archive__list { list-style: disc; padding-left: 1.25em; color: var(--muted); }
+</style>

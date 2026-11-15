@@ -1,0 +1,158 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SiteExtras from './SiteExtras.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import ComingSoon from '../ui/ComingSoon.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Accordion from '../ui/Accordion.astro';
+import Button from '../ui/Button.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import ProductCard from './ProductCard.astro';
+import DropBlock from './DropBlock.astro';
+import { site, t, pick, type Lang } from '../../lib/content';
+import { domain } from '../../lib/data';
+import { schema, PRODUCT_KINDS } from '../../lib/schemas/shop.ts';
+import { buildMailto } from '../../lib/mailto';
+
+/** Cuerpo de /tienda/ y /en/shop/ (las dos páginas son de 6 líneas y lo invocan). Maqueta: sin carrito ni pagos. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const shop = domain('shop', schema);
+const empty = shop.items.length === 0;
+const kinds = PRODUCT_KINDS.filter((k) => shop.items.some((p) => p.kind === k));
+const drop = shop.drops[0];
+const dropPieces = drop ? shop.items.filter((p) => p.drop === drop.id).map((p) => ({ id: p.id, name: pick(p.name, lang) })) : [];
+const emptyMail = buildMailto({ to: site.contact.email, subject: t('fans_mail_shop_subject', lang), body: t('fans_mail_shop_hello', lang) });
+const moduleProps = {
+  to: site.contact.email,
+  subject: t('fans_mail_shop_subject', lang),
+  hello: t('fans_mail_shop_hello', lang),
+  intro: t('fans_mail_shop_intro', lang),
+  nameLabel: t('fans_mail_shop_name', lang),
+  signoff: t('fans_mail_shop_signoff', lang),
+  count: t('fans_tray_count', lang, { n: '{n}' }),
+  shown: t('fans_filter_count', lang, { n: '{n}', total: '{total}' }),
+};
+const steps = [1, 2, 3].map((n) => ({ n, title: t(`fans_step_${n}_title`, lang), text: t(`fans_step_${n}_text`, lang) }));
+---
+
+<PageLayout lang={lang} route="shop" title={t('fans_shop_title', lang)} description={t('fans_shop_desc', lang)} demo={!empty} empty={empty}>
+  <p slot="lead">{t(empty ? 'fans_shop_empty_lead' : 'fans_shop_lead', lang)}</p>
+
+  {
+    empty ? (
+      <EmptyState lang={lang} title={t('fans_shop_empty_title', lang)} text={t('fans_shop_empty_text', lang)}>
+        <Button href={emptyMail} variant="primary">{t('fans_shop_empty_cta', lang)}</Button>
+      </EmptyState>
+    ) : (
+      <>
+        <section class="page-block" aria-labelledby="shop-soon">
+          <h2 class="sr-only" id="shop-soon">{t('fans_shop_soon_title', lang)}</h2>
+          <ComingSoon lang={lang} title={t('fans_shop_soon_title', lang)} text={t('fans_shop_soon_text', lang)} demo />
+        </section>
+
+        {
+          drop && (
+            <section class="page-block" aria-labelledby="drop">
+              <SectionHead lang={lang} id="drop" kicker={t('fans_drop_section', lang)} title={pick(drop.title, lang)} lead={t('fans_drop_lead', lang)} />
+              <DropBlock lang={lang} drop={drop} pieces={dropPieces} />
+            </section>
+          )
+        }
+
+        <section class="page-block" aria-labelledby="catalogo">
+          <SectionHead lang={lang} id="catalogo" title={t('fans_catalog_title', lang)} lead={t('fans_catalog_lead', lang)} />
+          <LazyModule name="fans-shop" when="idle" class="fans-shop" props={moduleProps}>
+            {
+              kinds.length > 1 && (
+                <div class="shop__filters" role="group" aria-label={t('fans_filter_label', lang)} data-filters hidden>
+                  <button type="button" class="fchip is-on" data-filter="all" aria-pressed="true">{t('fans_filter_all', lang)}</button>
+                  {kinds.map((k) => <button type="button" class="fchip" data-filter={k} aria-pressed="false">{t(`fans_kind_${k}`, lang)}</button>)}
+                </div>
+              )
+            }
+            <p class="label shop__status" data-filter-status aria-live="polite" hidden></p>
+            <ul class="grid-cards shop__grid" data-grid>
+              {shop.items.map((p) => <ProductCard lang={lang} product={p} />)}
+            </ul>
+
+            <div class="tray" data-tray hidden>
+              <div class="tray__info">
+                <p class="label tray__count" data-tray-count>{t('fans_tray_label', lang)}</p>
+                <label class="tray__name">
+                  <span class="sr-only">{t('fans_tray_name', lang)}</span>
+                  <input class="input" type="text" autocomplete="name" placeholder={t('fans_tray_name', lang)} data-tray-name />
+                </label>
+              </div>
+              <div class="tray__actions">
+                <a class="btn btn--primary" href={emptyMail} data-tray-mail>{t('fans_tray_send', lang)}</a>
+                <button type="button" class="btn" data-copy="" data-done={t('base_copied', lang)}><span data-copy-label>{t('fans_tray_copy', lang)}</span></button>
+                <button type="button" class="btn" data-tray-clear>{t('fans_tray_clear', lang)}</button>
+              </div>
+              <p class="tray__note">{t('fans_tray_note', lang)}</p>
+            </div>
+          </LazyModule>
+        </section>
+
+        <section class="page-block" aria-labelledby="pedido">
+          <SectionHead lang={lang} id="pedido" title={t('fans_order_title', lang)} lead={t('fans_order_lead', lang)} />
+          <ol class="steps">
+            {
+              steps.map((s) => (
+                <li class="steps__item">
+                  <span class="steps__n display" aria-hidden="true">{String(s.n).padStart(2, '0')}</span>
+                  <h3 class="steps__title display">{s.title}</h3>
+                  <p>{s.text}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        {
+          shop.policies.length > 0 && (
+            <section class="page-block" aria-labelledby="politicas">
+              <SectionHead lang={lang} id="politicas" title={t('fans_policies_title', lang)} lead={t('fans_policies_lead', lang)} demo />
+              <Accordion items={shop.policies.map((p) => ({ id: p.id, title: pick(p.title, lang) }))}>
+                {shop.policies.map((p) => <Fragment slot={p.id}>{p.body[lang].map((para) => <p>{para}</p>)}</Fragment>)}
+              </Accordion>
+            </section>
+          )
+        }
+      </>
+    )
+  }
+  <SiteExtras lang={lang} />
+</PageLayout>
+
+<style>
+  :global(.fans-shop) { display: grid; gap: var(--space-m); }
+  .shop__filters { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .shop__filters[hidden], .shop__status[hidden], .tray[hidden] { display: none; }
+  .fchip {
+    display: inline-flex; align-items: center; min-height: var(--tap); padding: 0.2rem var(--space-s);
+    font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui);
+    color: var(--chrome-200); background: transparent; border: var(--stroke) solid var(--chrome-600); border-radius: var(--radius-ui); cursor: pointer;
+    transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .fchip.is-on { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
+  .fchip:active { background: var(--chrome-200); color: var(--bg); }
+  @media (hover: hover) { .fchip:hover { border-color: var(--chrome-200); } .fchip.is-on:hover { border-color: var(--chrome-50); } }
+  .shop__grid { align-items: stretch; }
+  .shop__grid > :global(li[hidden]) { display: none; }
+  .tray {
+    position: sticky; bottom: var(--fans-tray-offset); z-index: 5;
+    display: grid; gap: var(--space-xs); padding: var(--space-s);
+    background: var(--fans-tray-bg); border: var(--stroke) solid var(--chrome-400);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  }
+  .tray__info { display: grid; gap: var(--space-2xs); grid-template-columns: minmax(0, 1fr); }
+  .tray__count { color: var(--accent); }
+  .tray__actions { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .tray__note { font-size: var(--step--1); color: var(--muted); }
+  @media (min-width: 52.01rem) { .tray__info { grid-template-columns: auto minmax(12rem, 22rem); align-items: center; gap: var(--space-m); } }
+  .steps { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); counter-reset: none; }
+  .steps__item { display: grid; gap: var(--space-2xs); align-content: start; padding-top: var(--space-s); border-top: var(--divider); color: var(--chrome-200); }
+  .steps__n { font-size: var(--step-3); line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--chrome-500); }
+  .steps__title { font-size: var(--step-1); color: var(--chrome-50); }
+</style>

@@ -1,0 +1,106 @@
+# Clases y mentorías (paquete oficio). TODO es una PROPUESTA de ejemplo: fechas, cupos y lugares son inventados.
+items:
+  - id: primeros-pasos-produccion
+    demo: true
+    seed: "les-primeros"
+    kind: class
+    level: beginner
+    modality: online
+    title: { es: "Primeros pasos en producción de techno", en: "First steps in techno production" }
+    summary: { es: "Clase individual para armar tu primer loop: kick, bajo y una estructura que funcione.", en: "One-to-one class to build your first loop: kick, bass and a structure that works." }
+    topics:
+      - { es: "Configurar la sesión y el tempo", en: "Setting up the session and tempo" }
+      - { es: "Kick, bajo y percusión mínima", en: "Kick, bass and minimal percussion" }
+      - { es: "De loop a arreglo en ocho pasos", en: "From loop to arrangement in eight steps" }
+    duration: { es: "90 minutos por clase", en: "90 minutes per class" }
+    sessions:
+      - { date: "2027-02-10", time: "19:00", spots: 1, place: { es: "Videollamada", en: "Video call" } }
+      - { date: "2027-02-24", time: "19:00", spots: 1, place: { es: "Videollamada", en: "Video call" } }
+  - id: mentoria-ocho-semanas
+    demo: true
+    seed: "les-mentoria"
+    kind: mentorship
+    level: intermediate
+    modality: hybrid
+    title: { es: "De la idea al tema terminado", en: "From idea to finished track" }
+    summary: { es: "Mentoría de ocho semanas: traés tus bocetos y salís con un tema mezclado y listo para enviar.", en: "Eight-week mentorship: bring your sketches and leave with a mixed track ready to send." }
+    topics:
+      - { es: "Revisión de tus bocetos y elección del que vale", en: "Reviewing your sketches and choosing the one worth finishing" }
+      - { es: "Arreglo, transiciones y energía", en: "Arrangement, transitions and energy" }
+      - { es: "Mezcla en tu propia sala", en: "Mixing in your own room" }
+      - { es: "Cómo presentar el tema a un sello", en: "How to pitch the track to a label" }
+    duration: { es: "8 semanas, una sesión semanal de 60 minutos", en: "8 weeks, one 60-minute session per week" }
+    sessions:
+      - { date: "2027-03-08", time: "18:30", spots: 4, place: { es: "Videollamada, con una sesión presencial", en: "Video call, with one in-person session" } }
+  - id: workshop-kicks-bajos
+    demo: true
+    seed: "les-kicks"
+    kind: workshop
+    level: intermediate
+    modality: inperson
+    title: { es: "Workshop: diseño de kicks y bajos", en: "Workshop: kick and bass design" }
+    summary: { es: "Tres horas para construir kicks y bajos que convivan, con escucha en un sistema grande.", en: "Three hours to build kicks and basses that coexist, with listening on a large system." }
+    topics:
+      - { es: "Síntesis de kicks desde cero", en: "Kick synthesis from scratch" }
+      - { es: "El bajo y el espacio que deja el kick", en: "Bass and the space the kick leaves" }
+      - { es: "Pruebas en mono y en sistema grande", en: "Mono and large-system tests" }
+    duration: { es: "3 horas", en: "3 hours" }
+    sessions:
+      - { date: "2027-04-17", time: "15:00", spots: 10, place: { es: "Sala de ejemplo · Ciudad", en: "Example room · City" } }
+  - id: workshop-mezclar-sets
+    demo: true
+    seed: "les-sets"
+    kind: workshop
+    level: beginner
+    modality: inperson
+    title: { es: "Workshop: armar y mezclar un set", en: "Workshop: building and mixing a set" }
+    summary: { es: "Beatmatching, frases y selección: cómo contar una historia con otros temas.", en: "Beatmatching, phrasing and selection: how to tell a story with other people's tracks." }
+    topics:
+      - { es: "Sincronía y frases musicales", en: "Sync and musical phrasing" }
+      - { es: "Armar una carpeta de música ordenada", en: "Building an organized music folder" }
+      - { es: "Primeros diez minutos en cabina", en: "Your first ten minutes in the booth" }
+    duration: { es: "4 horas", en: "4 hours" }
+    sessions:
+      - { date: "2027-05-08", time: "14:00", spots: 8, place: { es: "Sala de ejemplo · Ciudad", en: "Example room · City" } }
+  - id: taller-sintesis-acid
+    demo: true
+    seed: "les-acid"
+    kind: workshop
+    level: intermediate
+    modality: online
+    title: { es: "Taller de síntesis: líneas ácidas", en: "Synthesis workshop: acid lines" }
+    summary: { es: "Dos sesiones sobre filtros, resonancia y secuencias con deslizamientos y acentos.", en: "Two sessions on filters, resonance and sequences with slides and accents." }
+    topics:
+      - { es: "Filtro, resonancia y envolventes", en: "Filter, resonance and envelopes" }
+      - { es: "Secuencias con acentos y deslizamientos", en: "Sequences with accents and slides" }
+      - { es: "Saturación y ubicación en la mezcla", en: "Saturation and mix placement" }
+    duration: { es: "2 sesiones de 2 horas", en: "2 sessions of 2 hours" }
+    sessions:
+      - { date: "2027-06-05", time: "17:00", spots: 12, place: { es: "Videollamada", en: "Video call" } }
+  - id: mentoria-ep
+    demo: true
+    seed: "les-ep"
+    kind: mentorship
+    level: advanced
+    modality: online
+    title: { es: "Mentoría de EP: del concepto al lanzamiento", en: "EP mentorship: from concept to release" }
+    summary: { es: "Acompañamiento de tres meses para un EP: coherencia, mezcla, masterización y plan de lanzamiento.", en: "Three-month support for an EP: coherence, mixing, mastering and release plan." }
+    topics:
+      - { es: "Concepto y orden de los temas", en: "Concept and track order" }
+      - { es: "Mezcla y masterización como conjunto", en: "Mixing and mastering as a whole" }
+      - { es: "Arte, textos y plan de lanzamiento", en: "Artwork, texts and release plan" }
+    duration: { es: "12 semanas, una sesión cada quince días", en: "12 weeks, one session every two weeks" }
+    sessions:
+      - { date: "2027-07-12", time: "19:00", spots: 2, place: { es: "Videollamada", en: "Video call" } }
+
+levels:
+  - { id: beginner, demo: true, title: { es: "Inicial", en: "Beginner" }, text: { es: "Sin experiencia previa o con un par de loops hechos. Se trabaja lo esencial con calma.", en: "No prior experience or just a couple of loops made. We work on the essentials at a calm pace." } }
+  - { id: intermediate, demo: true, title: { es: "Intermedio", en: "Intermediate" }, text: { es: "Ya terminaste algún tema. Se profundiza en sonido, estructura y criterio.", en: "You have finished a track or two. We go deeper into sound, structure and judgement." } }
+  - { id: advanced, demo: true, title: { es: "Avanzado", en: "Advanced" }, text: { es: "Producís con regularidad. Se afinan decisiones, mezcla y lanzamiento.", en: "You produce regularly. We refine decisions, mixing and release." } }
+
+faq:
+  - { id: requisitos, demo: true, q: { es: "¿Qué necesito para empezar?", en: "What do I need to start?" }, a: { es: "Una computadora, auriculares y un programa de producción cualquiera. No hace falta equipo especial.", en: "A computer, headphones and any production software. No special equipment needed." } }
+  - { id: cupos, demo: true, q: { es: "¿Qué significa el cupo?", en: "What does the spot count mean?" }, a: { es: "Es la cantidad de personas por sesión. Los cupos de esta página son de ejemplo.", en: "It is the number of people per session. The spot counts on this page are examples." } }
+  - { id: grabaciones, demo: true, q: { es: "¿Quedan grabadas las clases?", en: "Are the classes recorded?" }, a: { es: "Las sesiones online se graban para que las repases, solo con acuerdo de todas las personas.", en: "Online sessions are recorded for you to review, only with everyone's agreement." } }
+  - { id: precios, demo: true, q: { es: "¿Cuánto cuestan?", en: "How much do they cost?" }, a: { es: "A consultar. Hay precios distintos según el formato y la cantidad de sesiones.", en: "On request. Prices differ by format and number of sessions." } }
+  - { id: cambios, demo: true, q: { es: "¿Puedo cambiar una fecha?", en: "Can I change a date?" }, a: { es: "Sí, con aviso de al menos 48 horas. Se reprograma sin costo una vez.", en: "Yes, with at least 48 hours' notice. One reschedule at no cost." } }

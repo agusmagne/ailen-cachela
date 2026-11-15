@@ -1,0 +1,16 @@
+/* Tokens del paquete agenda (fechas, archivo, mapa). Solo referencias a la paleta de tokens.css. */
+:root {
+  --agenda-panel-bg: color-mix(in srgb, var(--bg) 66%, transparent);
+  --agenda-cd-size: clamp(3rem, 11vw, 7.5rem);
+  --agenda-cd-size-sm: clamp(2.25rem, 14vw, 3.5rem);
+  /* Mapa */
+  --agenda-map-bg: radial-gradient(120% 90% at 50% 40%, var(--chrome-800), var(--bg) 70%);
+  --agenda-map-land: var(--chrome-400);
+  --agenda-map-land-opacity: 0.55;
+  --agenda-map-grid: var(--chrome-600);
+  --agenda-map-grid-opacity: 0.45;
+  --agenda-pin: var(--chrome-50);
+  --agenda-pin-demo: var(--chrome-200);
+  --agenda-pin-next: var(--accent);
+  --agenda-pin-label-bg: var(--bg);
+}

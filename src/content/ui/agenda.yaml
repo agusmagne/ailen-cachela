@@ -1,0 +1,124 @@
+# Textos de interfaz del paquete agenda (fechas, archivo, mapa, calendario). Prefijo obligatorio: agenda_.
+# Los textos de cada fecha (Entradas, Info, Cómo llegar, estados) reutilizan las claves shows_* de site.yaml.
+
+# ---- Página de fechas -------------------------------------------------------------
+agenda_title: { es: "Fechas", en: "Shows" }
+agenda_desc: { es: "Próximas fechas de Ailén Cachela con cuenta regresiva, hora en otras zonas, calendario para suscribirse, mapa de gigs y archivo por año.", en: "Upcoming Ailén Cachela shows with a countdown, local times in other time zones, a subscribable calendar, a gig map and a yearly archive." }
+agenda_lead: { es: "Dónde toca la que viene, a qué hora en tu ciudad y cómo llevártela a tu calendario.", en: "Where the next one is, what time it starts in your city and how to put it in your calendar." }
+agenda_jump_subscribe: { es: "Suscribirme al calendario", en: "Subscribe to the calendar" }
+agenda_jump_archive: { es: "Archivo por año", en: "Archive by year" }
+agenda_next_label: { es: "Próxima fecha", en: "Next date" }
+agenda_empty_title: { es: "Sin fechas anunciadas por ahora", en: "No dates announced for now" }
+agenda_empty_text: { es: "Cuando haya una nueva fecha va a aparecer acá, con su cuenta regresiva. Mientras tanto podés revisar el archivo o suscribirte al calendario para enterarte primero.", en: "When a new date comes up it will show here, with its countdown. Meanwhile you can browse the archive or subscribe to the calendar to hear first." }
+
+# ---- Cuenta regresiva ------------------------------------------------------------------
+agenda_cd_label: { es: "Cuenta regresiva a {title}", en: "Countdown to {title}" }
+agenda_cd_days: { es: "Días", en: "Days" }
+agenda_cd_hours: { es: "Horas", en: "Hours" }
+agenda_cd_minutes: { es: "Min", en: "Min" }
+agenda_cd_seconds: { es: "Seg", en: "Sec" }
+agenda_cd_sr: { es: "Faltan {days} d {hours} h {minutes} min", en: "{days} d {hours} h {minutes} min to go" }
+agenda_cd_live: { es: "En curso ahora", en: "Happening now" }
+agenda_cd_past: { es: "Esta fecha ya pasó. Recargá la página para ver la siguiente.", en: "This date has passed. Reload the page to see the next one." }
+agenda_cd_today: { es: "Es hoy", en: "It is today" }
+agenda_cd_tomorrow: { es: "Es mañana", en: "It is tomorrow" }
+agenda_when_tz: { es: "Hora de {zone} ({offset})", en: "{zone} time ({offset})" }
+agenda_all_day: { es: "Todo el día", en: "All day" }
+
+# ---- Herramientas por fecha -----------------------------------------------------------------
+agenda_tools: { es: "Llevátela con vos", en: "Take it with you" }
+agenda_add_cal: { es: "Agregar a mi calendario", en: "Add to my calendar" }
+agenda_add_cal_aria: { es: "Agregar {title} a mi calendario (archivo .ics)", en: "Add {title} to my calendar (.ics file)" }
+agenda_share: { es: "Compartir", en: "Share" }
+agenda_share_aria: { es: "Compartir la fecha {title}", en: "Share the {title} date" }
+agenda_share_text: { es: "{artist} @ {title}, {date}", en: "{artist} @ {title}, {date}" }
+agenda_copy_link: { es: "Copiar enlace", en: "Copy link" }
+agenda_copy_link_aria: { es: "Copiar el enlace a la fecha {title}", en: "Copy the link to the {title} date" }
+agenda_copied: { es: "Enlace copiado", en: "Link copied" }
+
+# ---- Hora en otras zonas -------------------------------------------------------------------------
+agenda_zones: { es: "Hora en otras zonas", en: "Time in other time zones" }
+agenda_zones_intro: { es: "Hora de inicio en distintas ciudades. Si cae otro día, la fila lo indica.", en: "Start time in different cities. If it falls on another day, the row says so." }
+agenda_zones_caption: { es: "Hora de inicio de {title} en otras zonas horarias", en: "Start time of {title} in other time zones" }
+agenda_zones_col_city: { es: "Ciudad", en: "City" }
+agenda_zones_col_day: { es: "Día", en: "Day" }
+agenda_zones_col_time: { es: "Hora", en: "Time" }
+agenda_zones_col_offset: { es: "Desfase", en: "Offset" }
+agenda_day_prev: { es: "día anterior", en: "previous day" }
+agenda_day_next: { es: "día siguiente", en: "next day" }
+agenda_zones_yours: { es: "Tu zona", en: "Your time zone" }
+agenda_zones_pick: { es: "Ver en otra zona", en: "See in another zone" }
+agenda_zones_pick_group: { es: "Zonas frecuentes", en: "Common zones" }
+agenda_zones_pick_all: { es: "Todas las zonas", en: "All zones" }
+agenda_zones_out: { es: "{date}, {time} ({offset})", en: "{date}, {time} ({offset})" }
+
+# ---- Suscripción al calendario -----------------------------------------------------------------------
+agenda_sub_title: { es: "Suscribite al calendario", en: "Subscribe to the calendar" }
+agenda_sub_lead: { es: "Todas las fechas reales en tu app de calendario, siempre al día: cuando se suma una, se suma sola.", en: "Every real date in your calendar app, always up to date: when one is added, it shows up by itself." }
+agenda_sub_btn: { es: "Suscribirme", en: "Subscribe" }
+agenda_sub_download: { es: "Descargar .ics", en: "Download .ics" }
+agenda_sub_url_label: { es: "Dirección del calendario", en: "Calendar address" }
+agenda_sub_copy: { es: "Copiar dirección", en: "Copy address" }
+agenda_sub_copied: { es: "Dirección copiada", en: "Address copied" }
+agenda_sub_note: { es: "Tu app de calendario decide cada cuánto se actualiza: puede tardar varias horas en reflejar un cambio. Solo incluye fechas reales.", en: "Your calendar app decides how often it refreshes: a change can take several hours to show. It only includes real dates." }
+agenda_sub_help_title: { es: "Cómo suscribirse", en: "How to subscribe" }
+agenda_sub_help_apple: { es: "iPhone, iPad y Mac: el botón Suscribirme abre Calendario.", en: "iPhone, iPad and Mac: the Subscribe button opens Calendar." }
+agenda_sub_help_google: { es: "Google Calendar: Otros calendarios, Desde URL, y pegá la dirección.", en: "Google Calendar: Other calendars, From URL, and paste the address." }
+agenda_sub_help_other: { es: "Outlook y otras apps: agregá un calendario por internet con la misma dirección.", en: "Outlook and other apps: add an internet calendar with the same address." }
+agenda_sub_qr: { es: "Código QR para suscribirse al calendario de fechas", en: "QR code to subscribe to the shows calendar" }
+agenda_sub_qr_hint: { es: "Escanealo con el celular", en: "Scan it with your phone" }
+
+# ---- Mapa ------------------------------------------------------------------------------------------------
+agenda_map_title: { es: "Mapa de fechas", en: "Gig map" }
+agenda_map_lead: { es: "Las ciudades donde sonó y donde va a sonar. Un punto por ciudad.", en: "The cities where it has played and where it will. One dot per city." }
+agenda_map_caption: { es: "{cities} ciudades en {countries} países. Mapa estilizado, no cartográfico.", en: "{cities} cities in {countries} countries. A stylised map, not a cartographic one." }
+agenda_map_legend: { es: "Referencias del mapa", en: "Map key" }
+agenda_map_legend_real: { es: "Fecha real", en: "Real date" }
+agenda_map_legend_demo: { es: "Ejemplo", en: "Sample" }
+agenda_map_legend_next: { es: "Próxima", en: "Next" }
+agenda_map_places: { es: "Ciudades del mapa", en: "Places on the map" }
+agenda_map_count: { es: "{n} fechas", en: "{n} dates" }
+agenda_map_count_one: { es: "1 fecha", en: "1 date" }
+agenda_map_unplaced: { es: "{n} fechas sin ubicación conocida no se dibujan en el mapa, pero están en el archivo.", en: "{n} dates with no known location are not drawn on the map, but they are in the archive." }
+agenda_map_empty: { es: "Todavía no hay ciudades para dibujar.", en: "There are no cities to draw yet." }
+
+# ---- Residencias ---------------------------------------------------------------------------------------------
+agenda_res_title: { es: "Residencias", en: "Residencies" }
+agenda_res_lead: { es: "Ciclos que se repiten en un mismo lugar.", en: "Series that come back to the same place." }
+agenda_res_since: { es: "Desde {date}", en: "Since {date}" }
+agenda_res_until: { es: "Hasta {date}", en: "Until {date}" }
+agenda_res_active: { es: "En curso", en: "Ongoing" }
+agenda_res_done: { es: "Terminada", en: "Finished" }
+
+# ---- Archivo -----------------------------------------------------------------------------------------------------
+agenda_recent_title: { es: "Últimas fechas", en: "Recent dates" }
+agenda_recent_empty: { es: "Todavía no hay fechas pasadas para mostrar.", en: "There are no past dates to show yet." }
+agenda_archive_link: { es: "Ver el archivo completo", en: "See the full archive" }
+agenda_archive_title: { es: "Archivo de fechas", en: "Shows archive" }
+agenda_archive_desc: { es: "Archivo de fechas de Ailén Cachela por año, con estadísticas y mapa de ciudades.", en: "Ailén Cachela's shows archive by year, with statistics and a city map." }
+agenda_archive_lead: { es: "Todo lo que ya pasó, año por año.", en: "Everything that has already happened, year by year." }
+agenda_archive_empty_title: { es: "El archivo todavía está vacío", en: "The archive is still empty" }
+agenda_archive_empty_text: { es: "Cuando pasen las primeras fechas del calendario se van a ordenar acá por año.", en: "Once the first dates from the calendar have passed they will be filed here by year." }
+agenda_years: { es: "Años", en: "Years" }
+agenda_year_dates: { es: "{n} fechas", en: "{n} dates" }
+agenda_year_dates_one: { es: "1 fecha", en: "1 date" }
+agenda_year_title: { es: "Fechas {year}", en: "Shows {year}" }
+agenda_year_desc: { es: "Fechas de Ailén Cachela en {year}: lugares, ciudades y estadísticas del año.", en: "Ailén Cachela's shows in {year}: venues, cities and the year in numbers." }
+agenda_year_lead: { es: "Las fechas de {year}, ordenadas de la más reciente a la más antigua.", en: "The {year} dates, from the most recent to the oldest." }
+agenda_year_empty_title: { es: "Sin fechas en {year}", en: "No dates in {year}" }
+agenda_year_empty_text: { es: "No hay fechas registradas para este año todavía.", en: "There are no dates on file for this year yet." }
+agenda_year_nav: { es: "Navegación entre años", en: "Year navigation" }
+agenda_year_prev: { es: "Año anterior", en: "Previous year" }
+agenda_year_next: { es: "Año siguiente", en: "Next year" }
+agenda_year_list: { es: "Fechas de {year}", en: "Dates in {year}" }
+agenda_back_shows: { es: "Próximas fechas", en: "Upcoming dates" }
+
+# ---- Estadísticas ------------------------------------------------------------------------------------------------------
+agenda_stats_title: { es: "En números", en: "In numbers" }
+agenda_stat_dates: { es: "Fechas", en: "Dates" }
+agenda_stat_cities: { es: "Ciudades", en: "Cities" }
+agenda_stat_countries: { es: "Países", en: "Countries" }
+agenda_stat_years: { es: "Años", en: "Years" }
+agenda_stats_by_year: { es: "Fechas por año", en: "Dates per year" }
+agenda_stats_note: { es: "No cuenta las fechas canceladas.", en: "Cancelled dates are not counted." }
+agenda_stats_demo: { es: "Las cifras incluyen fechas de ejemplo.", en: "These figures include sample dates." }

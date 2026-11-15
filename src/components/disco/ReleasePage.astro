@@ -1,0 +1,267 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DataList from '../ui/DataList.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import Media from '../Media.astro';
+import Waveform from './Waveform.astro';
+import { site, t, pick, formatDate, absolute, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { releases } from '../../lib/disco/data';
+import { neighbours, type Release } from '../../lib/disco/releases';
+import { releaseJsonLd } from '../../lib/disco/jsonld';
+import { releaseInstant } from '../../lib/disco/countdown';
+import { fromSeconds, toSeconds, isoDuration } from '../../lib/disco/format';
+
+interface Props { lang: Lang; release: Release }
+const { lang, release: r } = Astro.props;
+
+const kindLabel = t(`disco_kind_${r.kind}`, lang);
+const kindWord = r.kind === 'ep' ? 'EP' : kindLabel.toLowerCase();
+const alt = router.alternates('release', { slug: r.slug });
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const jsonLd = releaseJsonLd(r, { pageUrl: absolute(alt[lang], origin), artistName: site.artist.name });
+const description = r.demo
+  ? t('disco_release_desc_demo', lang, { title: r.title, kind: kindWord, label: r.label.name })
+  : t('disco_release_desc_real', lang, { title: r.title, kind: kindWord, label: r.label.name, year: r.year });
+const longDate = (iso: string) => formatDate(iso, lang, { day: 'numeric', month: 'long', year: 'numeric' });
+const upcoming = r.status === 'upcoming';
+const isCompilation = r.kind === 'compilation' && r.compilationArtists.length > 0;
+const totalDuration = r.tracks.length > 1 ? fromSeconds(r.tracks.reduce((a, tr) => a + toSeconds(tr.duration), 0)) : '';
+const isrcs = r.tracks.map((tr) => tr.isrc).filter(Boolean) as string[];
+
+const spec = [
+  { label: t('music_label', lang), value: r.label.name, ...(r.label.url ? { href: r.label.url, external: true } : {}) },
+  ...(r.catalog ? [{ label: t('disco_spec_catalog', lang), value: r.catalog }] : []),
+  { label: t('music_released', lang), value: longDate(r.date) },
+  { label: t('disco_spec_kind', lang), value: kindLabel },
+  ...(pick(r.format, lang) ? [{ label: t('music_format', lang), value: pick(r.format, lang) }] : []),
+  ...(r.bpm ? [{ label: t('disco_spec_bpm', lang), value: r.bpm }] : []),
+  ...(r.key ? [{ label: t('disco_spec_key', lang), value: r.key }] : []),
+  ...(r.demo && r.tracks.length ? [{ label: t('disco_spec_tracks', lang), value: r.tracks.length }] : []),
+  ...(r.demo && totalDuration ? [{ label: t('disco_spec_duration', lang), value: totalDuration }] : []),
+  ...(r.upc ? [{ label: t('disco_spec_upc', lang), value: r.upc }] : []),
+  ...(isrcs.length ? [{ label: t('disco_spec_isrc', lang), value: isrcs.length === 1 ? isrcs[0] : `${isrcs[0]} … ${isrcs[isrcs.length - 1]}`, wide: false }] : []),
+  ...(r.compilationArtists.length ? [{ label: t('music_artists', lang), value: r.compilationArtists.join(' · '), wide: true }] : []),
+];
+
+const { prev, next } = neighbours(releases, r.slug);
+const presave = ['Spotify', 'Apple Music', 'Beatport', 'Bandcamp'];
+const waveLabel = (title: string) => t('disco_wave_label', lang, { title });
+---
+
+<PageLayout
+  lang={lang}
+  route="release"
+  params={{ slug: r.slug }}
+  title={r.title}
+  crumbTail={r.title}
+  kicker={`${kindLabel}${r.catalog ? ` · ${r.catalog}` : ''}`}
+  description={description}
+  demo={r.demo}
+  ogType="music.album"
+  jsonLd={jsonLd ?? []}
+>
+  <p slot="lead">
+    {
+      r.remixOf
+        ? t('disco_remix_of', lang, { title: r.remixOf.title, artist: r.remixOf.artist })
+        : isCompilation
+          ? t('music_compilation', lang, { label: r.label.name, count: r.compilationArtists.length })
+          : pick(r.description, lang)
+    }
+  </p>
+  <Fragment slot="meta">
+    {upcoming && <Chip tone="accent">{t('disco_status_upcoming', lang)}</Chip>}
+    <Chip>{kindLabel}</Chip>
+    {r.demo && <DemoBadge lang={lang} variant="inline" />}
+  </Fragment>
+
+  <div class="rel">
+    <div class="rel__cover" class:list={{ 'has-demo-badge': r.demo }}>
+      {r.demo && <DemoBadge lang={lang} />}
+      <Media src={r.cover} alt={r.coverAlt ? pick(r.coverAlt, lang) : ''} label={r.catalog || r.title} kicker={r.label.name} variant="cover" seed={r.slug} sizes="(min-width: 60rem) 40vw, 92vw" priority />
+    </div>
+    <div class="rel__main">
+      {isCompilation && r.tracks.map((tr) => <p class="rel__own">{t('music_participates', lang, { track: tr.title, n: tr.n, duration: tr.duration })}</p>)}
+      {(r.demo && pick(r.description, lang) && (r.remixOf || isCompilation)) && <p class="rel__desc">{pick(r.description, lang)}</p>}
+      {
+        !r.demo && r.url && (
+          <div class="rel__actions">
+            <Button href={r.url} variant="primary" size="xl" external lang={lang}>{t('music_listen', lang)}</Button>
+          </div>
+        )
+      }
+      <DataList items={spec} layout="rows" />
+    </div>
+  </div>
+
+  {
+    upcoming && (
+      <section class="page-block" aria-labelledby="presave-title">
+        <SectionHead lang={lang} id="presave-title" title={t('disco_presave_title', lang)} lead={t('disco_presave_lead', lang)} demo={r.demo} />
+        <div class="presave">
+          <LazyModule name="disco-countdown" props={{ target: releaseInstant(r.date) }} when="idle" class="presave__count">
+            <p class="label">{t('disco_countdown_label', lang)}</p>
+            <p class="presave__date display"><time datetime={r.date}>{longDate(r.date)}</time></p>
+            <p class="presave__clock" data-cd-clock hidden aria-hidden="true">
+              <span class="presave__cell"><b data-cd-d>0</b><i>{t('disco_countdown_days', lang)}</i></span>
+              <span class="presave__cell"><b data-cd-h>00</b><i>{t('disco_countdown_hours', lang)}</i></span>
+              <span class="presave__cell"><b data-cd-m>00</b><i>{t('disco_countdown_minutes', lang)}</i></span>
+              <span class="presave__cell"><b data-cd-s>00</b><i>{t('disco_countdown_seconds', lang)}</i></span>
+            </p>
+            <p class="presave__done display" data-cd-done hidden>{t('disco_countdown_done', lang)}</p>
+            <p class="label">{t('disco_countdown_tz', lang)}</p>
+          </LazyModule>
+          <ul class="presave__buttons">
+            {
+              presave.map((p) => (
+                <li>
+                  <button class="btn presave__btn" type="button" disabled aria-disabled="true">
+                    <span>{t('disco_presave_button', lang, { platform: p })}</span>
+                    <span class="label presave__pending">{t('disco_presave_pending', lang)}</span>
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    r.tracks.length > 0 && (
+      <section class="page-block" aria-labelledby="tracks-title">
+        <SectionHead lang={lang} id="tracks-title" title={t('disco_tracklist', lang)} lead={isCompilation ? t('disco_compilation_note', lang) : r.demo ? t('disco_wave_note', lang) : undefined} />
+        <ol class="trk" aria-label={t('disco_tracklist_caption', lang, { title: r.title })}>
+          {
+            r.tracks.map((tr) => (
+              <li class="trk__row" id={`track-${tr.n}`}>
+                <a class="trk__n label" href={`#track-${tr.n}`} aria-label={t('disco_track_label', lang, { n: tr.n })}>{String(tr.n).padStart(2, '0')}</a>
+                <div class="trk__info">
+                  <h3 class="trk__title">{tr.title}</h3>
+                  <p class="label trk__meta">
+                    {isCompilation && <span class="trk__own">{t('disco_track_own', lang)}</span>}
+                    {tr.bpm && <span>{tr.bpm} BPM</span>}
+                    {tr.key && <span>{tr.key}</span>}
+                    {tr.isrc && <span>ISRC {tr.isrc}</span>}
+                  </p>
+                </div>
+                {r.demo && <Waveform class="trk__wave" seed={`${r.waveSeed}-${tr.n}`} label={waveLabel(tr.title)} count={80} />}
+                <p class="trk__dur label"><time datetime={isoDuration(tr.duration)}>{tr.duration}</time></p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    )
+  }
+
+  <section class="page-block" aria-labelledby="links-title">
+    <SectionHead lang={lang} id="links-title" title={t('disco_links_title', lang)} lead={r.platforms.length ? t('disco_links_lead_real', lang) : t('disco_links_pending', lang)} />
+    {
+      r.platforms.length > 0 && (
+        <div class="rel__links">
+          {r.platforms.map((p) => p.url && <Button href={p.url} external lang={lang} variant={p.id === 'bandcamp' ? 'primary' : 'default'}>{p.label}</Button>)}
+        </div>
+      )
+    }
+  </section>
+
+  {
+    r.credits.length > 0 && (
+      <section class="page-block" aria-labelledby="credits-title">
+        <SectionHead lang={lang} id="credits-title" title={t('disco_credits', lang)} />
+        <DataList layout="rows" items={r.credits.map((c) => ({ label: pick(c.role, lang), value: c.name }))} />
+      </section>
+    )
+  }
+
+  {
+    r.supportedBy.length > 0 && (
+      <section class="page-block" aria-labelledby="support-title">
+        <SectionHead lang={lang} id="support-title" title={t('disco_supported_by', lang)} lead={t('disco_supported_lead', lang)} demo={r.demo} />
+        <ul class="rel__support">{r.supportedBy.map((s) => <li><Chip>{s}</Chip></li>)}</ul>
+      </section>
+    )
+  }
+
+  {
+    (prev || next) && (
+      <nav class="page-block rel__nav" aria-label={t('disco_neighbours', lang)}>
+        {prev ? <a class="rel__nav-link" href={router.path('release', lang, { slug: prev.slug })} rel="prev"><span class="label">← {t('disco_prev', lang)}</span><span class="display">{prev.title}</span></a> : <span></span>}
+        {next ? <a class="rel__nav-link rel__nav-link--next" href={router.path('release', lang, { slug: next.slug })} rel="next"><span class="label">{t('disco_next', lang)} →</span><span class="display">{next.title}</span></a> : <span></span>}
+      </nav>
+    )
+  }
+  <p class="page-block"><Button href={router.path('music', lang)}>← {t('disco_back_music', lang)}</Button></p>
+</PageLayout>
+
+<style>
+  .rel { display: grid; gap: var(--space-l); align-items: start; }
+  @media (min-width: 52rem) {
+    .rel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-2xl); }
+    .rel__cover { position: sticky; top: calc(var(--header-h) + var(--space-m)); }
+  }
+  .rel__cover { position: relative; width: 100%; max-width: var(--disco-cover-max); box-shadow: var(--disco-cover-shadow); }
+  .rel__main { display: grid; gap: var(--space-s); justify-items: start; min-width: 0; }
+  .rel__main > :global(.facts) { justify-self: stretch; }
+  .rel__own { font-size: var(--step-1); max-width: var(--measure); color: var(--chrome-200); }
+  .rel__desc { max-width: var(--measure); color: var(--chrome-200); }
+  .rel__actions, .rel__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .rel__support { display: flex; flex-wrap: wrap; gap: var(--space-2xs); padding: 0; list-style: none; }
+
+  /* Pre-guardar */
+  .presave { display: grid; gap: var(--space-l); padding: var(--space-m); border: var(--card-border); background: var(--card-bg); }
+  @media (min-width: 52rem) { .presave { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: center; } }
+  .presave__count { display: grid; gap: var(--space-2xs); }
+  .presave__date { font-size: var(--step-3); line-height: var(--lh-title); }
+  .presave__clock { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block: var(--space-2xs); }
+  .presave__clock[hidden], .presave__done[hidden] { display: none; }
+  .presave__cell { display: grid; justify-items: center; min-width: 4.5rem; padding: var(--space-xs); border: var(--stroke) solid var(--chrome-600); }
+  .presave__cell b { font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-3); line-height: 1; font-variant-numeric: tabular-nums; color: var(--chrome-50); }
+  .presave__cell i { font-style: normal; font-family: var(--font-ui); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--muted); }
+  .presave__done { font-size: var(--step-3); color: var(--accent); }
+  .presave__buttons { display: grid; gap: var(--space-2xs); padding: 0; list-style: none; }
+  .presave__btn { width: 100%; min-height: var(--tap-lg); justify-content: space-between; text-align: left; opacity: 0.6; cursor: not-allowed; }
+  .presave__btn::before { display: none; }
+  .presave__pending { color: var(--muted); }
+
+  /* Pistas */
+  .trk { display: grid; padding: 0; list-style: none; border-top: var(--divider); counter-reset: none; }
+  .trk__row {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-xs) var(--space-s);
+    padding: var(--disco-track-pad) 0;
+    border-bottom: var(--divider);
+    scroll-margin-top: calc(var(--header-h) + var(--space-m));
+  }
+  .trk__row:target { background: var(--demo-bg); }
+  .trk__n { display: inline-grid; place-items: center; min-height: var(--tap); color: var(--accent); }
+  .trk__info { min-width: 0; display: grid; gap: var(--space-3xs); }
+  .trk__title { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .trk__meta { display: flex; flex-wrap: wrap; gap: 0 var(--space-s); }
+  .trk__own { color: var(--accent); }
+  .trk__wave { grid-column: 2 / -1; grid-row: 2; }
+  .trk__dur { grid-column: 3; grid-row: 1; text-align: right; font-variant-numeric: tabular-nums; }
+  @media (min-width: 52rem) {
+    .trk__row:has(.trk__wave) { grid-template-columns: 2.5rem minmax(0, 5fr) minmax(0, 4fr) 4rem; }
+    .trk__wave { grid-column: 3; grid-row: 1; }
+    .trk__dur { grid-column: 4; }
+  }
+
+  /* Anterior / siguiente */
+  .rel__nav { display: grid; gap: var(--space-s); grid-template-columns: 1fr; }
+  @media (min-width: 40rem) { .rel__nav { grid-template-columns: 1fr 1fr; } }
+  .rel__nav-link { display: grid; gap: var(--space-3xs); padding: var(--space-s); min-height: var(--tap-lg); border: var(--card-border); background: var(--card-bg); transition: border-color var(--dur-base) var(--ease); }
+  .rel__nav-link .display { font-size: var(--step-1); line-height: var(--lh-title); overflow-wrap: anywhere; }
+  .rel__nav-link--next { text-align: right; }
+  .rel__nav-link:focus-visible { border-color: var(--chrome-300); }
+  @media (hover: hover) { .rel__nav-link:hover { border-color: var(--chrome-300); } }
+</style>

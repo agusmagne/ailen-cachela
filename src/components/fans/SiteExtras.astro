@@ -1,0 +1,15 @@
+---
+import LazyModule from '../ui/LazyModule.astro';
+import { t, type Lang } from '../../lib/content';
+/**
+ * Capa transversal del paquete fans: registro del service worker (solo producción) y detalles escondidos
+ * (mensaje en consola, código Konami). Es invisible y se carga cuando el navegador está inactivo.
+ * Hoy lo incluyen las páginas del paquete; para que valga en el sitio entero, el layout `Base` debería incluirlo una vez:
+ *   <SiteExtras lang={lang} />    (ver el informe del paquete fans)
+ */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<LazyModule name="fans-pwa" when="idle" class="sr-only" />
+<LazyModule name="fans-eggs" when="idle" class="sr-only" props={{ message: t('fans_egg_message', lang), hint: t('fans_egg_hint', lang) }} />

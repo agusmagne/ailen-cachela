@@ -1,0 +1,47 @@
+/* Easter egg "modo cromo": un velo de diferencia que invierte la página con suavidad (sin parpadeo) y un cartel mono.
+   Todo es decorativo, aria-hidden y desaparece solo. Con reducir movimiento queda solo el cartel. */
+.fans-egg-veil {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-overlay) + 20);
+  pointer-events: none;
+  background: var(--chrome-50);
+  mix-blend-mode: difference;
+  opacity: 0;
+  animation: fans-egg-veil var(--fans-egg-dur) var(--ease-in-out) 1 both;
+}
+.fans-egg-toast {
+  position: fixed;
+  z-index: calc(var(--z-overlay) + 21);
+  left: 50%;
+  bottom: calc(var(--space-l) + var(--safe-b));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 2rem);
+  padding: var(--space-2xs) var(--space-s);
+  font-family: var(--font-ui);
+  font-weight: var(--font-ui-weight);
+  font-size: var(--step-ui);
+  letter-spacing: var(--tracking-ui);
+  text-transform: var(--case-ui);
+  color: var(--chrome-50);
+  background: var(--bg);
+  border: var(--stroke) solid var(--accent);
+  pointer-events: none;
+  animation: fans-egg-toast var(--fans-egg-dur) var(--ease-out) 1 both;
+}
+@keyframes fans-egg-veil {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  72% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes fans-egg-toast {
+  0% { opacity: 0; transform: translate(-50%, 0.75rem); }
+  14% { opacity: 1; transform: translate(-50%, 0); }
+  86% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fans-egg-veil { display: none; }
+  .fans-egg-toast { animation: none; }
+}

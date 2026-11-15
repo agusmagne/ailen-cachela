@@ -1,0 +1,96 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { site, t, absolute, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { computeStats } from '../../lib/agenda/entries';
+import { musicEventLd } from '../../lib/agenda/jsonld';
+import { showSlug } from '../../lib/agenda/entries';
+import GigMap from './GigMap.astro';
+import Stats from './Stats.astro';
+import ArchiveList from './ArchiveList.astro';
+import { archiveYears, loadAgenda, mapFor } from './data';
+/** /fechas/archivo/[año]/: las fechas de un año (reales y de ejemplo), sus cifras, su mapa y la navegación entre años. */
+interface Props {
+  lang: Lang;
+  year: number;
+}
+const { lang, year } = Astro.props;
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const { pastEntries } = await loadAgenda();
+const years = (await archiveYears()).filter((y) => y === year || pastEntries.some((e) => e.year === y));
+const entries = pastEntries.filter((e) => e.year === year);
+const stats = computeStats(entries);
+const { points, unplaced } = mapFor(entries);
+const idx = years.indexOf(year);
+const newer = idx > 0 ? years[idx - 1] : null;
+const older = idx >= 0 && idx < years.length - 1 ? years[idx + 1] : null;
+const url = (y: number) => router.path('shows-year', lang, { year: y });
+const pageUrl = absolute(url(year), origin);
+const jsonLd = entries.filter((e) => e.show).map((e) => musicEventLd(e.show!, site.artist.name, `${pageUrl}#${showSlug(e.show!)}`));
+const title = t('agenda_year_title', lang, { year });
+---
+
+<PageLayout
+  lang={lang}
+  route="shows-year"
+  params={{ year }}
+  title={title}
+  description={t('agenda_year_desc', lang, { year })}
+  crumbTail={String(year)}
+  demo={entries.length > 0 && entries.every((e) => e.demo)}
+  empty={entries.length === 0}
+  jsonLd={jsonLd}
+>
+  <p slot="lead">{t('agenda_year_lead', lang, { year })}</p>
+  <Fragment slot="meta">
+    <a class="btn" href={router.path('shows-archive', lang)}><span class="arrow" aria-hidden="true">←</span> {t('agenda_archive_title', lang)}</a>
+  </Fragment>
+
+  {
+    entries.length === 0 ? (
+      <EmptyState lang={lang} title={t('agenda_year_empty_title', lang, { year })} text={t('agenda_year_empty_text', lang)}>
+        <a class="btn" href={router.path('shows', lang)}>{t('agenda_back_shows', lang)}</a>
+      </EmptyState>
+    ) : (
+      <LazyModule name="agenda-live" props={{ lang, labels: {} }}>
+        <section class="page-block" aria-labelledby="cifras">
+          <SectionHead lang={lang} id="cifras" title={t('agenda_stats_title', lang)} demo={entries.every((e) => e.demo)} />
+          <Stats lang={lang} stats={stats} noYears />
+        </section>
+
+        <section class="page-block" aria-labelledby="fechas-anio">
+          <SectionHead lang={lang} id="fechas-anio" title={t('agenda_year_list', lang, { year })} />
+          <ArchiveList lang={lang} entries={entries} label={t('agenda_year_list', lang, { year })} />
+        </section>
+
+        <section class="page-block" aria-labelledby="mapa-anio">
+          <SectionHead lang={lang} id="mapa-anio" title={t('agenda_map_title', lang)} lead={t('agenda_map_lead', lang)} />
+          <GigMap lang={lang} points={points} unplaced={unplaced} id="map-year" />
+        </section>
+      </LazyModule>
+    )
+  }
+
+  <nav class="yearnav page-block" aria-label={t('agenda_year_nav', lang)}>
+    {
+      older !== null ? (
+        <a class="btn" href={url(older)} rel="prev"><span class="arrow" aria-hidden="true">←</span> {t('agenda_year_prev', lang)}: {older}</a>
+      ) : (
+        <span></span>
+      )
+    }
+    {
+      newer !== null && (
+        <a class="btn" href={url(newer)} rel="next">{t('agenda_year_next', lang)}: {newer} <span class="arrow" aria-hidden="true">→</span></a>
+      )
+    }
+  </nav>
+</PageLayout>
+
+<style>
+  .yearnav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-xs); }
+  @media (max-width: 52rem) { .yearnav .btn { flex: 1 1 100%; min-height: var(--tap-lg); } }
+</style>

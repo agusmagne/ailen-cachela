@@ -1,0 +1,309 @@
+# Dominio `booking`: proceso, riders, hospitalidad, condiciones y representación.
+#
+# TODO lo de este archivo es plantilla de EJEMPLO (demo: true): no lo redactó la artista ni su equipo. Se rotula en
+# pantalla y desaparece con el interruptor global `demo_content`. Lo único real del paquete es el email de booking
+# (site.yaml > contact.email) y los nombres de modelo de Pioneer DJ marcados como verificados (CDJ-3000X, DJM-V10,
+# DJM-A9, DJM-S11, PLX-1000). Cualquier otro equipo va con `confirm: true` y un nombre genérico.
+# No hay montos, porcentajes ni plazos definitivos: donde hace falta una cifra se escribe "X" o "a definir".
+
+# ---- Representación por territorio ------------------------------------------------------------------
+items:
+  - id: sudamerica
+    demo: true
+    region: { es: "Argentina y Sudamérica", en: "Argentina and South America" }
+    agency: { es: "Agencia de ejemplo · Sudamérica", en: "Sample agency · South America" }
+    note: { es: "Ejemplo de cómo se muestra un agente por región. Hoy no hay ninguna agencia confirmada: se escribe al email de booking.", en: "Example of how an agent per region is shown. No agency is confirmed today: write to the booking email." }
+  - id: europa
+    demo: true
+    region: { es: "Europa", en: "Europe" }
+    agency: { es: "Agencia de ejemplo · Europa", en: "Sample agency · Europe" }
+    note: { es: "Lugar reservado para la agencia europea, si la hubiera. Contacto: por definir.", en: "Slot reserved for a European agency, if there is one. Contact: to be defined." }
+  - id: norteamerica
+    demo: true
+    region: { es: "Norteamérica", en: "North America" }
+    agency: { es: "Agencia de ejemplo · Norteamérica", en: "Sample agency · North America" }
+    note: { es: "Lugar reservado. Contacto: por definir.", en: "Slot reserved. Contact: to be defined." }
+  - id: resto
+    demo: true
+    region: { es: "Resto del mundo", en: "Rest of the world" }
+    agency: { es: "Agencia de ejemplo · Resto del mundo", en: "Sample agency · Rest of the world" }
+    note: { es: "Mientras no haya representación, las consultas de cualquier territorio van al email de booking.", en: "Until there is representation, enquiries from any territory go to the booking email." }
+
+# ---- Cómo trabajo ----------------------------------------------------------------------------------------
+process:
+  - id: consulta
+    demo: true
+    title: { es: "Consulta", en: "Enquiry" }
+    text: { es: "Completás el formulario con fecha, lugar, formato y lo que ya sepas. No hace falta tener todo cerrado.", en: "Fill in the form with date, venue, format and whatever you already know. Nothing has to be settled yet." }
+  - id: respuesta
+    demo: true
+    title: { es: "Respuesta", en: "Reply" }
+    text: { es: "Ailén responde con disponibilidad y una propuesta de formato. Los plazos de respuesta se definen con ella.", en: "Ailén replies with availability and a proposed format. Reply times are to be defined with her." }
+  - id: confirmacion
+    demo: true
+    title: { es: "Confirmación", en: "Confirmation" }
+    text: { es: "Se acuerdan fee, viáticos y condiciones por escrito. Recién entonces se envían los riders.", en: "Fee, travel and terms are agreed in writing. The riders are sent only then." }
+  - id: advance
+    demo: true
+    title: { es: "Advance", en: "Advance" }
+    text: { es: "Unos 7 días antes se completa la hoja de avance: horarios, equipo, lista de invitados y contacto en el lugar.", en: "About 7 days before, the advance sheet is completed: times, equipment, guest list and on-site contact." }
+  - id: fecha
+    demo: true
+    title: { es: "El día", en: "The day" }
+    text: { es: "Llegada, prueba de sonido, set. Si algo no coincide con el rider, se resuelve juntos en la sala.", en: "Arrival, soundcheck, set. If anything does not match the rider, it is solved together at the venue." }
+
+# ---- Rider técnico: configuraciones --------------------------------------------------------------------
+rigs:
+  - id: dj-2cdj-v10
+    demo: true
+    mode: dj
+    primary: true
+    name: { es: "Cabina estándar", en: "Standard booth" }
+    gear:
+      - { kind: deck, qty: 2, model: { es: "CDJ-3000X", en: "CDJ-3000X" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-V10", en: "DJM-V10" } }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "Dos reproductores y mixer enlazados por Pro DJ Link. Es la configuración que se pide primero.", en: "Two players and a mixer linked over Pro DJ Link. This is the setup requested first." }
+  - id: dj-4cdj-v10
+    demo: true
+    mode: dj
+    name: { es: "Cabina de festival", en: "Festival booth" }
+    gear:
+      - { kind: deck, qty: 4, model: { es: "CDJ-3000X", en: "CDJ-3000X" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-V10", en: "DJM-V10" } }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "Para escenarios grandes o sets con cuatro reproductores.", en: "For large stages or sets with four players." }
+  - id: dj-2cdj-a9
+    demo: true
+    mode: dj
+    name: { es: "Alternativa con DJM-A9", en: "Alternative with DJM-A9" }
+    gear:
+      - { kind: deck, qty: 2, model: { es: "CDJ-3000X", en: "CDJ-3000X" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-A9", en: "DJM-A9" } }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "Alternativa aceptable si la sala no tiene el DJM-V10. A confirmar con la artista.", en: "Acceptable alternative if the venue has no DJM-V10. To be confirmed with the artist." }
+  - id: dj-2cdj-s11
+    demo: true
+    mode: dj
+    name: { es: "Alternativa con rekordbox", en: "Alternative with rekordbox" }
+    gear:
+      - { kind: deck, qty: 2, model: { es: "CDJ-3000X", en: "CDJ-3000X" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-S11", en: "DJM-S11" } }
+      - { kind: laptop, qty: 1, model: { es: "Laptop de la artista (rekordbox)", en: "Artist laptop (rekordbox)" }, confirm: true }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "Con la laptop de la artista conectada al mixer. Solo si la artista confirma este formato.", en: "With the artist's laptop connected to the mixer. Only if the artist confirms this format." }
+  - id: dj-vinilo
+    demo: true
+    mode: dj
+    name: { es: "Vinilo", en: "Vinyl" }
+    gear:
+      - { kind: turntable, qty: 2, model: { es: "PLX-1000", en: "PLX-1000" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-S11", en: "DJM-S11" } }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "Solo si la artista confirma que toca vinilo. Hoy es un ejemplo de cómo se escribe.", en: "Only if the artist confirms she plays vinyl. Today it is an example of how it is written." }
+  - id: live-basico
+    demo: true
+    mode: live
+    primary: true
+    name: { es: "Live set compacto", en: "Compact live set" }
+    gear:
+      - { kind: synth, qty: 2, model: { es: "Sintetizadores de la artista", en: "Artist synthesizers" }, confirm: true }
+      - { kind: drum, qty: 1, model: { es: "Caja de ritmos de la artista", en: "Artist drum machine" }, confirm: true }
+      - { kind: interface, qty: 1, model: { es: "Interfaz de audio de la artista", en: "Artist audio interface" }, confirm: true }
+      - { kind: mixer, qty: 1, model: { es: "Mixer de DJ del lugar", en: "Venue DJ mixer" }, confirm: true }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de escenario", en: "Stage monitors" }, confirm: true }
+    note: { es: "Ejemplo de stage plot: el equipo real lo define la artista. La sala aporta mesa, energía, mixer y monitoreo.", en: "Example stage plot: the artist defines the real gear. The venue provides table, power, mixer and monitoring." }
+  - id: hibrido-base
+    demo: true
+    mode: hybrid
+    primary: true
+    name: { es: "DJ con elementos de live", en: "DJ set with live elements" }
+    gear:
+      - { kind: deck, qty: 2, model: { es: "CDJ-3000X", en: "CDJ-3000X" } }
+      - { kind: mixer, qty: 1, model: { es: "DJM-V10", en: "DJM-V10" } }
+      - { kind: drum, qty: 1, model: { es: "Caja de ritmos de la artista", en: "Artist drum machine" }, confirm: true }
+      - { kind: fx, qty: 1, model: { es: "Procesador de efectos de la artista", en: "Artist effects unit" }, confirm: true }
+      - { kind: monitor, qty: 2, model: { es: "Monitores de cabina", en: "Booth monitors" }, confirm: true }
+    note: { es: "La cabina de DJ de siempre más un anexo con equipo de la artista. Se mandan como dos hojas separadas.", en: "The usual DJ booth plus an add-on with the artist's own gear. Sent as two separate sheets." }
+
+# ---- Rider técnico: requisitos ---------------------------------------------------------------------------------
+requirements:
+  - id: energia
+    demo: true
+    label: { es: "Energía", en: "Power" }
+    text: { es: "Tomas con tierra en la cabina, de una línea estable, sin compartir con luces ni humo. Cantidad exacta a confirmar en el advance.", en: "Grounded sockets in the booth on a stable line, not shared with lights or fog. Exact count to be confirmed in the advance." }
+  - id: monitoreo
+    demo: true
+    label: { es: "Monitoreo", en: "Monitoring" }
+    text: { es: "Dos monitores de cabina, ubicados a la altura de las orejas, con volumen independiente. Ninguna configuración de Pioneer DJ los incluye: se piden aparte.", en: "Two booth monitors at ear height with independent volume. None of the Pioneer DJ setups include them, so they are requested separately." }
+  - id: microfono
+    demo: true
+    label: { es: "Micrófono", en: "Microphone" }
+    text: { es: "Un micrófono con cable cerca de la cabina para anuncios, si el evento lo necesita.", en: "One wired microphone near the booth for announcements, if the event needs it." }
+  - id: mesa
+    demo: true
+    label: { es: "Mesa y espacio", en: "Table and space" }
+    text: { es: "Mesa estable, firme y a nivel, con lugar para el equipo, una laptop y un vaso. Sin vibración del piso de baile.", en: "A stable, firm, level table with room for the gear, a laptop and a drink. No vibration from the dance floor." }
+  - id: luz
+    demo: true
+    label: { es: "Luz de cabina", en: "Booth light" }
+    text: { es: "Luz tenue para leer los equipos, sin apuntar a los ojos ni a las pantallas.", en: "Dim light to read the gear, not pointed at the eyes or the screens." }
+  - id: sonido
+    demo: true
+    label: { es: "Sonido de sala", en: "House sound" }
+    text: { es: "Sistema calibrado y un técnico de sala presente durante la prueba y el set.", en: "A calibrated system and a house technician present during soundcheck and the set." }
+
+brings:
+  - { id: usb, demo: true, text: { es: "Música en USB y una copia de respaldo.", en: "Music on USB sticks and a backup copy." } }
+  - { id: cables, demo: true, text: { es: "Cables de audio y adaptadores de respaldo.", en: "Backup audio cables and adapters." } }
+  - { id: laptop, demo: true, text: { es: "Laptop propia solo si el formato elegido la usa.", en: "Own laptop only if the chosen format uses one." } }
+  - { id: auriculares, demo: true, text: { es: "Auriculares propios.", en: "Own headphones." } }
+
+mismatch:
+  - { id: aviso, demo: true, text: { es: "Si el equipo disponible no coincide con el listado, avisar con 7 días de antelación para ajustar el set.", en: "If the available gear does not match the list, let us know 7 days ahead so the set can be adjusted." } }
+  - { id: prueba, demo: true, text: { es: "Una prueba de sonido corta antes de abrir puertas evita casi todos los problemas.", en: "A short soundcheck before doors open prevents almost every problem." } }
+  - { id: escrito, demo: true, text: { es: "Lo que se acuerde se confirma por escrito en el advance.", en: "Whatever is agreed is confirmed in writing in the advance." } }
+
+# ---- Variante live / híbrido: input list ---------------------------------------------------------------------
+inputs:
+  - { id: in-1, demo: true, ch: 1, source: { es: "Sintetizador 1 (L)", en: "Synthesizer 1 (L)" }, connection: "DI / TRS", note: { es: "Línea, estéreo", en: "Line, stereo" } }
+  - { id: in-2, demo: true, ch: 2, source: { es: "Sintetizador 1 (R)", en: "Synthesizer 1 (R)" }, connection: "DI / TRS", note: { es: "Línea, estéreo", en: "Line, stereo" } }
+  - { id: in-3, demo: true, ch: 3, source: { es: "Sintetizador 2 (L)", en: "Synthesizer 2 (L)" }, connection: "DI / TRS", note: { es: "Línea, estéreo", en: "Line, stereo" } }
+  - { id: in-4, demo: true, ch: 4, source: { es: "Sintetizador 2 (R)", en: "Synthesizer 2 (R)" }, connection: "DI / TRS", note: { es: "Línea, estéreo", en: "Line, stereo" } }
+  - { id: in-5, demo: true, ch: 5, source: { es: "Caja de ritmos (L)", en: "Drum machine (L)" }, connection: "TRS", note: { es: "Salida principal", en: "Main output" } }
+  - { id: in-6, demo: true, ch: 6, source: { es: "Caja de ritmos (R)", en: "Drum machine (R)" }, connection: "TRS", note: { es: "Salida principal", en: "Main output" } }
+  - { id: in-7, demo: true, ch: 7, source: { es: "Micrófono de anuncios", en: "Announcement microphone" }, connection: "XLR", note: { es: "Solo si el evento lo pide", en: "Only if the event asks for it" } }
+
+cues:
+  - { id: c-1, demo: true, at: "-60", cue: { es: "Llegada y carga", en: "Arrival and load-in" }, signal: { es: "Contacto del lugar", en: "Venue contact" }, action: { es: "Se arma la cabina", en: "Booth is set up" }, fallback: { es: "Si no hay acceso, avisar al contacto del advance", en: "If there is no access, call the advance contact" } }
+  - { id: c-2, demo: true, at: "-30", cue: { es: "Prueba de sonido", en: "Soundcheck" }, signal: { es: "Técnico de sala", en: "House technician" }, action: { es: "Nivel y monitoreo", en: "Level and monitoring" }, fallback: { es: "Prueba reducida con solo el monitoreo", en: "Reduced check, monitoring only" } }
+  - { id: c-3, demo: true, at: "0", cue: { es: "Inicio del set", en: "Set start" }, signal: { es: "Productor o MC", en: "Producer or MC" }, action: { es: "Entra el primer track", en: "First track comes in" }, fallback: { es: "Se espera la señal; no se empieza sin ella", en: "Wait for the signal; do not start without it" } }
+  - { id: c-4, demo: true, at: "60", cue: { es: "Cambio de formato", en: "Format change" }, signal: { es: "La artista", en: "The artist" }, action: { es: "Pasa de DJ a live o viceversa", en: "Switches from DJ to live or back" }, fallback: { es: "Se queda en formato DJ", en: "Stays in DJ format" } }
+  - { id: c-5, demo: true, at: "110", cue: { es: "Aviso de cierre", en: "Closing notice" }, signal: { es: "Productor o MC", en: "Producer or MC" }, action: { es: "Último track", en: "Last track" }, fallback: { es: "Se cierra a la hora de corte del lugar", en: "Close at the venue curfew" } }
+
+# ---- Rider de hospitalidad ------------------------------------------------------------------------------------
+hospitality:
+  - id: camarin
+    demo: true
+    title: { es: "Camarín", en: "Dressing room" }
+    intro: { es: "Un lugar donde esperar y guardar las cosas.", en: "A place to wait and keep belongings." }
+    lines:
+      - { priority: must, text: { es: "Un espacio donde esperar y dejar el equipo, aunque sea compartido. Si no hay, avisar.", en: "A space to wait and leave gear, even if shared. If there is none, let us know." } }
+      - { priority: nice, text: { es: "Espejo, asientos y toallas, si está disponible.", en: "Mirror, seating and towels, if available." } }
+  - id: comida
+    demo: true
+    title: { es: "Comida", en: "Food" }
+    intro: { es: "Algo simple para quien viaja y toca a la noche.", en: "Something simple for someone travelling and playing at night." }
+    lines:
+      - { priority: must, text: { es: "Una comida simple para una persona, o un vale si el lugar no tiene cocina.", en: "A simple meal for one person, or a voucher if the venue has no kitchen." } }
+      - { priority: nice, text: { es: "Opción vegetariana o vegana, si está disponible. Las restricciones se confirman en el advance.", en: "A vegetarian or vegan option, if available. Restrictions are confirmed in the advance." } }
+  - id: bebida
+    demo: true
+    title: { es: "Bebidas", en: "Drinks" }
+    intro: { es: "Sin marcas ni lujos.", en: "No brands, no luxuries." }
+    lines:
+      - { priority: must, text: { es: "Agua suficiente en la cabina y en el camarín.", en: "Enough water in the booth and the dressing room." } }
+      - { priority: nice, text: { es: "Jugo, té o café y alguna bebida sin alcohol, si está disponible.", en: "Juice, tea or coffee and a soft drink, if available." } }
+      - { priority: nice, text: { es: "Vales de bebida del bar, a criterio del lugar.", en: "Bar drink tickets, at the venue's discretion." } }
+  - id: transporte
+    demo: true
+    title: { es: "Traslados y alojamiento", en: "Travel and accommodation" }
+    intro: { es: "Se negocia dentro del acuerdo, no en esta lista.", en: "Negotiated within the agreement, not in this list." }
+    lines:
+      - { priority: must, text: { es: "Quién cubre traslados y alojamiento se acuerda por escrito antes de confirmar la fecha.", en: "Who covers travel and accommodation is agreed in writing before the date is confirmed." } }
+      - { priority: nice, text: { es: "Traslado desde y hacia el lugar el día del evento, si está disponible.", en: "Transport to and from the venue on the day of the event, if available." } }
+  - id: carga
+    demo: true
+    title: { es: "Llegada y carga", en: "Arrival and load-in" }
+    intro: { es: "Para que nadie improvise en la puerta.", en: "So nobody improvises at the door." }
+    lines:
+      - { priority: must, text: { es: "Una persona de contacto que reciba a la artista y diga por dónde se ingresa.", en: "A contact person to receive the artist and say where to enter." } }
+      - { priority: nice, text: { es: "Un lugar para estacionar cerca de la puerta de carga, si está disponible.", en: "A parking space near the load-in door, if available." } }
+  - id: lista
+    demo: true
+    title: { es: "Lista de invitados", en: "Guest list" }
+    intro: { es: "Cantidad según la capacidad del evento, a definir.", en: "Number depends on the event capacity, to be defined." }
+    lines:
+      - { priority: must, text: { es: "Una lista corta de invitados. La cantidad exacta se acuerda con el promotor.", en: "A short guest list. The exact number is agreed with the promoter." } }
+      - { priority: nice, text: { es: "Acceso a backstage para quienes acompañan a la artista, si está disponible.", en: "Backstage access for those accompanying the artist, if available." } }
+
+# ---- Condiciones de contratación (plantilla) ----------------------------------------------------------------
+terms:
+  - id: duracion
+    demo: true
+    title: { es: "Duración y horarios", en: "Set length and times" }
+    text: { es: "El set dura el tiempo acordado en la confirmación. Se define hora de inicio, hora de fin y horario de corte del lugar.", en: "The set lasts the time agreed at confirmation. Start time, end time and the venue curfew are defined." }
+    points:
+      - { es: "Duración: a acordar según el tipo de evento y la franja.", en: "Length: to be agreed according to event type and slot." }
+      - { es: "Prueba de sonido y llegada: se fijan en el advance.", en: "Soundcheck and arrival: set in the advance." }
+    review: { es: "La artista define sus duraciones habituales y los horarios de prueba.", en: "The artist defines her usual lengths and soundcheck times." }
+  - id: fee
+    demo: true
+    title: { es: "Fee", en: "Fee" }
+    text: { es: "El fee se consulta por booking: depende de la fecha, el formato, la producción y los viáticos.", en: "The fee is quoted through booking: it depends on date, format, production and travel." }
+    points:
+      - { es: "Fee: a consultar.", en: "Fee: on request." }
+      - { es: "Moneda y forma de pago: a definir con cada promotor.", en: "Currency and payment method: to be defined with each promoter." }
+    review: { es: "La artista decide si publica un rango o solo \"a consultar\".", en: "The artist decides whether to publish a range or just \"on request\"." }
+  - id: deposito
+    demo: true
+    title: { es: "Depósito", en: "Deposit" }
+    text: { es: "Para bloquear una fecha se suele pedir un depósito sobre el fee, que se descuenta del total.", en: "To hold a date a deposit on the fee is usually requested, deducted from the total." }
+    points:
+      - { es: "Porcentaje del depósito: X % del fee (a definir).", en: "Deposit percentage: X % of the fee (to be defined)." }
+      - { es: "Si no es reembolsable, se dice de forma explícita al firmar y se repite en la cláusula de cancelación.", en: "If it is non-refundable, say so explicitly at signing and repeat it in the cancellation clause." }
+    review: { es: "El porcentaje y si es reembolsable lo define la artista con su contador o abogado. Los modelos de contrato más difundidos son de otros países y no son una recomendación para Argentina.", en: "The percentage and whether it is refundable are defined by the artist with her accountant or lawyer. The most common contract templates come from other countries and are not a recommendation for Argentina." }
+  - id: cancelacion
+    demo: true
+    title: { es: "Cancelación", en: "Cancellation" }
+    text: { es: "Escala de ejemplo, de menor a mayor costo cuanto más cerca de la fecha. Ningún plazo ni porcentaje de esta página es definitivo.", en: "Sample scale, with higher cost the closer to the date. No deadline or percentage on this page is final." }
+    points:
+      - { es: "Con mucha anticipación: se pierde solo el depósito (plazo a definir).", en: "With plenty of notice: only the deposit is lost (deadline to be defined)." }
+      - { es: "Con poca anticipación: X % del fee (plazos y porcentajes a definir).", en: "With short notice: X % of the fee (deadlines and percentages to be defined)." }
+      - { es: "Cancelación de la artista: devuelve el depósito. Fuerza mayor o enfermedad: se reprograma.", en: "Cancellation by the artist: the deposit is returned. Force majeure or illness: the date is rescheduled." }
+    review: { es: "Plazos y porcentajes salen de plantillas de otros países. Los define la artista con un abogado argentino.", en: "Deadlines and percentages come from templates of other countries. The artist defines them with an Argentine lawyer." }
+  - id: grabacion
+    demo: true
+    title: { es: "Grabación y transmisión", en: "Recording and streaming" }
+    text: { es: "Grabar o transmitir el set requiere permiso por escrito antes del evento.", en: "Recording or streaming the set requires written permission before the event." }
+    points:
+      - { es: "Se pregunta si se permite grabar, transmitir en vivo y quién conserva los derechos.", en: "It is asked whether recording and live streaming are allowed and who keeps the rights." }
+      - { es: "Publicar el material siempre se consulta antes.", en: "Publishing the material is always checked first." }
+    review: { es: "Criterio de la artista sobre grabaciones, plataformas y derechos.", en: "The artist's policy on recordings, platforms and rights." }
+  - id: imagen
+    demo: true
+    title: { es: "Uso de imagen", en: "Use of image" }
+    text: { es: "El nombre, el logo y las fotos de prensa se usan tal como se entregan, con crédito del fotógrafo.", en: "The name, logo and press photos are used as delivered, with photographer credit." }
+    points:
+      - { es: "El nombre se escribe siempre igual: Ailén Cachela.", en: "The name is always written the same way: Ailén Cachela." }
+      - { es: "Piezas con la imagen de la artista, aprobadas antes de publicarse.", en: "Pieces with the artist's image are approved before publishing." }
+    review: { es: "La artista define el orden de aparición en el line-up y la aprobación de piezas.", en: "The artist defines billing order in the line-up and approval of pieces." }
+  - id: exclusividad
+    demo: true
+    title: { es: "Exclusividad territorial", en: "Radius clause" }
+    text: { es: "Algunos eventos piden que la artista no toque en un radio cercano antes y después de la fecha. Se define en el contrato, no en un rider público.", en: "Some events ask that the artist not play within a nearby radius before and after the date. It is defined in the contract, not in a public rider." }
+    points:
+      - { es: "Radio y plazo: a definir caso por caso.", en: "Radius and period: to be defined case by case." }
+    review: { es: "Se negocia por evento. La artista decide si acepta este tipo de cláusula.", en: "Negotiated per event. The artist decides whether to accept this kind of clause." }
+  - id: billing
+    demo: true
+    title: { es: "Billing y flyer", en: "Billing and flyer" }
+    text: { es: "La artista pide por escrito su lugar en el line-up y el tamaño de su nombre antes de que el flyer se publique.", en: "The artist asks in writing for her place in the line-up and the size of her name before the flyer is published." }
+    points:
+      - { es: "Se envía el flyer para aprobación antes de publicarlo.", en: "The flyer is sent for approval before publishing." }
+    review: { es: "Orden y tamaño de nombre: lo define la artista con cada promotor.", en: "Order and name size: defined by the artist with each promoter." }
+  - id: fuerza-mayor
+    demo: true
+    title: { es: "Fuerza mayor", en: "Force majeure" }
+    text: { es: "Clima extremo, cortes de energía, emergencias sanitarias o decisiones de la autoridad que impidan el evento. En esos casos se reprograma o se acuerda otra solución.", en: "Extreme weather, power cuts, health emergencies or authority decisions that prevent the event. In those cases the date is rescheduled or another solution is agreed." }
+    points: []
+    review: { es: "Redacción a revisar por un abogado.", en: "Wording to be reviewed by a lawyer." }
+  - id: factura
+    demo: true
+    title: { es: "Facturación en Argentina", en: "Invoicing in Argentina" }
+    text: { es: "Para promotores de Argentina. Datos orientativos sobre cómo se factura un servicio artístico. No es asesoramiento contable.", en: "For promoters in Argentina. Orientative notes on how an artistic service is invoiced. This is not accounting advice." }
+    points:
+      - { es: "Quienes están en el monotributo emiten en general Factura C, con un punto de venta dado de alta en ARCA.", en: "Those under monotributo generally issue Factura C, with a point of sale registered with ARCA." }
+      - { es: "Sobre un monto que ARCA actualiza (hoy, a confirmar), es obligatorio identificar al cliente con CUIT, CUIL o DNI.", en: "Above an amount that ARCA updates (currently to be confirmed), the client must be identified with CUIT, CUIL or DNI." }
+      - { es: "Para pagos desde el exterior, la forma de facturar se acuerda caso por caso.", en: "For payments from abroad, how to invoice is agreed case by case." }
+    review: { es: "Confirmar categoría fiscal, montos vigentes y facturación al exterior con el contador de la artista.", en: "Confirm tax category, current thresholds and invoicing abroad with the artist's accountant." }

@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//test//ES
+BEGIN:VEVENT
+UID:ag-1@example.test
+DTSTART;TZID=America/Argentina/Buenos_Aires:20261128T230000
+DTEND;TZID=America/Argentina/Buenos_Aires:20261129T040000
+SUMMARY:Nave Prueba; Sala 2
+LOCATION:Av. Ejemplo 123\nC1425ABC Buenos Aires\nCABA\nArgentina
+GEO:-34.6037;-58.3816
+DESCRIPTION:Puerta 23 hs\, cierre 4 hs.\nhttps://entradas.example.test/ag1
+URL:https://entradas.example.test/ag1
+END:VEVENT
+BEGIN:VEVENT
+UID:ag-2@example.test
+DTSTART;VALUE=DATE:20261212
+DTEND;VALUE=DATE:20261214
+SUMMARY:[AGOTADO] Festival Prueba
+LOCATION:Córdoba\, Argentina
+END:VEVENT
+BEGIN:VEVENT
+UID:ag-3@example.test
+DTSTART;TZID=America/Argentina/Buenos_Aires:20260905T220000
+SUMMARY:[Cancelado] Club Prueba
+LOCATION:Calle Falsa 1\n7000 Tandil\nBuenos Aires\nArgentina
+END:VEVENT
+END:VCALENDAR

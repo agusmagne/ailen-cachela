@@ -1,0 +1,123 @@
+---
+/**
+ * Escenario del visualizador (lo usan /lab/visualizador/ y /lab/en-vivo/): dos canvas (cromo del shader compartido y anillos
+ * de espectro), botón de inicio, HUD con reproducir, fuente (loop o micrófono), sonido y pantalla completa, y los ajustes.
+ * La lógica está en src/scripts/modules/lab-visualizer.ts. Sin JS se ve el aviso; el sonido nunca arranca solo.
+ */
+import LazyModule from '../ui/LazyModule.astro';
+import LabNoJs from './LabNoJs.astro';
+import SoundBar from './SoundBar.astro';
+import { t, pick, withBase, type Lang } from '../../lib/content';
+import { PRESETS } from '../../lib/lab/presets';
+import { router } from '../../lib/routes';
+
+interface Props { lang: Lang; mode?: 'page' | 'live' }
+const { lang, mode = 'page' } = Astro.props;
+const live = mode === 'live';
+const alternates = router.alternates('lab-live');
+const other = lang === 'es' ? 'en' : 'es';
+const labels = {
+  lang,
+  play: t('lab_viz_start', lang),
+  stop: t('lab_viz_stop', lang),
+  fsEnter: t('lab_viz_fs_enter', lang),
+  fsExit: t('lab_viz_fs_exit', lang),
+  micOn: t('lab_viz_mic_on', lang),
+  micOff: t('lab_viz_mic_off', lang),
+  micDenied: t('lab_viz_mic_denied', lang),
+  micUnsupported: t('lab_viz_mic_unsupported', lang),
+  noAudio: t('lab_seq_no_audio', lang),
+  motionNote: t('lab_viz_motion_note', lang),
+  loopOn: t('lab_viz_loop_on', lang),
+  sessionTitle: t(live ? 'lab_session_live' : 'lab_session_viz', lang),
+  sessionAlbum: t('lab_session_album', lang),
+  sessionArtist: t('lab_session_artist', lang),
+  icon: withBase('/apple-touch-icon.png'),
+};
+const id = live ? 'live' : 'viz';
+---
+
+<LazyModule name="lab-visualizer" props={{ labels, mode }} class={live ? 'viz-wrap viz-wrap--live' : 'lab-tool'} when={live ? 'idle' : 'visible'}>
+  <LabNoJs lang={lang}>{t('lab_viz_desc', lang)}</LabNoJs>
+
+  <div data-app hidden class={live ? 'viz-app' : 'lab-tool'}>
+    <div class="viz-stage" data-stage role="group" aria-label={t('lab_viz_stage', lang)}>
+      <canvas class="viz-gl" data-viz-canvas aria-hidden="true"></canvas>
+      <canvas class="viz-rings" data-viz-rings aria-hidden="true"></canvas>
+
+      {
+        live && (
+          <div class="viz-top">
+            <a href={router.path('lab', lang)}>← {t('base_route_lab', lang)}</a>
+            <span class="viz-top__right">
+              <span class="lab-note">{t('lab_synth_note', lang)}</span>
+              <a href={alternates[other]} hreflang={other} lang={other} aria-label={t('lab_live_lang_label', lang)}>{t('lab_live_lang', lang)}</a>
+            </span>
+          </div>
+        )
+      }
+
+      <div class="viz-start" data-start>
+        <button type="button" class="btn btn--primary btn--xl">{t('lab_viz_start', lang)}</button>
+        <p>{live ? t('lab_live_hint', lang) : t('lab_viz_start_hint', lang)}</p>
+      </div>
+
+      <div class="viz-hud">
+        <button type="button" class="lab-toggle" data-play><span data-play-label>{t('lab_viz_start', lang)}</span></button>
+        <div class="lab-seg" role="group" aria-label={t('lab_viz_source', lang)}>
+          <button type="button" class="lab-toggle" data-source="loop" aria-pressed="true">{t('lab_viz_source_loop', lang)}</button>
+          <button type="button" class="lab-toggle" data-source="mic" aria-pressed="false">{t('lab_viz_source_mic', lang)}</button>
+        </div>
+        <SoundBar lang={lang} />
+        <span class="viz-hud__spacer"></span>
+        <button type="button" class="lab-toggle" data-fs><span data-fs-label>{t('lab_viz_fs_enter', lang)}</span></button>
+      </div>
+
+      {
+        live && (
+          <div class="live-panel">
+            <div class="lab-ctl" style="max-width:none">
+              <label for={`${id}-preset`}><span>{t('lab_viz_loop_label', lang)}</span></label>
+              <select id={`${id}-preset`} class="lab-select" data-preset-select>
+                {PRESETS.map((p) => <option value={p.id}>{pick(p.name, lang)}</option>)}
+              </select>
+            </div>
+            <div class="lab-ctl" style="max-width:none">
+              <label for={`${id}-sens`}><span>{t('lab_viz_sens', lang)}</span></label>
+              <input id={`${id}-sens`} class="lab-range" type="range" min="30" max="300" step="5" value="100" data-sens />
+            </div>
+            <button type="button" class="lab-toggle" data-motion aria-pressed="false" hidden>{t('lab_viz_motion', lang)}</button>
+            <p class="viz-note" data-motion-note hidden></p>
+            <p class="viz-note">{t('lab_viz_mic_note', lang)}</p>
+          </div>
+        )
+      }
+    </div>
+
+    {
+      !live && (
+        <div class="lab-panel">
+          <div class="viz-panel">
+            <div class="lab-ctl" style="max-width:none">
+              <label for={`${id}-preset`}><span>{t('lab_viz_loop_label', lang)}</span></label>
+              <select id={`${id}-preset`} class="lab-select" data-preset-select>
+                {PRESETS.map((p) => <option value={p.id}>{pick(p.name, lang)}</option>)}
+              </select>
+            </div>
+            <div class="lab-ctl" style="max-width:none">
+              <label for={`${id}-sens`}><span>{t('lab_viz_sens', lang)}</span></label>
+              <input id={`${id}-sens`} class="lab-range" type="range" min="30" max="300" step="5" value="100" data-sens />
+            </div>
+            <button type="button" class="lab-toggle" data-motion aria-pressed="false" hidden>{t('lab_viz_motion', lang)}</button>
+          </div>
+          <p class="viz-note" data-motion-note hidden></p>
+          <p class="viz-note">{t('lab_viz_mic_note', lang)}</p>
+          <p class="viz-note" data-mic-state aria-live="off"></p>
+          <p class="viz-note">{t('lab_viz_keys', lang)}</p>
+        </div>
+      )
+    }
+    <p class="lab-status" role="status" aria-live="polite" aria-atomic="true" data-status></p>
+    <p class="viz-note" data-gl-note hidden>{t('lab_viz_fallback', lang)}</p>
+  </div>
+</LazyModule>

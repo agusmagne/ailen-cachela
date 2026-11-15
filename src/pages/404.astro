@@ -1,30 +1,84 @@
 ---
 import Base from '../layouts/Base.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import { t, site, homePath } from '../lib/content';
-const lang = 'es';
+import SiteExtras from '../components/fans/SiteExtras.astro';
+import Chip from '../components/ui/Chip.astro';
+import LazyModule from '../components/ui/LazyModule.astro';
+import { site, t, homePath } from '../lib/content';
+import { router } from '../lib/routes';
+import { routeLabel } from '../lib/nav';
+
+/**
+ * Página 404 (GitHub Pages sirve /404.html para cualquier ruta inexistente). Es una sola página para los dos idiomas:
+ * muestra ambos textos y, con JS, deja solo el del idioma de la ruta pedida (/en/...). Con el shader compartido de
+ * cromo de fondo; sin WebGL o con reducir movimiento queda un degradé o un cuadro fijo.
+ */
+const langs = ['es', 'en'] as const;
+const pages = router.index().filter((r) => r.group !== 'legal');
+const title = `${t('fans_404_title', 'es')} · ${t('fans_404_title', 'en')}`;
 ---
 
-<Base lang={lang} title={`${t('notfound_title', lang)} | ${site.site.name}`} noindex>
-  <Nav lang={lang} />
-  <main id="main" class="nf wrap">
-    <p class="label">404</p>
-    <h1 class="nf__title">{t('notfound_title', lang)}</h1>
-    <p>{t('notfound_text', lang)}</p>
-    <a class="btn btn--primary" href={homePath(lang)}>{t('notfound_back', lang)}</a>
-  </main>
-  <Footer lang={lang} />
+<Base lang="es" title={`${title} | ${site.site.name}`} noindex>
+  <a class="nf-skip" href="#main">{t('skip', 'es')} · {t('skip', 'en')}</a>
+  <LazyModule name="fans-404" when="idle" class="fans-nf" props={{ base: homePath('es') }}>
+    <canvas class="nf__canvas" data-nf-canvas aria-hidden="true"></canvas>
+    <div class="nf__veil" aria-hidden="true"></div>
+    <header class="nf__top wrap">
+      <a class="nf__brand" href={homePath('es')}>{site.site.name}</a>
+    </header>
+    <main id="main" class="nf__main wrap">
+      <p class="label nf__kicker">Error · <span data-egg-tap>404</span></p>
+      <p class="nf__numeral display" aria-hidden="true" data-egg-tap>404</p>
+      <h1 class="nf__title display">
+        {langs.map((l) => <span data-l={l} lang={l}>{t('fans_404_title', l)}</span>)}
+      </h1>
+      {langs.map((l) => <p class="nf__text" data-l={l} lang={l}>{t('fans_404_text', l)}</p>)}
+      <div class="nf__actions">
+        {langs.map((l) => <a class="btn btn--primary btn--xl" href={homePath(l)} lang={l}>{t('fans_404_home', l)}</a>)}
+      </div>
+      {
+        pages.length > 0 && (
+          <div class="nf__goto">
+            {
+              langs.map((l) => (
+                <nav data-l={l} lang={l} aria-label={t('fans_404_goto', l)}>
+                  <p class="label">{t('fans_404_goto', l)}</p>
+                  <ul class="nf__chips">
+                    {pages.map((r) => <li><Chip href={router.path(r.id, l)}>{routeLabel(r.id, l)}</Chip></li>)}
+                  </ul>
+                </nav>
+              ))
+            }
+          </div>
+        )
+      }
+      {langs.map((l) => <p class="label nf__hint" data-l={l} lang={l}>{t('fans_404_hint', l)}</p>)}
+    </main>
+  </LazyModule>
+  <SiteExtras lang="es" />
 </Base>
 
 <style>
-  .nf { display: grid; gap: var(--space-m); justify-items: start; align-content: center; min-height: 80svh; padding-top: calc(var(--header-h) + var(--space-l)); }
-  .nf__title {
-    font-family: var(--font-display);
-    font-weight: var(--font-display-weight);
-    font-size: var(--step-4);
-    line-height: var(--lh-title);
-    letter-spacing: var(--tracking-display);
-    text-transform: var(--case-display);
-  }
+  .nf-skip { position: fixed; z-index: calc(var(--z-overlay) + 1); left: var(--space-s); top: var(--space-s); padding: var(--space-2xs) var(--space-s); background: var(--chrome-50); color: var(--bg); font-family: var(--font-ui); font-size: var(--step-ui); text-transform: var(--case-ui); transform: translateY(-200%); }
+  .nf-skip:focus { transform: none; }
+  :global(.fans-nf) { position: relative; isolation: isolate; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+  .nf__canvas { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; opacity: 0; transition: opacity 1.4s var(--ease-out); }
+  .nf__canvas.is-live { opacity: 1; }
+  :global(.fans-nf)::before { content: ''; position: absolute; inset: 0; z-index: -4; background: var(--fans-nf-glow), var(--bg); }
+  .nf__veil { position: absolute; inset: 0; z-index: -2; background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 52%, transparent), color-mix(in srgb, var(--bg) 84%, transparent) 70%, var(--bg)); }
+  .nf__top { display: flex; align-items: center; min-height: var(--header-h); padding-top: var(--safe-t); }
+  .nf__brand { display: inline-flex; align-items: center; min-height: var(--tap); font-family: var(--font-display); font-weight: var(--font-display-weight); font-stretch: var(--stretch-display); letter-spacing: var(--tracking-display); text-transform: var(--case-display); color: var(--chrome-50); }
+  .nf__main { position: relative; display: grid; gap: var(--space-s); justify-items: start; align-content: center; padding-block: var(--space-xl); }
+  .nf__kicker { color: var(--accent); }
+  .nf__numeral { position: absolute; z-index: -1; top: 50%; right: var(--pad-r); transform: translateY(-62%); font-size: var(--fans-nf-numeral); line-height: 0.8; letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px var(--chrome-500); pointer-events: auto; user-select: none; }
+  .nf__title { font-size: clamp(2.2rem, 1.2rem + 6vw, 6rem); line-height: 0.96; overflow-wrap: anywhere; max-width: 14ch; }
+  .nf__title [data-l] { display: block; }
+  .nf__title [data-l='en'] { color: var(--chrome-300); }
+  .nf__text { max-width: var(--measure); color: var(--chrome-200); }
+  .nf__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); padding-top: var(--space-2xs); }
+  .nf__goto { display: grid; gap: var(--space-s); padding-top: var(--space-m); }
+  .nf__goto nav { display: grid; gap: var(--space-2xs); }
+  .nf__chips { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .nf__hint { color: var(--subtle); padding-top: var(--space-s); }
+  [data-l][hidden] { display: none !important; }
+  @media (max-width: 52rem) { .nf__numeral { top: 18%; transform: none; right: var(--pad-r); } }
 </style>

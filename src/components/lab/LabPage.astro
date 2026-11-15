@@ -1,0 +1,26 @@
+---
+/**
+ * Envoltorio de las páginas del Lab: PageLayout + estilos compartidos + la aclaración de que el sonido es sintetizado.
+ * Cada herramienta (SequencerPage, VisualizerPage, ...) lo usa y lleva su propio marcado en el slot por defecto.
+ */
+import './lab.css';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { t, type Lang } from '../../lib/content';
+
+interface Props {
+  lang: Lang;
+  route: string;
+  title: string;
+  description: string;
+  lead: string;
+  /** muestra "sonido sintetizado..." en la cabecera */
+  sound?: boolean;
+}
+const { lang, route, title, description, lead, sound = true } = Astro.props;
+---
+
+<PageLayout lang={lang} route={route} title={title} description={description}>
+  <p slot="lead">{lead}</p>
+  {sound && <Fragment slot="meta"><span class="lab-note">{t('lab_synth_note', lang)}</span></Fragment>}
+  <slot />
+</PageLayout>

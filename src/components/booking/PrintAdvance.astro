@@ -1,0 +1,61 @@
+---
+import PrintLayout from '../../layouts/PrintLayout.astro';
+import { ADVANCE_FORM } from '../../lib/booking/form';
+import { t, site, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import { fieldLabelKey, optionKey, sectionKey } from './ui';
+
+/** Hoja de avance (advance sheet) imprimible: el promotor la completa y la manda unos 7 días antes. */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const form = ADVANCE_FORM;
+const rows = form.fields;
+/** Ancho de cada campo en una grilla de 6 columnas: las horas y fechas ocupan 2, los textos 3 y los largos toda la fila. */
+const span = (f: (typeof rows)[number]) => (f.id === 'event' ? 4 : f.kind === 'time' || f.kind === 'date' || f.kind === 'number' || f.kind === 'checkbox' ? 2 : f.kind === 'select' || f.kind === 'textarea' || f.id === 'payment' ? 6 : 3);
+---
+
+<PrintLayout lang={lang} title={t('booking_advance_title', lang)} doc={t('booking_print_doc_advance', lang)} demo>
+  <section class="sheet__page">
+    <h1>{t('booking_advance_title', lang)}</h1>
+    <p>{t('booking_print_advance_intro', lang)} <strong>{site.contact.email}</strong></p>
+    <h2>{t(sectionKey(form, 1), lang)}</h2>
+    <div class="bk-adv">
+      {
+        rows.map((f) => (
+          <div class="bk-adv__row" style={`grid-column: span ${span(f)}`}>
+            {f.kind === 'checkbox' ? (
+              <p class="bk-adv__check"><span class="bk-adv__box"></span> {t(fieldLabelKey(form, f.id), lang)}</p>
+            ) : f.kind === 'select' ? (
+              <>
+                <p class="bk-adv__label">{t(fieldLabelKey(form, f.id), lang)}</p>
+                <p class="bk-adv__opts">{(f.options ?? []).map((o) => <span><span class="bk-adv__box"></span> {t(optionKey(form, f.id, o), lang)}</span>)}</p>
+              </>
+            ) : (
+              <>
+                <p class="bk-adv__label">{t(fieldLabelKey(form, f.id), lang)}{f.required ? ' *' : ''}</p>
+                <p class:list={['bk-adv__line', { 'bk-adv__line--tall': f.kind === 'textarea' }]}></p>
+              </>
+            )}
+          </div>
+        ))
+      }
+    </div>
+    <p class="bk-adv__note">{t('booking_print_advance_note', lang)}</p>
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>{t('booking_print_doc_advance', lang)}</span></footer>
+  </section>
+</PrintLayout>
+
+<style is:global>
+  .bk-adv { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.6mm 6mm; }
+  .bk-adv__row { break-inside: avoid; display: grid; gap: 0.6mm; align-content: end; }
+  .bk-adv__label { font-family: var(--font-ui); font-size: 7pt; letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--paper-muted); }
+  .bk-adv__line { height: 4.4mm; border-bottom: 0.4pt solid var(--paper-ink); }
+  .bk-adv__line--tall { height: 8mm; }
+  .bk-adv__opts { display: flex; flex-wrap: wrap; gap: 1mm 4mm; font-size: 9pt; }
+  .bk-adv__check { font-size: 9.5pt; }
+  .sheet .bk-adv__opts, .sheet .bk-adv__check { line-height: 1.3; }
+  .bk-adv__box { display: inline-block; width: 3mm; height: 3mm; border: 0.5pt solid var(--paper-ink); vertical-align: -0.5mm; margin-right: 1mm; }
+  .bk-adv__note { margin-top: 3mm; font-size: 8.5pt; color: var(--paper-muted); }
+</style>

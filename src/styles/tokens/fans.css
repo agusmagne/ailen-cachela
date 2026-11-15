@@ -1,0 +1,21 @@
+/* Tokens del paquete fans (tienda, newsletter, comunidad, links, legales, 404). Base.astro los importa solo. */
+:root {
+  /* Tienda */
+  --fans-poster-ratio: 3 / 4;
+  --fans-digit-size: clamp(2.4rem, 1rem + 7.2vw, 6.5rem);
+  --fans-digit-gap: clamp(0.5rem, 2vw, 1.5rem);
+  --fans-tray-bg: color-mix(in srgb, var(--bg-raised) 90%, transparent);
+  --fans-tray-offset: var(--space-s);
+  /* Link-in-bio */
+  --fans-links-max: 30rem;
+  --fans-link-h: var(--tap-lg);
+  --fans-links-glow: radial-gradient(60% 40% at 50% 0%, color-mix(in srgb, var(--chrome-300) 16%, transparent), transparent 70%);
+  /* 404 */
+  --fans-nf-glow: radial-gradient(70% 55% at 50% 38%, color-mix(in srgb, var(--chrome-200) 10%, transparent), transparent 72%);
+  --fans-nf-numeral: clamp(7rem, 4rem + 28vw, 26rem);
+  /* Easter egg (modo cromo): duración del destello */
+  --fans-egg-dur: 2400ms;
+}
+@media (max-width: 52rem) {
+  :root { --fans-tray-offset: calc(var(--dock-h) + var(--safe-b) + var(--space-2xs)); }
+}

@@ -1,0 +1,107 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Chip from '../ui/Chip.astro';
+import DataTable from '../ui/DataTable.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import Button from '../ui/Button.astro';
+import ReleaseTile from './ReleaseTile.astro';
+import { t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { releases, charts } from '../../lib/disco/data';
+import { filterOptions } from '../../lib/disco/releases';
+import { buildHash } from '../../lib/disco/filter';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const opts = filterOptions(releases);
+const hasFilters = releases.length > 1;
+const groups = [
+  { key: 'k', title: t('disco_filter_kind', lang), values: opts.kinds.map((k) => ({ value: k, label: t(`disco_kind_${k}`, lang) })) },
+  { key: 'y', title: t('disco_filter_year', lang), values: opts.years.map((y) => ({ value: String(y), label: String(y) })) },
+  { key: 'l', title: t('disco_filter_label_group', lang), values: opts.labels.map((l) => ({ value: l, label: l })) },
+].filter((g) => g.values.length > 1);
+const total = releases.length;
+const anyDemo = releases.some((r) => r.demo);
+const hasMixes = router.listed('mixes');
+---
+
+<PageLayout lang={lang} route="music" title={t('disco_music_title', lang)} description={t('disco_music_desc', lang)} demo={anyDemo} empty={releases.length === 0}>
+  <p slot="lead">{t(anyDemo ? 'disco_music_lead' : 'disco_music_lead_real', lang)}</p>
+  {hasMixes && (
+    <Fragment slot="meta"><Button href={router.path('mixes', lang)} variant="primary" arrow>{t('base_route_mixes', lang)}</Button></Fragment>
+  )}
+
+  {
+    releases.length === 0 ? (
+      <EmptyState lang={lang} />
+    ) : (
+      <>
+        <section class="page-block" aria-labelledby="disco-list-title">
+          <SectionHead lang={lang} id="disco-list-title" title={t('disco_discography', lang)} kicker={String(total).padStart(2, '0')} lead={t('disco_discography_lead', lang)} />
+          <LazyModule name="disco-filter" props={{ total, countText: t('disco_filter_count', lang, { shown: '{shown}', total: '{total}' }) }} when="idle" class="disco">
+            {
+              hasFilters && groups.length > 0 && (
+                <div class="disco__bar" data-filter-bar hidden role="group" aria-label={t('disco_filter_label', lang)}>
+                  {groups.map((g) => (
+                    <div class="disco__group">
+                      <p class="label disco__group-title" id={`flt-${g.key}`}>{g.title}</p>
+                      <div class="disco__chips" role="group" aria-labelledby={`flt-${g.key}`}>
+                        <Chip href={`#${buildHash({})}`} data-filter-key={g.key} data-filter-value="" selected>{t('disco_filter_all', lang)}</Chip>
+                        {g.values.map((v) => (
+                          <Chip href={`#${buildHash({ [g.key]: v.value })}`} data-filter-key={g.key} data-filter-value={v.value}>{v.label}</Chip>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <p class="label disco__count" role="status" aria-live="polite" data-filter-count>{t('disco_filter_count', lang, { shown: total, total })}</p>
+                </div>
+              )
+            }
+            <ul class="disco__grid" aria-label={t('disco_list_label', lang)} data-filter-list>
+              {releases.map((r, i) => <ReleaseTile lang={lang} release={r} priority={i < 2} />)}
+            </ul>
+            <div class="disco__none" data-filter-none hidden>
+              <p>{t('disco_filter_none', lang)}</p>
+              <Button href={`#${buildHash({})}`} data-filter-reset>{t('disco_filter_reset', lang)}</Button>
+            </div>
+          </LazyModule>
+        </section>
+
+        {
+          charts.map((c) => (
+            <section class="page-block" aria-labelledby={`chart-${c.id}`}>
+              <SectionHead lang={lang} id={`chart-${c.id}`} title={pick(c.title, lang)} kicker={formatDate(`${c.month}-01`, lang, { month: 'long', year: 'numeric' })} lead={t('disco_charts_lead', lang)} demo={c.demo} />
+              <DataTable
+                lang={lang}
+                caption={t('disco_charts_caption', lang, { month: formatDate(`${c.month}-01`, lang, { month: 'long', year: 'numeric' }) })}
+                columns={[
+                  { key: 'pos', label: t('disco_col_pos', lang), numeric: true, nowrap: true },
+                  { key: 'title', label: t('disco_col_title', lang) },
+                  { key: 'artist', label: t('disco_col_artist', lang) },
+                  { key: 'label', label: t('disco_col_label', lang) },
+                  { key: 'bpm', label: t('disco_col_bpm', lang), numeric: true, nowrap: true },
+                  { key: 'key', label: t('disco_col_key', lang), nowrap: true },
+                ]}
+                rows={c.entries.map((e) => ({ pos: String(e.position).padStart(2, '0'), title: e.title, artist: e.artist, label: e.label, bpm: e.bpm, key: e.key }))}
+              />
+            </section>
+          ))
+        }
+      </>
+    )
+  }
+</PageLayout>
+
+<style>
+  .disco { display: grid; gap: var(--space-m); }
+  .disco__bar { display: grid; gap: var(--space-s); padding-bottom: var(--space-m); border-bottom: var(--divider); }
+  .disco__bar[hidden] { display: none; }
+  .disco__group { display: grid; gap: var(--space-2xs); }
+  .disco__chips { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .disco__count { color: var(--accent); }
+  .disco__grid { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--disco-grid-min)), 1fr)); padding: 0; }
+  .disco__none { display: grid; gap: var(--space-s); justify-items: start; padding: var(--space-l) var(--space-m); border: var(--card-border); color: var(--muted); }
+  .disco__none[hidden], .disco__grid[hidden] { display: none; }
+</style>

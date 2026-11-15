@@ -1,0 +1,350 @@
+# Textos de interfaz del paquete booking (es/en). Prefijo obligatorio: booking_.
+# Los textos de las condiciones, riders y hospitalidad están en src/content/booking.yaml (son plantillas de ejemplo).
+
+# ---- Rutas: títulos de página, migas y menú -----------------------------------------------------------------
+booking_title: { es: "Booking", en: "Booking" }
+booking_kicker: { es: "Trabajo · Contratación", en: "Work · Booking" }
+booking_desc: { es: "Consultá la contratación de Ailén Cachela: proceso, rider técnico, hospitalidad, condiciones y un formulario que arma el mail de booking.", en: "Book Ailén Cachela: process, technical rider, hospitality, terms and a form that builds the booking email." }
+booking_lead: { es: "Todo lo que necesitás para consultar una fecha: cómo se trabaja, qué equipo se pide y un formulario que arma el mail con los datos de tu evento. Nada se envía desde esta página: el mensaje sale desde tu correo.", en: "Everything you need to enquire about a date: how it works, what gear is requested and a form that builds the email with your event details. Nothing is sent from this page: the message leaves from your own email." }
+booking_cta_form: { es: "Armar consulta", en: "Build an enquiry" }
+booking_route_tech: { es: "Rider técnico", en: "Technical rider" }
+booking_route_hospitality: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+booking_route_terms: { es: "Condiciones", en: "Terms" }
+booking_back_to_booking: { es: "Volver a Booking", en: "Back to Booking" }
+booking_empty_title: { es: "Este documento todavía no está", en: "This document is not ready yet" }
+booking_empty_text: { es: "Los textos de riders y condiciones se publican cuando la artista los confirme. Mientras tanto, escribí al email de booking.", en: "Rider and terms texts are published once the artist confirms them. Meanwhile, write to the booking email." }
+
+# ---- Cómo trabajo ----------------------------------------------------------------------------------------------------
+booking_process_title: { es: "Cómo trabajo", en: "How it works" }
+booking_process_kicker: { es: "Proceso", en: "Process" }
+booking_process_lead: { es: "Cinco pasos, de la primera consulta al día del evento.", en: "Five steps, from the first enquiry to the day of the event." }
+
+# ---- Documentos ----------------------------------------------------------------------------------------------------------
+booking_docs_title: { es: "Documentos", en: "Documents" }
+booking_docs_kicker: { es: "Riders y condiciones", en: "Riders and terms" }
+booking_docs_lead: { es: "Plantillas de ejemplo para ver cómo se presentan. Los textos definitivos los confirma la artista.", en: "Sample templates showing how they are presented. The final texts are confirmed by the artist." }
+booking_doc_tech_title: { es: "Rider técnico", en: "Technical rider" }
+booking_doc_tech_kicker: { es: "Cabina y sala", en: "Booth and room" }
+booking_doc_tech_text: { es: "Configuraciones de cabina con diagrama, requisitos de sala y variantes DJ, live e híbrido.", en: "Booth setups with a diagram, room requirements and DJ, live and hybrid variants." }
+booking_doc_hospitality_title: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+booking_doc_hospitality_kicker: { es: "Camarín, comida, traslados", en: "Dressing room, food, travel" }
+booking_doc_hospitality_text: { es: "Lo imprescindible y lo que se pide solo si está disponible, escrito sin exigencias.", en: "What is essential and what is asked only if available, written without demands." }
+booking_doc_terms_title: { es: "Condiciones", en: "Terms" }
+booking_doc_terms_kicker: { es: "Plantilla a revisar", en: "Template to review" }
+booking_doc_terms_text: { es: "Duración, fee, depósito, cancelación, grabación, uso de imagen y facturación en Argentina.", en: "Length, fee, deposit, cancellation, recording, use of image and invoicing in Argentina." }
+booking_doc_advance_title: { es: "Advance sheet", en: "Advance sheet" }
+booking_doc_advance_kicker: { es: "Hoja de avance", en: "Pre-event sheet" }
+booking_doc_advance_text: { es: "Horarios, equipo, lista de invitados y contacto en el lugar, unos 7 días antes.", en: "Times, gear, guest list and on-site contact, about 7 days before." }
+
+# ---- Formulario de booking -------------------------------------------------------------------------------
+booking_form_title: { es: "Consulta de booking", en: "Booking enquiry" }
+booking_form_kicker: { es: "Formulario", en: "Form" }
+booking_form_lead: { es: "Completá lo que sepas, en cuatro pasos. Al final se arma un mail listo para enviar desde tu cliente de correo, o podés copiar el texto. No guardamos nada.", en: "Fill in what you know, in four steps. At the end an email is built, ready to send from your own mail client, or you can copy the text. We store nothing." }
+booking_form_label_booking: { es: "Consulta de booking", en: "Booking enquiry" }
+booking_form_label_advance: { es: "Advance sheet", en: "Advance sheet" }
+booking_progress: { es: "Paso {n} de {total} · {title}", en: "Step {n} of {total} · {title}" }
+booking_next: { es: "Siguiente", en: "Next" }
+booking_review: { es: "Revisar", en: "Review" }
+booking_back: { es: "Volver", en: "Back" }
+booking_required: { es: "obligatorio", en: "required" }
+booking_choose: { es: "Elegí una opción", en: "Choose an option" }
+booking_yes: { es: "Sí", en: "Yes" }
+booking_errors_title: { es: "Hay campos para revisar ({n})", en: "Some fields need a look ({n})" }
+booking_err_required: { es: "Este campo es obligatorio.", en: "This field is required." }
+booking_err_email: { es: "Escribí un email válido, por ejemplo nombre@dominio.com.", en: "Enter a valid email, for example name@domain.com." }
+booking_err_date: { es: "Elegí una fecha válida.", en: "Choose a valid date." }
+booking_err_past: { es: "La fecha ya pasó. Elegí una fecha futura.", en: "That date has passed. Choose a future date." }
+booking_err_time: { es: "Escribí la hora con formato 23:30.", en: "Enter the time as 23:30." }
+booking_err_number: { es: "Escribí solo números enteros.", en: "Enter whole numbers only." }
+booking_err_range: { es: "El número está fuera del rango permitido.", en: "The number is outside the allowed range." }
+booking_err_url: { es: "Escribí un link completo que empiece con https://.", en: "Enter a full link starting with https://." }
+booking_err_option: { es: "Elegí una de las opciones.", en: "Choose one of the options." }
+booking_err_long: { es: "El texto es demasiado largo.", en: "The text is too long." }
+
+# ---- Pasos del formulario de booking -----------------------------------------------------------------
+booking_sb_1: { es: "Evento y lugar", en: "Event and venue" }
+booking_sb_2: { es: "Line-up y técnica", en: "Line-up and technical" }
+booking_sb_3: { es: "Economía y logística", en: "Budget and logistics" }
+booking_si_b_1: { es: "Quién escribe, qué evento es y dónde y cuándo se hace.", en: "Who is writing, what the event is and where and when it happens." }
+booking_si_b_2: { es: "Con quién comparte cartel, en qué franja y con qué equipo.", en: "Who shares the bill, in which slot and with what gear." }
+booking_si_b_3: { es: "El fee que proponés y quién cubre viáticos. Todo se confirma por escrito después.", en: "The fee you propose and who covers travel. Everything is confirmed in writing afterwards." }
+booking_summary_title: { es: "Revisá y enviá", en: "Review and send" }
+booking_summary_intro: { es: "Esto es lo que vas a mandar. Podés volver y corregir cualquier dato.", en: "This is what you are about to send. You can go back and fix anything." }
+booking_summary_empty: { es: "Todavía no completaste ningún dato.", en: "You have not filled in anything yet." }
+booking_open_mail: { es: "Abrir en mi correo", en: "Open in my email" }
+booking_copy_text: { es: "Copiar texto", en: "Copy text" }
+booking_copied: { es: "Texto copiado", en: "Text copied" }
+booking_copy_failed: { es: "No se pudo copiar solo. Seleccioná el texto de abajo y copialo a mano.", en: "Could not copy automatically. Select the text below and copy it by hand." }
+booking_opened_after_copy: { es: "Se abrió tu correo y el texto completo quedó copiado: pegalo en el mensaje.", en: "Your email opened and the full text was copied: paste it into the message." }
+booking_trim_warning: { es: "El mensaje es largo y algunos correos lo cortan. El botón abre una versión corta con los datos clave y copia el texto completo para que lo pegues.", en: "The message is long and some email apps cut it off. The button opens a short version with the key details and copies the full text for you to paste." }
+booking_raw_label: { es: "Texto completo del mensaje", en: "Full message text" }
+booking_nojs_submit: { es: "Abrir mi correo con estos datos", en: "Open my email with these details" }
+booking_nojs_hint: { es: "Sin JavaScript el botón arma el mail con lo que completaste, en texto plano.", en: "Without JavaScript the button builds the email with what you filled in, as plain text." }
+booking_nojs_template: { es: "O abrí una plantilla en blanco", en: "Or open a blank template" }
+booking_mail_subject_booking: { es: "Consulta de booking", en: "Booking enquiry" }
+booking_mail_subject_advance: { es: "Advance sheet", en: "Advance sheet" }
+booking_mail_greeting_booking: { es: "Hola Ailén, te escribo por una consulta de booking. Estos son los datos que tengo:", en: "Hi Ailén, I am writing with a booking enquiry. These are the details I have:" }
+booking_mail_greeting_advance: { es: "Hola, te paso la hoja de avance de la fecha:", en: "Hi, here is the advance sheet for the date:" }
+booking_mail_closing: { es: "Gracias, quedo atento a tu respuesta.", en: "Thanks, I look forward to your reply." }
+booking_mail_trimmed: { es: "(Mensaje recortado por su largo: el detalle completo está en el portapapeles. Pegalo acá.)", en: "(Message shortened because of its length: the full detail is in the clipboard. Paste it here.)" }
+
+# ---- Campos del formulario de booking (fb) ---------------------------------------------------------------
+booking_fb_contact_name: { es: "Tu nombre", en: "Your name" }
+booking_fb_organization: { es: "Productora, club o festival", en: "Promoter, club or festival" }
+booking_fb_email: { es: "Tu email", en: "Your email" }
+booking_fb_event_name: { es: "Nombre del evento", en: "Event name" }
+booking_fb_event_type: { es: "Tipo de evento", en: "Event type" }
+booking_fb_date: { es: "Fecha", en: "Date" }
+booking_fb_alt_date: { es: "Fecha alternativa", en: "Alternative date" }
+booking_fb_city: { es: "Ciudad", en: "City" }
+booking_fb_country: { es: "País", en: "Country" }
+booking_fb_venue: { es: "Lugar o venue", en: "Venue" }
+booking_fb_capacity: { es: "Capacidad", en: "Capacity" }
+booking_fb_start_time: { es: "Hora de apertura", en: "Doors open" }
+booking_fb_end_time: { es: "Hora de cierre o corte", en: "Closing or curfew" }
+booking_fb_lineup: { es: "Line-up previsto", en: "Planned line-up" }
+booking_fb_slot: { es: "Franja propuesta", en: "Proposed slot" }
+booking_fb_format: { es: "Formato", en: "Format" }
+booking_fb_duration: { es: "Duración del set", en: "Set length" }
+booking_fb_equipment: { es: "Equipo en cabina", en: "Booth equipment" }
+booking_fb_monitors: { es: "Hay monitores de cabina", en: "Booth monitors available" }
+booking_fb_mic: { es: "Hay micrófono cerca de la cabina", en: "Microphone near the booth" }
+booking_fb_links: { es: "Link del evento o de la edición anterior", en: "Link to the event or the previous edition" }
+booking_fb_tech_notes: { es: "Notas técnicas", en: "Technical notes" }
+booking_fb_fee: { es: "Fee propuesto", en: "Proposed fee" }
+booking_fb_currency: { es: "Moneda", en: "Currency" }
+booking_fb_travel: { es: "Traslados y alojamiento", en: "Travel and accommodation" }
+booking_fb_people: { es: "Personas que viajan", en: "People travelling" }
+booking_fb_nights: { es: "Noches de alojamiento", en: "Nights of accommodation" }
+booking_fb_transfer: { es: "Incluye traslados locales", en: "Includes local transfers" }
+booking_fb_notes: { es: "Algo más que quieras contar", en: "Anything else you want to tell us" }
+
+booking_hb_email: { es: "Para responderte. No se guarda ni se envía a ningún servicio.", en: "To reply to you. It is not stored or sent to any service." }
+booking_hb_date: { es: "Si todavía no está cerrada, poné la más probable.", en: "If it is not settled yet, enter the most likely one." }
+booking_hb_capacity: { es: "Cantidad de personas, aproximada.", en: "Approximate number of people." }
+booking_hb_end_time: { es: "Formato 23:30.", en: "Format 23:30." }
+booking_hb_lineup: { es: "Nombres y horarios, aunque sean tentativos.", en: "Names and times, even if tentative." }
+booking_hb_links: { es: "Para conocer el contexto del evento.", en: "To understand the context of the event." }
+booking_hb_fee: { es: "Un monto o un rango. Puede quedar vacío si preferís conversarlo.", en: "An amount or a range. It can stay empty if you prefer to discuss it." }
+booking_hb_people: { es: "De 1 a 10.", en: "From 1 to 10." }
+booking_hb_nights: { es: "De 0 a 14.", en: "From 0 to 14." }
+
+booking_ob_event_type_club: { es: "Club", en: "Club" }
+booking_ob_event_type_festival: { es: "Festival", en: "Festival" }
+booking_ob_event_type_after: { es: "After", en: "After-hours" }
+booking_ob_event_type_private: { es: "Evento privado", en: "Private event" }
+booking_ob_event_type_stream: { es: "Radio o streaming", en: "Radio or stream" }
+booking_ob_event_type_other: { es: "Otro", en: "Other" }
+booking_ob_slot_warmup: { es: "Warm-up", en: "Warm-up" }
+booking_ob_slot_peak: { es: "Pico de la noche", en: "Peak time" }
+booking_ob_slot_closing: { es: "Cierre", en: "Closing" }
+booking_ob_slot_after: { es: "After", en: "After-hours" }
+booking_ob_slot_tbd: { es: "A definir", en: "To be defined" }
+booking_ob_format_dj: { es: "DJ set", en: "DJ set" }
+booking_ob_format_live: { es: "Live set", en: "Live set" }
+booking_ob_format_hybrid: { es: "Híbrido (DJ con live)", en: "Hybrid (DJ with live)" }
+booking_ob_format_tbd: { es: "A definir", en: "To be defined" }
+booking_ob_duration_1h: { es: "1 hora", en: "1 hour" }
+booking_ob_duration_2h: { es: "2 horas", en: "2 hours" }
+booking_ob_duration_3h: { es: "3 horas", en: "3 hours" }
+booking_ob_duration_other: { es: "Otra duración (la aclaro en las notas)", en: "Other length (explained in the notes)" }
+booking_ob_equipment_rider: { es: "Lo que pide el rider técnico", en: "What the technical rider asks for" }
+booking_ob_equipment_other: { es: "Otro equipo (lo aclaro en las notas)", en: "Other gear (explained in the notes)" }
+booking_ob_equipment_unknown: { es: "Todavía no lo sé", en: "I do not know yet" }
+booking_ob_currency_ars: { es: "Pesos argentinos (ARS)", en: "Argentine pesos (ARS)" }
+booking_ob_currency_usd: { es: "Dólares (USD)", en: "US dollars (USD)" }
+booking_ob_currency_eur: { es: "Euros (EUR)", en: "Euros (EUR)" }
+booking_ob_currency_other: { es: "Otra", en: "Other" }
+booking_ob_travel_promoter: { es: "Los cubre el promotor", en: "Covered by the promoter" }
+booking_ob_travel_included: { es: "Incluidos en el fee", en: "Included in the fee" }
+booking_ob_travel_discuss: { es: "A conversar", en: "To discuss" }
+
+# ---- Advance sheet (fa) --------------------------------------------------------------------------------
+booking_advance_title: { es: "Advance sheet", en: "Advance sheet" }
+booking_advance_kicker: { es: "Hoja de avance", en: "Pre-event sheet" }
+booking_advance_lead: { es: "Con la fecha confirmada, unos 7 días antes se completan los detalles prácticos del día. Este formulario arma el mail; también hay una versión para imprimir.", en: "Once the date is confirmed, about 7 days before the practical details of the day are completed. This form builds the email; there is also a printable version." }
+booking_advance_pdf: { es: "Advance sheet imprimible", en: "Printable advance sheet" }
+booking_advance_pdf_desc: { es: "Hoja A4 para completar a mano o en pantalla.", en: "A4 sheet to fill in by hand or on screen." }
+booking_sa_1: { es: "Datos del evento y del día", en: "Event and day details" }
+booking_si_a_1: { es: "Horarios, equipo y contacto en el lugar. Lo que no sepas todavía, dejalo vacío.", en: "Times, gear and on-site contact. Leave empty whatever you do not know yet." }
+booking_fa_event: { es: "Evento", en: "Event" }
+booking_fa_date: { es: "Fecha", en: "Date" }
+booking_fa_venue: { es: "Lugar o venue", en: "Venue" }
+booking_fa_address: { es: "Dirección", en: "Address" }
+booking_fa_site_name: { es: "Contacto en el lugar", en: "On-site contact" }
+booking_fa_site_phone: { es: "Teléfono del contacto", en: "Contact phone" }
+booking_fa_load_in: { es: "Hora de llegada y carga", en: "Arrival and load-in time" }
+booking_fa_soundcheck: { es: "Prueba de sonido", en: "Soundcheck" }
+booking_fa_set_start: { es: "Inicio del set", en: "Set start" }
+booking_fa_set_end: { es: "Fin del set", en: "Set end" }
+booking_fa_curfew: { es: "Horario de corte del lugar", en: "Venue curfew" }
+booking_fa_equipment: { es: "Equipo en cabina", en: "Booth equipment" }
+booking_fa_monitors: { es: "Monitores de cabina confirmados", en: "Booth monitors confirmed" }
+booking_fa_guest_deadline: { es: "Fecha límite de la lista", en: "Guest list deadline" }
+booking_fa_guest_count: { es: "Invitados acordados", en: "Agreed guests" }
+booking_fa_hotel: { es: "Alojamiento", en: "Accommodation" }
+booking_fa_transport: { es: "Traslados (horarios y puntos)", en: "Transfers (times and places)" }
+booking_fa_payment: { es: "Forma y momento de pago", en: "Payment method and timing" }
+booking_fa_notes: { es: "Notas", en: "Notes" }
+booking_fa_sender_name: { es: "Tu nombre", en: "Your name" }
+booking_fa_sender_email: { es: "Tu email", en: "Your email" }
+booking_ha_site_phone: { es: "Para ubicar al equipo el día del evento.", en: "To reach the team on the day of the event." }
+booking_ha_load_in: { es: "Formato 18:30.", en: "Format 18:30." }
+booking_ha_guest_count: { es: "De 0 a 200.", en: "From 0 to 200." }
+booking_oa_equipment_rider: { es: "Como en el rider técnico", en: "As in the technical rider" }
+booking_oa_equipment_changes: { es: "Hay cambios (los aclaro en las notas)", en: "There are changes (explained in the notes)" }
+booking_oa_equipment_unknown: { es: "Todavía no lo sé", en: "I do not know yet" }
+booking_oa_hotel_yes: { es: "Sí, alojamiento incluido", en: "Yes, accommodation included" }
+booking_oa_hotel_no: { es: "No hace falta", en: "Not needed" }
+booking_oa_hotel_tbd: { es: "A definir", en: "To be defined" }
+
+# ---- Contacto ---------------------------------------------------------------------------------------------------------
+booking_contact_title: { es: "Contacto directo", en: "Direct contact" }
+booking_contact_kicker: { es: "Booking", en: "Booking" }
+booking_contact_lead: { es: "Si preferís escribir sin formulario, este es el email de booking.", en: "If you prefer to write without the form, this is the booking email." }
+booking_contact_email: { es: "Email de booking", en: "Booking email" }
+booking_contact_base: { es: "Ciudad base", en: "Home base" }
+booking_contact_tz: { es: "Zona horaria", en: "Time zone" }
+booking_contact_tz_value: { es: "Buenos Aires (UTC−3)", en: "Buenos Aires (UTC−3)" }
+booking_contact_write: { es: "Escribir un mail", en: "Write an email" }
+booking_contact_copy: { es: "Copiar email", en: "Copy email" }
+booking_contact_copy_aria: { es: "Copiar el email de booking al portapapeles", en: "Copy the booking email to the clipboard" }
+booking_vcard_label: { es: "Contacto de booking (vCard)", en: "Booking contact (vCard)" }
+booking_vcard_desc: { es: "Para guardar el contacto en tu agenda. Solo lleva el email.", en: "To save the contact in your address book. It only contains the email." }
+booking_vcard_title: { es: "Booking", en: "Booking" }
+booking_vcard_note: { es: "Contacto de booking de Ailén Cachela.", en: "Booking contact for Ailén Cachela." }
+booking_qr_label: { es: "Código QR que lleva a la página de booking", en: "QR code linking to the booking page" }
+booking_qr_caption: { es: "Esta página", en: "This page" }
+
+# ---- Representación ------------------------------------------------------------------------------------------------
+booking_rep_title: { es: "Representación", en: "Representation" }
+booking_rep_kicker: { es: "Por territorio", en: "By territory" }
+booking_rep_lead: { es: "Ejemplo de cómo se mostraría una agencia por región. Hoy ninguna está confirmada.", en: "An example of how an agency per region would be shown. None is confirmed today." }
+
+# ---- Rider técnico ---------------------------------------------------------------------------------------------------
+booking_tech_title: { es: "Rider técnico", en: "Technical rider" }
+booking_tech_kicker: { es: "Booking · Equipo", en: "Booking · Gear" }
+booking_tech_desc: { es: "Rider técnico de ejemplo de Ailén Cachela: configuraciones de cabina con diagrama, requisitos de sala y variantes DJ, live e híbrido.", en: "Sample technical rider for Ailén Cachela: booth setups with a diagram, room requirements and DJ, live and hybrid variants." }
+booking_tech_lead: { es: "Qué equipo se pide en la cabina, cómo se arma y qué pasa si algo no coincide. La artista confirma qué toca realmente.", en: "What gear is requested in the booth, how it is set up and what happens if something does not match. The artist confirms what she actually plays." }
+booking_tech_how_title: { es: "Cómo leer este rider", en: "How to read this rider" }
+booking_tech_how_kicker: { es: "Antes de empezar", en: "Before you start" }
+booking_tech_how_1: { es: "Elegí el formato del evento (DJ, live o híbrido) y mirá la configuración preferida. Las alternativas aceptables van debajo de cada una.", en: "Pick the event format (DJ, live or hybrid) and look at the preferred setup. Acceptable alternatives are listed below each one." }
+booking_tech_how_2: { es: "El rider se manda después de confirmar la fecha, no en la primera consulta. Cualquier cambio se acuerda por escrito en el advance.", en: "The rider is sent after the date is confirmed, not at the first enquiry. Any change is agreed in writing in the advance." }
+booking_tech_note_label: { es: "Sobre los nombres de equipo", en: "About gear names" }
+booking_tech_note: { es: "Los nombres de modelo CDJ-3000X, DJM-V10, DJM-A9, DJM-S11 y PLX-1000 figuran en el sitio de Pioneer DJ. Cualquier otro equipo aparece como “a confirmar con la artista”.", en: "The model names CDJ-3000X, DJM-V10, DJM-A9, DJM-S11 and PLX-1000 appear on the Pioneer DJ site. Any other gear is listed as “to be confirmed with the artist”." }
+booking_tech_config_title: { es: "Configuraciones de cabina", en: "Booth setups" }
+booking_tech_config_kicker: { es: "Diagramas", en: "Diagrams" }
+booking_tech_config_lead: { es: "Vista desde arriba. Las piezas con borde punteado son equipo a confirmar.", en: "Seen from above. Pieces with a dashed outline are gear to be confirmed." }
+booking_tech_modes_label: { es: "Formato del set", en: "Set format" }
+booking_mode_dj: { es: "DJ set", en: "DJ set" }
+booking_mode_live: { es: "Live set", en: "Live set" }
+booking_mode_hybrid: { es: "Híbrido", en: "Hybrid" }
+booking_mode_dj_intro: { es: "Solo reproductores o tornamesas, mixer y monitores. La hoja más corta.", en: "Players or turntables, mixer and monitors only. The shortest sheet." }
+booking_mode_live_intro: { es: "Con instrumentos de la artista: necesita stage plot, lista de entradas y hoja de cues.", en: "With the artist's instruments: needs a stage plot, an input list and a cue sheet." }
+booking_mode_hybrid_intro: { es: "Una cabina de DJ más un anexo con equipo propio. Conviene mandar las dos hojas por separado.", en: "A DJ booth plus an add-on with her own gear. It is best to send the two sheets separately." }
+booking_tech_preferred: { es: "Preferida", en: "Preferred" }
+booking_tech_diagram_title: { es: "Diagrama de cabina: {name}", en: "Booth diagram: {name}" }
+booking_tech_diagram_desc: { es: "Vista desde arriba de la mesa. Equipo: {gear}. El DJ está al frente y la pista, del otro lado de la mesa.", en: "Top view of the table. Gear: {gear}. The DJ stands at the front and the dance floor is on the far side of the table." }
+booking_tech_inputs: { es: "Lista de entradas (input list)", en: "Input list" }
+booking_tech_cues: { es: "Hoja de cues", en: "Cue sheet" }
+booking_tech_cues_note: { es: "Los minutos se cuentan desde el inicio del set: negativos son antes, positivos después.", en: "Minutes are counted from the set start: negative is before, positive is after." }
+booking_col_ch: { es: "Canal", en: "Channel" }
+booking_col_source: { es: "Fuente", en: "Source" }
+booking_col_connection: { es: "Conexión", en: "Connection" }
+booking_col_note: { es: "Nota", en: "Note" }
+booking_col_at: { es: "Minuto", en: "Minute" }
+booking_col_cue: { es: "Cue", en: "Cue" }
+booking_col_signal: { es: "Quién da la señal", en: "Who gives the signal" }
+booking_col_action: { es: "Qué hace la artista", en: "What the artist does" }
+booking_col_fallback: { es: "Plan B", en: "Plan B" }
+booking_tech_req_title: { es: "Requisitos de sala", en: "Room requirements" }
+booking_tech_req_kicker: { es: "Energía, monitoreo, micrófono", en: "Power, monitoring, microphone" }
+booking_tech_artist_title: { es: "Qué lleva la artista y si algo no coincide", en: "What the artist brings and what if something does not match" }
+booking_tech_artist_kicker: { es: "Logística", en: "Logistics" }
+booking_tech_brings: { es: "Lo que lleva la artista", en: "What the artist brings" }
+booking_tech_mismatch: { es: "Si el equipo no coincide", en: "If the gear does not match" }
+booking_tech_dl_title: { es: "Descargas y documentos relacionados", en: "Downloads and related documents" }
+booking_tech_dl_kicker: { es: "PDF", en: "PDF" }
+booking_tech_pdf: { es: "Rider técnico", en: "Technical rider" }
+booking_tech_pdf_desc: { es: "PDF A4 de cuatro páginas, con diagrama de cabina, stage plot, lista de entradas y hoja de cues.", en: "Four-page A4 PDF with the booth diagram, stage plot, input list and cue sheet." }
+
+# ---- Rider de hospitalidad -------------------------------------------------------------------------------------------
+booking_hosp_title: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+booking_hosp_kicker: { es: "Booking · Camarín y traslados", en: "Booking · Dressing room and travel" }
+booking_hosp_desc: { es: "Rider de hospitalidad de ejemplo de Ailén Cachela: camarín, comida, bebidas, traslados y lista de invitados, sin exigencias.", en: "Sample hospitality rider for Ailén Cachela: dressing room, food, drinks, travel and guest list, without demands." }
+booking_hosp_lead: { es: "Lo que ayuda a que el día salga bien, separado en lo imprescindible y lo que se pide solo si está disponible. Pensado para una artista emergente.", en: "What helps the day go well, split into what is essential and what is only asked for if available. Written for an emerging artist." }
+booking_hosp_principles_title: { es: "Cómo está pensado", en: "How it is meant" }
+booking_hosp_principles_kicker: { es: "Principios", en: "Principles" }
+booking_hosp_p_proportion: { es: "La lista guarda proporción con el evento y el fee: pocas cosas, claras.", en: "The list is proportionate to the event and the fee: a few clear things." }
+booking_hosp_p_flexible: { es: "Lo que no es imprescindible se pide como “si está disponible”. Sin marcas ni lujos.", en: "Anything non-essential is asked for as “if available”. No brands, no luxuries." }
+booking_hosp_p_written: { es: "Lo que se acuerda se confirma por escrito en el advance.", en: "Whatever is agreed is confirmed in writing in the advance." }
+booking_hosp_p_after: { es: "Se manda después de confirmar la fecha, no en el primer contacto.", en: "It is sent after the date is confirmed, not at first contact." }
+booking_hosp_list_title: { es: "Qué se pide", en: "What is requested" }
+booking_hosp_list_kicker: { es: "Por tema", en: "By topic" }
+booking_hosp_list_lead: { es: "“Imprescindible” es lo mínimo para tocar bien. “Si está disponible” es deseable, no una condición.", en: "“Essential” is the minimum to play well. “If available” is desirable, not a condition." }
+booking_hosp_must: { es: "Imprescindible", en: "Essential" }
+booking_hosp_nice: { es: "Si está disponible", en: "If available" }
+booking_hosp_dl_title: { es: "Descargas y documentos relacionados", en: "Downloads and related documents" }
+booking_hosp_pdf: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+booking_hosp_pdf_desc: { es: "PDF A4 de dos páginas, listo para adjuntar al advance.", en: "Two-page A4 PDF, ready to attach to the advance." }
+
+# ---- Condiciones ------------------------------------------------------------------------------------------------------
+booking_terms_title: { es: "Condiciones de contratación", en: "Booking terms" }
+booking_terms_kicker: { es: "Booking · Plantilla", en: "Booking · Template" }
+booking_terms_desc: { es: "Plantilla de ejemplo con las condiciones habituales de una contratación: duración, fee, depósito, cancelación, grabación, uso de imagen y facturación en Argentina.", en: "Sample template with the usual terms of a booking: length, fee, deposit, cancellation, recording, use of image and invoicing in Argentina." }
+booking_terms_lead: { es: "Los temas que suelen acordarse antes de confirmar una fecha. Sin montos ni plazos definitivos.", en: "The topics that are usually agreed before a date is confirmed. With no final amounts or deadlines." }
+booking_terms_warning_label: { es: "Ejemplo, a revisar", en: "Example, to be reviewed" }
+booking_terms_warning: { es: "Estos textos no son un contrato ni asesoramiento legal o contable. Hay que revisarlos con la artista, un contador y un abogado argentino antes de usarlos. Donde falta una cifra se escribe “X” o “a definir”.", en: "These texts are not a contract or legal or accounting advice. They must be reviewed with the artist, an accountant and an Argentine lawyer before use. Where a figure is missing it reads “X” or “to be defined”." }
+booking_terms_list_title: { es: "Temas", en: "Topics" }
+booking_terms_list_kicker: { es: "Plantilla", en: "Template" }
+booking_terms_list_lead: { es: "Abrí cada tema para ver el texto de ejemplo y qué hay que decidir.", en: "Open each topic to see the sample text and what has to be decided." }
+booking_terms_review: { es: "A revisar:", en: "To review:" }
+booking_terms_next_title: { es: "Y ahora", en: "What next" }
+booking_terms_next_kicker: { es: "Siguientes pasos", en: "Next steps" }
+booking_terms_next_lead: { es: "Con las condiciones claras, armá la consulta o mirá lo que se pide en la sala.", en: "With the terms clear, build the enquiry or look at what is requested at the venue." }
+
+# ---- Diagrama -------------------------------------------------------------------------------------------------------
+booking_d_floor: { es: "Pista · sala", en: "Dance floor · room" }
+booking_d_floor_stage: { es: "Pista · público", en: "Dance floor · audience" }
+booking_d_table: { es: "Mesa", en: "Table" }
+booking_d_artist: { es: "Artista", en: "Artist" }
+booking_d_pa: { es: "Salida a PA", en: "Out to PA" }
+booking_d_link: { es: "Pro DJ Link", en: "Pro DJ Link" }
+booking_d_legend: { es: "Leyenda", en: "Legend" }
+booking_gear_tbc: { es: "a confirmar con la artista", en: "to be confirmed with the artist" }
+booking_k_deck: { es: "reproductor", en: "player" }
+booking_k_mixer: { es: "mixer", en: "mixer" }
+booking_k_turntable: { es: "tornamesa", en: "turntable" }
+booking_k_laptop: { es: "laptop", en: "laptop" }
+booking_k_monitor: { es: "monitor", en: "monitor" }
+booking_k_mic: { es: "micrófono", en: "microphone" }
+booking_k_synth: { es: "sintetizador", en: "synthesizer" }
+booking_k_drum: { es: "caja de ritmos", en: "drum machine" }
+booking_k_interface: { es: "interfaz de audio", en: "audio interface" }
+booking_k_fx: { es: "efectos", en: "effects" }
+booking_ks_deck: { es: "DECK", en: "DECK" }
+booking_ks_mixer: { es: "MIXER", en: "MIXER" }
+booking_ks_turntable: { es: "TT", en: "TT" }
+booking_ks_laptop: { es: "LAPTOP", en: "LAPTOP" }
+booking_ks_monitor: { es: "MON", en: "MON" }
+booking_ks_mic: { es: "MIC", en: "MIC" }
+booking_ks_synth: { es: "SYNTH", en: "SYNTH" }
+booking_ks_drum: { es: "DRUMS", en: "DRUMS" }
+booking_ks_interface: { es: "I/O", en: "I/O" }
+booking_ks_fx: { es: "FX", en: "FX" }
+
+# ---- Vistas de impresión (PDF) ---------------------------------------------------------------------------------------
+booking_print_doc_tech: { es: "Rider técnico", en: "Technical rider" }
+booking_print_doc_hosp: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+booking_print_doc_advance: { es: "Advance sheet", en: "Advance sheet" }
+booking_print_tech_intro: { es: "Equipo que se pide en la cabina y en la sala para el set de Ailén Cachela. Se envía una vez confirmada la fecha; cualquier cambio se acuerda por escrito en el advance.", en: "Gear requested in the booth and the room for Ailén Cachela's set. Sent once the date is confirmed; any change is agreed in writing in the advance." }
+booking_print_hosp_intro: { es: "Lo que ayuda a que el día salga bien. Lo imprescindible está separado de lo que se pide solo si está disponible.", en: "What helps the day go well. The essentials are separated from what is only asked for if available." }
+booking_print_advance_intro: { es: "Completar y enviar unos 7 días antes del evento a:", en: "Please complete and send about 7 days before the event to:" }
+booking_print_hosp_closing: { es: "Nos adaptamos a la sala: avisen lo que tienen y lo resolvemos juntos. Lo que se acuerde se confirma por escrito.", en: "We adapt to the venue: tell us what you have and we will sort it out together. Whatever is agreed is confirmed in writing." }
+booking_print_advance_note: { es: "* Datos obligatorios. Lo que se acuerde se confirma por escrito.", en: "* Required details. Whatever is agreed is confirmed in writing." }
+booking_print_contact: { es: "Contacto", en: "Contact" }
+booking_print_notice: { es: "Aviso previo", en: "Advance notice" }
+booking_print_notice_value: { es: "7 días ante cualquier diferencia de equipo", en: "7 days for any gear difference" }
+booking_print_preferred: { es: "Configuración preferida", en: "Preferred setup" }
+booking_print_alternatives: { es: "Alternativas aceptables", en: "Acceptable alternatives" }
+booking_print_live: { es: "Live y stage plot", en: "Live and stage plot" }

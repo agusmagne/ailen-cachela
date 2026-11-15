@@ -1,0 +1,222 @@
+# Textos de interfaz del paquete press (Prensa / EPK). Claves con prefijo press_. Placeholders: {x}
+press_title: { es: "Prensa y EPK", en: "Press & EPK" }
+press_desc:
+  es: "Press kit de Ailén Cachela, DJ y productora de Buenos Aires: bios en tres largos, ficha técnica, logos, fotos, trayectoria y descargas (EPK en PDF, ZIP, vCard)."
+  en: "Ailén Cachela press kit, DJ and producer from Buenos Aires: bios in three lengths, fact sheet, logos, photos, timeline and downloads (EPK as PDF, ZIP, vCard)."
+press_tagline:
+  es: "DJ y productora de Buenos Aires, co-fundadora de fragmento.techno."
+  en: "DJ and producer from Buenos Aires, co-founder of fragmento.techno."
+press_jump: { es: "Secciones de esta página", en: "Sections on this page" }
+press_copy: { es: "Copiar texto", en: "Copy text" }
+press_copied: { es: "Copiado", en: "Copied" }
+
+# Acciones de la cabecera
+press_cta_epk: { es: "EPK en PDF", en: "EPK as PDF" }
+press_cta_kit: { es: "Press kit (ZIP)", en: "Press kit (ZIP)" }
+press_cta_vcard: { es: "Guardar contacto (vCard)", en: "Save contact (vCard)" }
+
+# Nombres de las secciones (también son las anclas del índice)
+press_s_bio: { es: "Bio", en: "Bio" }
+press_s_facts: { es: "Ficha técnica", en: "Fact sheet" }
+press_s_listen: { es: "Escuchar", en: "Listen" }
+press_s_shows: { es: "Próximas fechas", en: "Upcoming shows" }
+press_s_photos: { es: "Fotos de prensa", en: "Press photos" }
+press_s_voices: { es: "Prensa y apoyos", en: "Press & support" }
+press_s_timeline: { es: "Trayectoria", en: "Timeline" }
+press_s_statement: { es: "Statement y espacios seguros", en: "Statement & safer spaces" }
+press_s_brand: { es: "Marca", en: "Brand" }
+press_s_downloads: { es: "Descargas", en: "Downloads" }
+press_s_contact: { es: "Contacto", en: "Contact" }
+
+# Bio
+press_bio_lead:
+  es: "Tres largos para copiar y pegar. La corta es la bio oficial del sitio; la media y la larga son texto de ejemplo hasta que la artista las escriba."
+  en: "Three lengths to copy and paste. The short one is the site's official bio; the medium and long ones are sample text until the artist writes them."
+press_bio_tabs: { es: "Largo de la bio", en: "Bio length" }
+press_bio_tagline: { es: "Frase", en: "Tagline" }
+press_bio_short: { es: "Corta", en: "Short" }
+press_bio_medium: { es: "Media", en: "Medium" }
+press_bio_long: { es: "Larga", en: "Long" }
+press_bio_words: { es: "{n} palabras", en: "{n} words" }
+press_bio_verified: { es: "texto oficial", en: "official text" }
+
+# Ficha técnica
+press_facts_lead:
+  es: "Lo verificado va primero. BPM, formatos y territorios son de ejemplo hasta que la artista los confirme."
+  en: "Verified facts come first. BPM, formats and territories are sample content until the artist confirms them."
+press_fact_role: { es: "Rol", en: "Role" }
+press_fact_city: { es: "Base", en: "Based in" }
+press_fact_label: { es: "Sello", en: "Label" }
+press_fact_label_value: { es: "{label} · “{track}” en {catalog} ({year})", en: "{label} · “{track}” on {catalog} ({year})" }
+press_fact_collective: { es: "Colectivo", en: "Collective" }
+press_fact_collective_value: { es: "{name} (co-fundadora)", en: "{name} (co-founder)" }
+press_fact_project: { es: "Proyecto artístico", en: "Artistic project" }
+press_fact_languages: { es: "Idioma", en: "Language" }
+press_fact_languages_value: { es: "Español", en: "Spanish" }
+press_pron_title: { es: "Cómo se pronuncia", en: "How to pronounce it" }
+
+# Escuchar y fechas
+press_listen_lead:
+  es: "El reproductor usa uno de los sets reales de SoundCloud y se carga recién al tocar play."
+  en: "The player uses one of the real SoundCloud sets and only loads when you press play."
+press_shows_lead:
+  es: "Las próximas fechas salen del calendario público de la artista."
+  en: "Upcoming dates come from the artist's public calendar."
+press_shows_empty:
+  es: "Cuando se anuncie una fecha aparece acá."
+  en: "When a date is announced it appears here."
+press_shows_all: { es: "Agenda, archivo y calendario", en: "Schedule, archive and calendar" }
+
+# Fotos
+press_photos_lead:
+  es: "Todavía no hay fotos de la artista en el sitio: estas piezas son arte generativo de ejemplo que ocupa su lugar. Las fotos reales se publican con crédito y permiso."
+  en: "There are no photos of the artist on the site yet: these pieces are sample generative art holding their place. Real photos are published with credit and permission."
+press_photo_notreal: { es: "No es una foto de la artista", en: "Not a photo of the artist" }
+press_photo_credit: { es: "Crédito: arte generativo del sitio (ejemplo)", en: "Credit: the site's generative art (sample)" }
+press_photo_spec: { es: "Formato {shape} · vectorial (SVG)", en: "{shape} format · vector (SVG)" }
+press_shape_landscape: { es: "horizontal", en: "landscape" }
+press_shape_portrait: { es: "vertical", en: "portrait" }
+press_shape_square: { es: "cuadrado", en: "square" }
+press_photos_empty_title: { es: "Fotos de prensa pendientes", en: "Press photos pending" }
+press_photos_empty_text:
+  es: "Se publican apenas la artista entregue fotos con crédito y permiso de uso. Mientras tanto, se pueden pedir por email."
+  en: "They are published as soon as the artist provides photos with credit and permission to use them. Meanwhile, they can be requested by email."
+
+# Prensa y apoyos
+press_voices_lead:
+  es: "Citas, apoyos y testimonios de ejemplo: ningún medio, club o persona de esta sección es real."
+  en: "Sample quotes, support and testimonials: no outlet, club or person in this section is real."
+press_quotes_title: { es: "En la prensa", en: "In the press" }
+press_supports_title: { es: "Apoyada por", en: "Supported by" }
+press_testimonials_title: { es: "Lo que dicen los promotores", en: "What promoters say" }
+
+# Trayectoria
+press_timeline_lead:
+  es: "El hito de 2017 es real; los demás son de ejemplo hasta que la artista complete su trayectoria."
+  en: "The 2017 milestone is real; the rest are sample content until the artist completes her timeline."
+press_real_milestone: { es: "Publica “{track}” en {release}", en: "Releases “{track}” on {release}" }
+press_real_milestone_place: { es: "{label} · {city}", en: "{label} · {city}" }
+
+# Statement
+press_statement_lead:
+  es: "Textos de ejemplo, a definir por la artista."
+  en: "Sample text, to be defined by the artist."
+press_safer_title: { es: "Política de cabina y espacios seguros", en: "Booth and safer-spaces policy" }
+
+# Marca
+press_brand_lead:
+  es: "Isotipo, paleta y tipografías del sitio, para que cualquier pieza de prensa se vea como la artista."
+  en: "The site's logo mark, palette and typefaces, so any press piece looks like the artist."
+press_brand_logo: { es: "Isotipo y wordmark", en: "Logo mark and wordmark" }
+press_brand_palette: { es: "Paleta", en: "Palette" }
+press_brand_type: { es: "Tipografías", en: "Typefaces" }
+press_brand_rules: { es: "Usos", en: "Usage" }
+press_brand_draft:
+  es: "Borrador: el logo y las reglas de uso son provisorios hasta que la artista defina su identidad definitiva."
+  en: "Draft: the logo and usage rules are provisional until the artist settles her final identity."
+press_logo_title: { es: "Isotipo de Ailén Cachela", en: "Ailén Cachela logo mark" }
+press_logo_color: { es: "Color, sobre fondo oscuro", en: "Colour, on dark" }
+press_logo_black: { es: "Negro, sobre fondo claro", en: "Black, on light" }
+press_logo_white: { es: "Blanco, sobre fondo oscuro", en: "White, on dark" }
+press_logo_wordmark: { es: "Wordmark (Archivo expandida)", en: "Wordmark (Archivo expanded)" }
+press_dl_iso_black: { es: "Isotipo negro (SVG)", en: "Black logo mark (SVG)" }
+press_dl_iso_white: { es: "Isotipo blanco (SVG)", en: "White logo mark (SVG)" }
+press_dl_wm_black: { es: "Wordmark negro (PNG)", en: "Black wordmark (PNG)" }
+press_dl_wm_white: { es: "Wordmark blanco (PNG)", en: "White wordmark (PNG)" }
+press_sw_void: { es: "Vacío", en: "Void" }
+press_sw_bg: { es: "Fondo", en: "Background" }
+press_sw_bg_raised: { es: "Fondo elevado", en: "Raised background" }
+press_sw_chrome_50: { es: "Cromo 50", en: "Chrome 50" }
+press_sw_chrome_100: { es: "Cromo 100", en: "Chrome 100" }
+press_sw_chrome_200: { es: "Cromo 200", en: "Chrome 200" }
+press_sw_chrome_300: { es: "Cromo 300", en: "Chrome 300" }
+press_sw_chrome_400: { es: "Cromo 400", en: "Chrome 400" }
+press_sw_chrome_500: { es: "Cromo 500", en: "Chrome 500" }
+press_sw_chrome_600: { es: "Cromo 600", en: "Chrome 600" }
+press_sw_chrome_700: { es: "Cromo 700", en: "Chrome 700" }
+press_sw_chrome_800: { es: "Cromo 800", en: "Chrome 800" }
+press_sw_accent: { es: "Acento rosa", en: "Pink accent" }
+press_sw_accent_b: { es: "Iridiscente azul", en: "Iridescent blue" }
+press_sw_accent_c: { es: "Iridiscente arena", en: "Iridescent sand" }
+press_type_display: { es: "títulos", en: "headings" }
+press_type_display_note:
+  es: "Grotesca ancha en mayúsculas, peso 800: nombre, títulos y cifras grandes. Licencia SIL OFL 1.1."
+  en: "Wide grotesque in capitals, weight 800: name, headings and large figures. SIL OFL 1.1 licence."
+press_type_ui: { es: "datos y etiquetas", en: "data and labels" }
+press_type_ui_note:
+  es: "Monoespaciada en mayúsculas con espaciado abierto: fechas, BPM, catálogos y etiquetas. Licencia SIL OFL 1.1."
+  en: "Monospaced capitals with open tracking: dates, BPM, catalogue numbers and labels. SIL OFL 1.1 licence."
+press_rule_space_title: { es: "Zona de respeto", en: "Clear space" }
+press_rule_space_text:
+  es: "Dejar alrededor del isotipo un margen libre de al menos la mitad de su ancho."
+  en: "Keep a free margin of at least half the logo mark's width around it."
+press_rule_size_title: { es: "Tamaño mínimo", en: "Minimum size" }
+press_rule_size_text:
+  es: "No reducir el isotipo por debajo de 24 px en pantalla o 8 mm en papel."
+  en: "Do not shrink the logo mark below 24 px on screen or 8 mm in print."
+press_rule_colors_title: { es: "Colores", en: "Colours" }
+press_rule_colors_text:
+  es: "Usar solo las versiones de color, negro o blanco. No recolorear, no agregar sombras ni deformar."
+  en: "Use only the colour, black or white versions. Do not recolour, add shadows or distort."
+press_rule_photos_title: { es: "Sobre imágenes", en: "On images" }
+press_rule_photos_text:
+  es: "Sobre fotos, elegir la versión con más contraste y evitar zonas con mucho detalle detrás del isotipo."
+  en: "On photos, pick the higher-contrast version and avoid busy areas behind the logo mark."
+
+# Descargas
+press_downloads_lead:
+  es: "Todo lo de esta página, listo para llevar. Los archivos con contenido de ejemplo lo dicen en su interior."
+  en: "Everything on this page, ready to take away. Files with sample content say so inside."
+press_dl_kit: { es: "Press kit completo", en: "Full press kit" }
+press_dl_kit_desc:
+  es: "Bios en texto, ficha técnica, isotipo SVG, wordmark PNG, piezas de ejemplo, vCard, QR y los PDF."
+  en: "Bios as text, fact sheet, logo mark SVG, wordmark PNG, sample pieces, vCard, QR and the PDFs."
+press_dl_epk: { es: "EPK (PDF, español)", en: "EPK (PDF, English)" }
+press_dl_epk_desc:
+  es: "Tres páginas A4 con bio, ficha, trayectoria, prensa y marca."
+  en: "Three A4 pages with bio, fact sheet, timeline, press and brand."
+press_dl_one: { es: "One-sheet (PDF, español)", en: "One-sheet (PDF, English)" }
+press_dl_one_desc:
+  es: "Una página A4 con lo esencial, para adjuntar a un mail."
+  en: "One A4 page with the essentials, to attach to an email."
+press_dl_epk_other: { es: "EPK (PDF, English)", en: "EPK (PDF, español)" }
+press_dl_one_other: { es: "One-sheet (PDF, English)", en: "One-sheet (PDF, español)" }
+press_dl_vcard: { es: "Contacto de booking (vCard)", en: "Booking contact (vCard)" }
+press_dl_vcard_desc:
+  es: "Archivo .vcf con el email de booking; sin teléfono."
+  en: ".vcf file with the booking email; no phone number."
+
+# Contacto
+press_contact_lead:
+  es: "Booking y prensa por el mismo canal, más los perfiles oficiales."
+  en: "Booking and press through the same channel, plus the official profiles."
+press_contact_booking: { es: "Booking", en: "Booking" }
+press_contact_booking_page: { es: "Riders y condiciones", en: "Riders and terms" }
+press_contact_press: { es: "Prensa", en: "Press" }
+press_contact_press_same: { es: "Hoy la prensa se atiende en el mismo email que el booking.", en: "For now press enquiries go to the same email as booking." }
+press_qr_title: { es: "QR de esta página", en: "QR for this page" }
+press_qr_text: { es: "Para carteles, tarjetas y gacetillas. Se genera en el sitio, sin servicios externos.", en: "For posters, cards and press releases. Generated on the site, no external services." }
+press_qr_label: { es: "QR: página de prensa de Ailén Cachela", en: "QR: Ailén Cachela press page" }
+press_qr_download: { es: "Descargar QR (SVG)", en: "Download QR (SVG)" }
+press_links_title: { es: "Perfiles oficiales", en: "Official profiles" }
+press_vcard_note:
+  es: "Contacto de booking de Ailén Cachela / Ailén Cachela booking contact"
+  en: "Contacto de booking de Ailén Cachela / Ailén Cachela booking contact"
+
+# PDF (vistas de impresión)
+press_print_doc_epk: { es: "EPK · Press kit", en: "EPK · Press kit" }
+press_print_doc_one: { es: "One-sheet", en: "One-sheet" }
+press_print_page: { es: "Página {n} de {total}", en: "Page {n} of {total}" }
+press_print_demo_rows: { es: "Contenido de ejemplo", en: "Sample content" }
+press_print_brand_note: { es: "Isotipo y paleta del sitio. Archivos vectoriales en el press kit.", en: "Logo mark and palette from the site. Vector files in the press kit." }
+
+# Press kit (ZIP)
+press_kit_demo_note: { es: "CONTENIDO DE EJEMPLO: no es real ni oficial", en: "SAMPLE CONTENT: not real or official" }
+press_kit_facts_title: { es: "Ficha técnica · Ailén Cachela", en: "Fact sheet · Ailén Cachela" }
+press_kit_readme_title: { es: "Press kit · Ailén Cachela", en: "Press kit · Ailén Cachela" }
+press_kit_readme_intro:
+  es: "DJ y productora de Buenos Aires. Este paquete reúne bios, ficha técnica, isotipo, contacto y QR de la página de prensa."
+  en: "DJ and producer from Buenos Aires. This package gathers bios, fact sheet, logo mark, contact and the press page QR."
+press_kit_readme_files: { es: "Archivos incluidos:", en: "Included files:" }
+press_kit_contact: { es: "Booking y prensa", en: "Booking and press" }
+press_kit_generated: { es: "Generado por el sitio", en: "Generated by the site" }

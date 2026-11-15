@@ -1,0 +1,233 @@
+# =============================================================================
+# PRENSA / EPK — contenido de EJEMPLO. Nada de este archivo es real ni oficial: cada ítem lleva `demo: true`,
+# se rotula en pantalla y desaparece con el interruptor `demo_content` (site.yaml) o DEMO_CONTENT=0.
+# Los datos reales (bio corta, ciudad, sello ROOM, "Ahogo", perfiles, email de booking) viven en site.yaml.
+# Sin medios, clubes, festivales, personas ni marcas reales: nombres evidentemente ficticios.
+# =============================================================================
+
+bios:
+  - id: medium
+    demo: true
+    text:
+      es: |-
+        Ailén Cachela es DJ y productora de Buenos Aires. Su trabajo se mueve en el techno: pulso firme, graves profundos y una atención casi obsesiva al detalle de cada transición. Co-fundadora de fragmento.techno, trabaja desde la cabina y desde el estudio con la misma idea: construir tensión despacio y soltarla en el momento justo.
+
+        En 2017 sumó “Ahogo” (Original Mix) a Ellas EP [ROOM.004], la compilación del sello porteño ROOM. Desde entonces alterna fechas en clubes y fiestas con la producción de material propio y con SENKA, su proyecto artístico en desarrollo.
+
+        Sus sets recorren la pista de punta a punta: arrancan contenidos, ganan densidad y terminan en un terreno hipnótico donde el volumen y el silencio pesan lo mismo. Disponible para clubes, festivales y eventos en Argentina y en el exterior.
+      en: |-
+        Ailén Cachela is a DJ and producer from Buenos Aires. Her work lives in techno: a steady pulse, deep low end and an almost obsessive attention to the detail of every transition. A co-founder of fragmento.techno, she works from the booth and from the studio with the same idea: build tension slowly and release it at exactly the right moment.
+
+        In 2017 she added “Ahogo” (Original Mix) to Ellas EP [ROOM.004], the compilation from Buenos Aires label ROOM. Since then she has balanced club and party dates with producing her own material and with SENKA, her artistic project, still in development.
+
+        Her sets cover the floor from end to end: they start restrained, gain density and finish in a hypnotic place where volume and silence weigh the same. Available for clubs, festivals and events in Argentina and abroad.
+  - id: long
+    demo: true
+    text:
+      es: |-
+        Ailén Cachela es DJ y productora de Buenos Aires, Argentina. Su trabajo se mueve en el techno: pulso firme, graves profundos y una atención casi obsesiva al detalle de cada transición. Trabaja desde la cabina y desde el estudio con una sola idea: construir tensión despacio y soltarla en el momento justo.
+
+        Es co-fundadora de fragmento.techno, un colectivo que piensa la fiesta como un espacio compartido antes que como un evento: la música, el sonido de la sala, la luz y las personas que la habitan cuentan por igual. Esa mirada colectiva marca también su forma de tocar, atenta a la pista y a cómo cambia a lo largo de la noche.
+
+        En 2017 sumó “Ahogo” (Original Mix), un tema de casi ocho minutos, a Ellas EP [ROOM.004], la compilación del sello porteño ROOM, publicada en digital con formato de “pagás lo que quieras”. Desde entonces alterna fechas en clubes y fiestas con la producción de material propio y con SENKA, su proyecto artístico en desarrollo.
+
+        Sus sets recorren la pista de punta a punta. Arrancan contenidos, con espacio para que la sala se acomode; ganan densidad de a poco; y terminan en un terreno hipnótico donde el volumen y el silencio pesan lo mismo. Prefiere los cierres largos y los cambios de energía que se sienten antes de que se escuchen.
+
+        Fuera de la cabina, comparte su proceso de trabajo, enseña y colabora con otras personas de la escena local. Cree en las cabinas cuidadas, en los equipos de sonido bien calibrados y en las fiestas donde todas las personas se sienten seguras de bailar.
+
+        Disponible para clubes, festivales y eventos en Argentina y en el exterior, en formato DJ set, live o híbrido.
+      en: |-
+        Ailén Cachela is a DJ and producer from Buenos Aires, Argentina. Her work lives in techno: a steady pulse, deep low end and an almost obsessive attention to the detail of every transition. She works from the booth and from the studio with a single idea: build tension slowly and release it at exactly the right moment.
+
+        She is a co-founder of fragmento.techno, a collective that thinks of the party as a shared space before it is an event: the music, the sound of the room, the light and the people in it all count equally. That collective outlook shapes how she plays too, attentive to the floor and to how it changes through the night.
+
+        In 2017 she added “Ahogo” (Original Mix), a track of almost eight minutes, to Ellas EP [ROOM.004], the compilation from Buenos Aires label ROOM, released digitally on a “name your price” basis. Since then she has balanced club and party dates with producing her own material and with SENKA, her artistic project, still in development.
+
+        Her sets cover the floor from end to end. They start restrained, leaving room for the venue to settle; they gain density little by little; and they finish in a hypnotic place where volume and silence weigh the same. She favours long closings and shifts in energy that are felt before they are heard.
+
+        Away from the booth she shares her working process, teaches and collaborates with other people in the local scene. She believes in well cared-for booths, properly calibrated sound systems and parties where everyone feels safe to dance.
+
+        Available for clubs, festivals and events in Argentina and abroad, as a DJ set, live or hybrid performance.
+
+facts:
+  - id: genre
+    demo: true
+    label: { es: "Géneros", en: "Genres" }
+    value: { es: "Techno · Hypnotic · Peak time", en: "Techno · Hypnotic · Peak time" }
+  - id: bpm
+    demo: true
+    label: { es: "BPM habitual", en: "Usual BPM" }
+    value: { es: "128 – 140", en: "128 – 140" }
+  - id: formats
+    demo: true
+    label: { es: "Formatos", en: "Formats" }
+    value: { es: "DJ set · Live · Híbrido · b2b", en: "DJ set · Live · Hybrid · b2b" }
+  - id: length
+    demo: true
+    label: { es: "Duración de set", en: "Set length" }
+    value: { es: "1 a 4 horas, según el evento", en: "1 to 4 hours, depending on the event" }
+  - id: territories
+    demo: true
+    label: { es: "Territorios", en: "Territories" }
+    value: { es: "Argentina · Latinoamérica · Europa", en: "Argentina · Latin America · Europe" }
+  - id: gear
+    demo: true
+    label: { es: "Soportes", en: "Media" }
+    value: { es: "USB · controlador · vinilo (a confirmar)", en: "USB · controller · vinyl (to be confirmed)" }
+
+pronunciation:
+  - id: name
+    demo: true
+    name: "Ailén Cachela"
+    phonetic:
+      es: "ai-LÉN ka-CHE-la"
+      en: "eye-LEN kah-CHEH-lah"
+    note:
+      es: "Acento en la última sílaba de “Ailén” y en la penúltima de “Cachela”. A confirmar con la artista."
+      en: "Stress the last syllable of “Ailén” and the second-to-last of “Cachela”. To be confirmed with the artist."
+
+quotes:
+  - id: quote-1
+    demo: true
+    text:
+      es: "Un set que crece sin apuro y no suelta a la pista ni un segundo."
+      en: "A set that builds without hurry and never lets the floor go."
+    outlet: { es: "Medio de ejemplo", en: "Sample outlet" }
+    year: "2025"
+  - id: quote-2
+    demo: true
+    text:
+      es: "Graves profundos, transiciones limpias y una lectura precisa de la sala."
+      en: "Deep low end, clean transitions and a precise read of the room."
+    outlet: { es: "Revista de ejemplo", en: "Sample magazine" }
+    year: "2024"
+  - id: quote-3
+    demo: true
+    text:
+      es: "Techno hipnótico con mucho oficio: de esas cabinas que invitan a quedarse hasta el final."
+      en: "Hypnotic techno with plenty of craft: the kind of booth that makes you stay until the end."
+    outlet: { es: "Blog de ejemplo", en: "Sample blog" }
+    year: "2023"
+
+supports:
+  - id: support-1
+    demo: true
+    name: { es: "Club Ejemplo", en: "Example Club" }
+    place: { es: "Ciudad", en: "City" }
+  - id: support-2
+    demo: true
+    name: { es: "Festival Ejemplo", en: "Example Festival" }
+    place: { es: "País", en: "Country" }
+  - id: support-3
+    demo: true
+    name: { es: "Fiesta Ejemplo", en: "Example Party" }
+    place: { es: "Ciudad", en: "City" }
+  - id: support-4
+    demo: true
+    name: { es: "Sala Ejemplo", en: "Example Hall" }
+    place: { es: "Ciudad", en: "City" }
+  - id: support-5
+    demo: true
+    name: { es: "Radio de ejemplo", en: "Sample Radio" }
+    place: { es: "Ciudad", en: "City" }
+  - id: support-6
+    demo: true
+    name: { es: "Colectivo Ejemplo", en: "Example Collective" }
+    place: { es: "Ciudad", en: "City" }
+
+testimonials:
+  - id: promoter-1
+    demo: true
+    text:
+      es: "Llegó a horario, resolvió la técnica sin drama y la pista no se vació en ningún momento. Volveríamos a programarla."
+      en: "She arrived on time, sorted the technical side with no drama and the floor never emptied. We would book her again."
+    author: { es: "Promotor de ejemplo", en: "Sample promoter" }
+    org: { es: "Festival Ejemplo", en: "Example Festival" }
+  - id: promoter-2
+    demo: true
+    text:
+      es: "Comunicación clara antes del evento, rider razonable y un set a la altura del cierre que pedíamos."
+      en: "Clear communication before the event, a reasonable rider and a set worthy of the closing slot we asked for."
+    author: { es: "Programadora de ejemplo", en: "Sample programmer" }
+    org: { es: "Club Ejemplo · Ciudad", en: "Example Club · City" }
+
+timeline:
+  - id: m-2018
+    demo: true
+    year: 2018
+    title: { es: "Primeras fechas regulares en fiestas de la escena local", en: "First regular dates at local scene parties" }
+    place: { es: "Ciudad de ejemplo", en: "Sample city" }
+  - id: m-2019
+    demo: true
+    year: 2019
+    title: { es: "Residencia de ejemplo en una sala de club", en: "Sample residency at a club venue" }
+    place: { es: "Club Ejemplo · Ciudad", en: "Example Club · City" }
+  - id: m-2021
+    demo: true
+    year: 2021
+    title: { es: "Primera gira corta fuera de la ciudad", en: "First short tour outside the city" }
+    place: { es: "Varias ciudades (ejemplo)", en: "Several cities (sample)" }
+  - id: m-2023
+    demo: true
+    year: 2023
+    title: { es: "Set de cierre en un festival de ejemplo", en: "Closing set at a sample festival" }
+    place: { es: "Festival Ejemplo · País", en: "Example Festival · Country" }
+  - id: m-2025
+    demo: true
+    year: 2025
+    title: { es: "Primera fecha internacional de ejemplo", en: "First sample international date" }
+    place: { es: "Sala Ejemplo · Ciudad", en: "Example Hall · City" }
+
+statement:
+  - id: statement
+    demo: true
+    text:
+      es: |-
+        Busco que la pista sienta que algo se construye. Me interesa el techno como una forma de atención: el tiempo largo, la repetición que cambia apenas, el cuerpo que deja de pensar y empieza a escuchar.
+
+        Trabajo con la tensión y con el silencio por igual. Creo que una buena noche se parece más a un paisaje que a una lista de temas, y que lo que une a las personas en una sala es el sonido que comparten.
+      en: |-
+        I want the floor to feel that something is being built. I am interested in techno as a form of attention: long time, repetition that changes only slightly, the body that stops thinking and starts listening.
+
+        I work with tension and silence equally. I believe a good night is closer to a landscape than to a list of tracks, and that what brings people together in a room is the sound they share.
+
+safer:
+  - id: respect
+    demo: true
+    title: { es: "Respeto en la cabina y en la pista", en: "Respect in the booth and on the floor" }
+    text:
+      es: "Se pide a los espacios que tengan una política visible contra el acoso y la discriminación, y un canal claro para avisar si algo pasa."
+      en: "Venues are asked to have a visible policy against harassment and discrimination, and a clear channel to report problems."
+  - id: booth
+    demo: true
+    title: { es: "Cabina cuidada", en: "A cared-for booth" }
+    text:
+      es: "Acceso a la cabina limitado a quienes trabajan en el evento, y una persona de contacto del equipo durante todo el set."
+      en: "Booth access limited to event staff, and one team contact available throughout the set."
+  - id: travel
+    demo: true
+    title: { es: "Traslados seguros", en: "Safe travel" }
+    text:
+      es: "Para fechas nocturnas, un traslado seguro de ida y vuelta al alojamiento o a la casa, coordinado de antemano."
+      en: "For night dates, safe round-trip transport to the hotel or home, arranged in advance."
+  - id: consent
+    demo: true
+    title: { es: "Consentimiento con las imágenes", en: "Consent with images" }
+    text:
+      es: "Las fotos y los videos de la cabina se acuerdan con la artista; el material se publica con crédito y sin fines distintos a los pactados."
+      en: "Photos and videos of the booth are agreed with the artist; material is published with credit and only for the purposes agreed."
+
+photos:
+  - { id: foto-1, demo: true, seed: "press-ailen-01", shape: landscape, caption: { es: "Horizontal · anillos de cromo", en: "Landscape · chrome rings" } }
+  - { id: foto-2, demo: true, seed: "press-ailen-02", shape: portrait, caption: { es: "Vertical · arco de cromo", en: "Portrait · chrome arch" } }
+  - { id: foto-3, demo: true, seed: "press-ailen-03", shape: landscape, caption: { es: "Horizontal · líneas de pista", en: "Landscape · floor lines" } }
+  - { id: foto-4, demo: true, seed: "press-ailen-04", shape: square, caption: { es: "Cuadrada · disco", en: "Square · record" } }
+  - { id: foto-5, demo: true, seed: "press-ailen-05", shape: portrait, caption: { es: "Vertical · luz fría", en: "Portrait · cold light" } }
+
+contacts:
+  - id: prensa
+    demo: true
+    email: "prensa@ejemplo.invalid"
+    note:
+      es: "Contacto de prensa dedicado: pendiente de la artista. Hoy toda la prensa va al mismo email que el booking."
+      en: "Dedicated press contact: pending from the artist. For now all press goes to the same email as booking."

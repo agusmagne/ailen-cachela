@@ -1,0 +1,126 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { site, t, link, absolute, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { musicEventLd } from '../../lib/agenda/jsonld';
+import { showSlug } from '../../lib/agenda/entries';
+import ShowCard from './ShowCard.astro';
+import Subscribe from './Subscribe.astro';
+import GigMap from './GigMap.astro';
+import Residencies from './Residencies.astro';
+import ArchiveList from './ArchiveList.astro';
+import { loadAgenda, mapFor } from './data';
+/** Página /fechas/ (y /en/shows/): la próxima con cuenta regresiva, las demás, calendario, mapa, residencias y últimas pasadas. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const { upcoming, residencies, upEntries, pastEntries, all } = await loadAgenda();
+
+const featured = upcoming.find((s) => s.status !== 'cancelled') ?? null;
+const list = featured ? [featured, ...upcoming.filter((s) => s !== featured)] : upcoming;
+const { points, unplaced } = mapFor(all, new Set(upEntries.map((e) => e.key)));
+const recent = pastEntries.slice(0, 6);
+const ig = link('instagram');
+
+const pageUrl = absolute(router.path('shows', lang), origin);
+const jsonLd = upcoming.map((s) => musicEventLd(s, site.artist.name, `${pageUrl}#${showSlug(s)}`));
+
+const labels = {
+  live: t('agenda_cd_live', lang),
+  past: t('agenda_cd_past', lang),
+  today: t('agenda_cd_today', lang),
+  tomorrow: t('agenda_cd_tomorrow', lang),
+  sr: t('agenda_cd_sr', lang),
+  pick: t('agenda_zones_pick', lang),
+  yours: t('agenda_zones_yours', lang),
+  common: t('agenda_zones_pick_group', lang),
+  all: t('agenda_zones_pick_all', lang),
+  out: t('agenda_zones_out', lang),
+  dayNext: t('agenda_day_next', lang),
+  dayPrev: t('agenda_day_prev', lang),
+};
+---
+
+<PageLayout lang={lang} route="shows" title={t('agenda_title', lang)} description={t('agenda_desc', lang)} jsonLd={jsonLd}>
+  <p slot="lead">{t('agenda_lead', lang)}</p>
+  <Fragment slot="meta">
+    <a class="btn btn--primary" href="#calendario">{t('agenda_jump_subscribe', lang)} <span class="arrow" data-dir="down" aria-hidden="true">↓</span></a>
+    <a class="btn" href={router.path('shows-archive', lang)}>{t('agenda_jump_archive', lang)}</a>
+  </Fragment>
+
+  <LazyModule name="agenda-live" props={{ lang, labels }} class="agenda">
+    <p class="sr-only" role="status" data-copy-status></p>
+
+    <section class="page-block" aria-labelledby="proximas">
+      <SectionHead lang={lang} id="proximas" title={t('shows_upcoming', lang)} kicker={upcoming.length > 0 ? t('shows_count', lang, { n: upcoming.length }) : undefined} />
+      {
+        list.length === 0 ? (
+          <EmptyState lang={lang} title={t('agenda_empty_title', lang)} text={t('agenda_empty_text', lang)}>
+            <ul class="agenda__actions">
+              {ig && ig.url && (
+                <li>
+                  <a class="btn" href={ig.url} target="_blank" rel="noopener noreferrer">
+                    {t('shows_follow', lang, { handle: ig.handle })}
+                    <span class="sr-only"> {t('new_tab', lang)}</span>
+                  </a>
+                </li>
+              )}
+              <li><a class="btn" href={`mailto:${site.contact.email}`}>{t('shows_book', lang, { email: site.contact.email })}</a></li>
+              <li><a class="btn" href={router.path('shows-archive', lang)}>{t('agenda_archive_link', lang)}</a></li>
+            </ul>
+          </EmptyState>
+        ) : (
+          <ul class="shows">
+            {list.map((s, i) => <ShowCard show={s} lang={lang} featured={s === featured && i === 0} index={i} origin={origin} artist={site.artist.name} />)}
+          </ul>
+        )
+      }
+    </section>
+
+    <section class="page-block" aria-labelledby="calendario-h">
+      <SectionHead lang={lang} id="calendario-h" title={t('agenda_sub_title', lang)} />
+      <Subscribe lang={lang} origin={origin} />
+    </section>
+
+    <section class="page-block" aria-labelledby="mapa">
+      <SectionHead lang={lang} id="mapa" title={t('agenda_map_title', lang)} lead={t('agenda_map_lead', lang)} demo={points.length > 0 && points.every((p) => p.demo)} />
+      <GigMap lang={lang} points={points} unplaced={unplaced} id="map-shows" />
+    </section>
+
+    {
+      residencies.length > 0 && (
+        <section class="page-block" aria-labelledby="residencias">
+          <SectionHead lang={lang} id="residencias" title={t('agenda_res_title', lang)} lead={t('agenda_res_lead', lang)} demo />
+          <Residencies lang={lang} items={residencies} />
+        </section>
+      )
+    }
+
+    <section class="page-block" aria-labelledby="archivo">
+      <SectionHead lang={lang} id="archivo" title={t('agenda_recent_title', lang)} demo={recent.length > 0 && recent.every((e) => e.demo)} />
+      {
+        recent.length > 0 ? (
+          <ArchiveList lang={lang} entries={recent} label={t('agenda_recent_title', lang)} />
+        ) : (
+          <p class="agenda__none">{t('agenda_recent_empty', lang)}</p>
+        )
+      }
+      <p class="agenda__more"><a class="btn" href={router.path('shows-archive', lang)}>{t('agenda_archive_link', lang)} <span class="arrow" aria-hidden="true">→</span></a></p>
+    </section>
+  </LazyModule>
+</PageLayout>
+
+<style>
+  .shows { display: grid; gap: var(--space-s); }
+  .agenda__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs); }
+  .agenda__actions .btn { text-align: center; overflow-wrap: anywhere; }
+  .agenda__none { color: var(--muted); }
+  .agenda__more { margin-top: var(--space-m); }
+  @media (max-width: 52rem) {
+    .agenda__actions { flex-direction: column; align-items: stretch; }
+    .agenda__actions .btn { min-height: 3.25rem; }
+  }
+</style>

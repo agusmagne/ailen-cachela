@@ -1,0 +1,129 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Embed from '../ui/Embed.astro';
+import Chip from '../ui/Chip.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { t, pick, type Lang } from '../../lib/content';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/videos';
+import { categoryCounts, isoDuration, pickFeatured } from '../../lib/oficio/videos';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const vids = domain('videos', schema);
+const empty = vids.items.length === 0;
+const anyDemo = vids.items.some((v) => v.demo);
+const L = (k: string) => t(k, lang);
+const featured = pickFeatured(vids.items);
+const rest = vids.items.filter((v) => v !== featured);
+const counts = categoryCounts(vids.items);
+const cat = (c: string) => L(`oficio_vcat_${c}`);
+---
+
+<PageLayout lang={lang} route="videos" title={L('oficio_videos_title')} description={L('oficio_videos_desc')} demo={anyDemo} empty={empty}>
+  <p slot="lead">{L('oficio_videos_lead')}</p>
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    featured && (
+      <section class="page-block" aria-labelledby="vid-featured">
+        <SectionHead lang={lang} id="vid-featured" kicker={L('oficio_kicker_featured')} title={L('oficio_featured_title')} lead={L('oficio_videos_inert')} demo={featured.demo} />
+        <article class="feat">
+          <Embed lang={lang} provider="youtube" inert demo={featured.demo} title={`${cat(featured.category)} · ${featured.duration}`} />
+          <div class="feat__text">
+            <p class="vmeta">
+              <Chip tone="accent">{cat(featured.category)}</Chip>
+              <Chip>{featured.year}</Chip>
+              <Chip><time datetime={isoDuration(featured.duration)}>{featured.duration}</time></Chip>
+            </p>
+            <h3 class="feat__title display">{pick(featured.title, lang)}</h3>
+            <p class="feat__place label">{pick(featured.place, lang)}</p>
+            <p class="feat__sum">{pick(featured.summary, lang)}</p>
+          </div>
+        </article>
+      </section>
+    )
+  }
+
+  {
+    rest.length > 0 && (
+      <section class="page-block" aria-labelledby="vid-grid">
+        <SectionHead lang={lang} id="vid-grid" kicker={L('oficio_kicker_library')} title={L('oficio_library_title')} demo={rest.some((v) => v.demo)} />
+        <LazyModule name="oficio-videos" when="idle" class="vgrid-host" props={{ all: L('oficio_vcat_all'), shown: L('oficio_vshown') }}>
+          <div class="vfilter" role="group" aria-label={L('oficio_vfilter')} hidden data-vf>
+            <button type="button" class="vchip is-on" data-cat="all" aria-pressed="true">{L('oficio_vcat_all')} <span class="vchip__n">{rest.length}</span></button>
+            {counts.map((c) => {
+              const n = rest.filter((v) => v.category === c.category).length;
+              return n > 0 ? <button type="button" class="vchip" data-cat={c.category} aria-pressed="false">{cat(c.category)} <span class="vchip__n">{n}</span></button> : null;
+            })}
+          </div>
+          <p class="sr-only" role="status" aria-live="polite" data-vf-status></p>
+          <ul class="vgrid">
+            {rest.map((v, i) => (
+              <li class="vitem" data-cat={v.category} data-reveal style={`--reveal-delay:${(i % 3) * 80}ms`}>
+                <Embed lang={lang} provider="youtube" inert demo={v.demo} title={`${cat(v.category)} · ${v.duration}`} />
+                <div class="vitem__text">
+                  <p class="vmeta">
+                    <Chip>{cat(v.category)}</Chip>
+                    <Chip>{v.year}</Chip>
+                    <Chip><time datetime={isoDuration(v.duration)}>{v.duration}</time></Chip>
+                  </p>
+                  <h3 class="vitem__title display">{pick(v.title, lang)}</h3>
+                  <p class="vitem__place label">{pick(v.place, lang)}</p>
+                  <p class="vitem__sum">{pick(v.summary, lang)}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </LazyModule>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .feat { display: grid; gap: var(--space-m); align-items: end; }
+  @media (min-width: 62rem) { .feat { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-xl); } }
+  .feat__text { display: grid; gap: var(--space-xs); }
+  .feat__title { font-size: var(--step-3); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .feat__sum { color: var(--chrome-200); max-width: 46ch; }
+  .vmeta { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .feat__place, .vitem__place { color: var(--subtle); }
+
+  .vfilter { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-bottom: var(--space-m); }
+  .vfilter[hidden] { display: none; }
+  .vchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    min-height: var(--tap);
+    padding: 0.2rem var(--space-s);
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    color: var(--chrome-200);
+    background: transparent;
+    border: var(--stroke) solid var(--chrome-600);
+    border-radius: var(--radius-ui);
+    cursor: pointer;
+    transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .vchip__n { color: var(--subtle); }
+  .vchip.is-on { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
+  .vchip.is-on .vchip__n { color: var(--chrome-600); }
+  .vchip:focus-visible { border-color: var(--chrome-50); }
+  @media (hover: hover) { .vchip:not(.is-on):hover { border-color: var(--chrome-50); color: var(--chrome-50); } }
+  .vchip:active { background: var(--press-bg); }
+
+  .vgrid { display: grid; gap: var(--space-l) var(--oficio-gap); grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+  .vitem[hidden] { display: none; }
+  .vitem { display: grid; gap: var(--space-xs); align-content: start; }
+  .vitem__text { display: grid; gap: var(--space-2xs); }
+  .vitem__title { font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .vitem__sum { color: var(--muted); }
+</style>

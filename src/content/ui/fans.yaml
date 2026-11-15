@@ -1,0 +1,209 @@
+# Textos de interfaz del paquete fans (tienda, newsletter, comunidad, links, legales, 404, PWA). Prefijo obligatorio: fans_.
+
+# ---- Tienda -------------------------------------------------------------------------------------------------------
+fans_shop_title: { es: "Tienda", en: "Shop" }
+fans_shop_desc: { es: "Maqueta de la tienda de Ailén Cachela: prendas, pósters con arte generativo y ediciones limitadas. Sin carrito ni pagos; los pedidos se consultan por mail.", en: "Mock-up of Ailén Cachela's shop: apparel, posters with generative art and limited editions. No cart or payments; orders are enquired about by email." }
+fans_shop_lead: { es: "Prendas, pósters con arte generativo y ediciones limitadas. Es una maqueta: no hay stock, precios ni pagos. Elegí lo que te gusta y armá la consulta por mail.", en: "Apparel, posters with generative art and limited editions. This is a mock-up: no stock, prices or payments. Pick what you like and build the enquiry by email." }
+fans_shop_soon_title: { es: "Tienda en preparación", en: "Shop in preparation" }
+fans_shop_soon_text: { es: "Todavía no se vende nada desde acá. Los productos son de ejemplo para mostrar cómo se vería; no hay precios, stock ni pagos conectados.", en: "Nothing is sold from here yet. Products are samples showing how it would look; no prices, stock or payments are connected." }
+fans_shop_empty_lead: { es: "Prendas, pósters y ediciones limitadas, cuando haya algo real para mostrar.", en: "Apparel, posters and limited editions, once there is something real to show." }
+fans_shop_empty_title: { es: "La tienda todavía no abrió", en: "The shop has not opened yet" }
+fans_shop_empty_text: { es: "Cuando haya productos reales se van a ver acá. Mientras tanto, para cualquier consulta podés escribir por mail.", en: "When there are real products they will show up here. Meanwhile, you can write by email for any enquiry." }
+fans_shop_empty_cta: { es: "Escribir por mail", en: "Send an email" }
+
+fans_drop_section: { es: "Drop", en: "Drop" }
+fans_drop_kicker: { es: "Próximo drop", en: "Next drop" }
+fans_drop_lead: { es: "Una tanda corta de piezas en tirada numerada. Hay una cuenta regresiva a la apertura.", en: "A short batch of pieces in a numbered run. A countdown leads to opening." }
+fans_drop_opens: { es: "Abre el {date}", en: "Opens {date}" }
+fans_drop_aria: { es: "Cuenta regresiva hasta la apertura del drop", en: "Countdown to the drop opening" }
+fans_drop_days: { es: "días", en: "days" }
+fans_drop_hours: { es: "horas", en: "hours" }
+fans_drop_minutes: { es: "min", en: "min" }
+fans_drop_seconds: { es: "seg", en: "sec" }
+fans_drop_open_now: { es: "El drop está abierto", en: "The drop is open" }
+fans_drop_open_text: { es: "En una tienda real, acá se habilitaría el pedido. En esta maqueta, el pedido sigue siendo una consulta por mail.", en: "In a real shop, ordering would open here. In this mock-up an order is still an email enquiry." }
+fans_drop_pieces: { es: "Piezas del drop", en: "Pieces in the drop" }
+
+fans_catalog_title: { es: "Catálogo", en: "Catalogue" }
+fans_catalog_lead: { es: "Todo es de ejemplo. Cada ficha se abre para ver los detalles.", en: "Everything is a sample. Open each card to see the details." }
+fans_filter_label: { es: "Filtrar por tipo", en: "Filter by type" }
+fans_filter_all: { es: "Todo", en: "All" }
+fans_filter_count: { es: "Mostrando {n} de {total}", en: "Showing {n} of {total}" }
+fans_kind_apparel: { es: "Prendas", en: "Apparel" }
+fans_kind_poster: { es: "Pósters", en: "Posters" }
+fans_kind_physical: { es: "Ediciones físicas", en: "Physical editions" }
+fans_kind_digital: { es: "Digital", en: "Digital" }
+fans_format_tee: { es: "Remera", en: "T-shirt" }
+fans_format_hoodie: { es: "Buzo", en: "Hoodie" }
+fans_format_tote: { es: "Tote bag", en: "Tote bag" }
+fans_format_print: { es: "Impresión", en: "Print" }
+fans_format_vinyl: { es: "Vinilo 12\"", en: "12\" vinyl" }
+fans_format_tape: { es: "Casete", en: "Cassette" }
+fans_format_pack: { es: "Sample pack", en: "Sample pack" }
+fans_status_soon: { es: "Próximamente", en: "Coming soon" }
+fans_status_consult: { es: "A consultar", en: "Enquire" }
+fans_status_drop: { es: "En el drop", en: "In the drop" }
+fans_status_soldout: { es: "Agotado", en: "Sold out" }
+fans_p_spec: { es: "Ficha técnica", en: "Specifications" }
+fans_p_format: { es: "Formato", en: "Format" }
+fans_p_material: { es: "Material", en: "Material" }
+fans_p_sizes: { es: "Talles", en: "Sizes" }
+fans_p_dims: { es: "Medidas", en: "Size" }
+fans_p_edition: { es: "Edición", en: "Edition" }
+fans_p_edition_numbered: { es: "Tirada de {n} copias numeradas", en: "Run of {n} numbered copies" }
+fans_p_edition_open: { es: "Tirada de {n} copias", en: "Run of {n} copies" }
+fans_p_price: { es: "Precio", en: "Price" }
+fans_p_price_tbd: { es: "A confirmar (sin precio real)", en: "To be confirmed (no real price)" }
+fans_p_art: { es: "Arte", en: "Artwork" }
+fans_p_art_text: { es: "Generativo, creado por código con una semilla propia de cada pieza", en: "Generative, created in code with a seed unique to each piece" }
+fans_p_ask: { es: "Consultar por mail", en: "Enquire by email" }
+fans_p_add: { es: "Sumar a la consulta", en: "Add to enquiry" }
+fans_p_remove: { es: "Quitar de la consulta", en: "Remove from enquiry" }
+fans_p_unavailable: { es: "No disponible", en: "Not available" }
+fans_p_notify: { es: "Avisarme cuando salga", en: "Let me know when it is out" }
+fans_p_cover_alt: { es: "Arte generativo de {name}", en: "Generative artwork for {name}" }
+
+fans_tray_label: { es: "Tu consulta", en: "Your enquiry" }
+fans_tray_count: { es: "{n} en tu consulta", en: "{n} in your enquiry" }
+fans_tray_send: { es: "Armar el mail", en: "Build the email" }
+fans_tray_copy: { es: "Copiar el texto", en: "Copy the text" }
+fans_tray_clear: { es: "Vaciar", en: "Clear" }
+fans_tray_name: { es: "Tu nombre (opcional)", en: "Your name (optional)" }
+fans_tray_note: { es: "Se abre tu programa de correo con el mensaje armado. Nada se envía hasta que lo mandes vos.", en: "Your email app opens with the message built. Nothing is sent until you send it." }
+fans_order_title: { es: "Cómo se pide", en: "How to order" }
+fans_order_lead: { es: "No hay carrito ni pago en el sitio: el pedido es una conversación por mail.", en: "There is no cart or payment on the site: an order is a conversation by email." }
+fans_step_1_title: { es: "Elegí", en: "Choose" }
+fans_step_1_text: { es: "Sumá las piezas que te interesan a tu consulta, o consultá por una sola desde su ficha.", en: "Add the pieces you like to your enquiry, or ask about one from its card." }
+fans_step_2_title: { es: "Escribí", en: "Write" }
+fans_step_2_text: { es: "El sitio arma un mail con tu lista. Lo revisás y lo mandás desde tu cuenta.", en: "The site builds an email with your list. You review it and send it from your account." }
+fans_step_3_title: { es: "Confirmá", en: "Confirm" }
+fans_step_3_text: { es: "En una tienda real, la respuesta traería disponibilidad, precio y forma de pago. Hoy es solo una maqueta.", en: "In a real shop the reply would bring availability, price and payment. Today it is only a mock-up." }
+fans_policies_title: { es: "Envíos y devoluciones", en: "Shipping and returns" }
+fans_policies_lead: { es: "Plantilla a revisar antes de vender cualquier cosa real.", en: "A template to review before selling anything real." }
+fans_mail_shop_subject: { es: "Consulta de tienda (maqueta)", en: "Shop enquiry (mock-up)" }
+fans_mail_shop_hello: { es: "Hola,", en: "Hi," }
+fans_mail_shop_intro: { es: "Me interesa consultar por:", en: "I would like to ask about:" }
+fans_mail_shop_name: { es: "Nombre", en: "Name" }
+fans_mail_shop_signoff: { es: "¡Gracias!", en: "Thanks!" }
+fans_shop_ld_name: { es: "Tienda", en: "Shop" }
+
+# ---- Newsletter -------------------------------------------------------------------------------------------------
+fans_nl_title: { es: "Newsletter", en: "Newsletter" }
+fans_nl_desc: { es: "Alta por mail para enterarte primero de fechas, lanzamientos y mixes de Ailén Cachela. La lista todavía no está conectada a ningún servicio.", en: "Sign up by email to hear first about Ailén Cachela's dates, releases and mixes. The list is not connected to any service yet." }
+fans_nl_lead: { es: "El canal propio para enterarte primero de fechas, lanzamientos y mixes, sin depender de lo que decida una red social.", en: "A channel of your own to hear first about dates, releases and mixes, without depending on what a social network decides." }
+fans_nl_soon_title: { es: "Próximamente", en: "Coming soon" }
+fans_nl_soon_text: { es: "La lista todavía no está conectada a ningún servicio de envío. Mientras tanto, el alta se hace por mail y se carga a mano.", en: "The list is not connected to any sending service yet. Meanwhile, sign-up is by email and entered by hand." }
+fans_nl_form_title: { es: "Anotate", en: "Sign up" }
+fans_nl_form_lead: { es: "Completá lo que quieras y armá el mail de alta. No hace falta escribir tu dirección: el mensaje sale desde tu cuenta.", en: "Fill in whatever you like and build the sign-up email. You do not need to type your address: the message goes out from your account." }
+fans_nl_name: { es: "Nombre (opcional)", en: "Name (optional)" }
+fans_nl_lang: { es: "Idioma de los envíos", en: "Language of the emails" }
+fans_nl_lang_es: { es: "Español", en: "Spanish" }
+fans_nl_lang_en: { es: "Inglés", en: "English" }
+fans_nl_lang_both: { es: "Los dos", en: "Both" }
+fans_nl_topics: { es: "Quiero enterarme de", en: "I want to hear about" }
+fans_nl_send: { es: "Armar el mail de alta", en: "Build the sign-up email" }
+fans_nl_copy: { es: "Copiar el texto", en: "Copy the text" }
+fans_nl_note: { es: "Se abre tu programa de correo con el mensaje listo. Nada se envía hasta que lo mandes vos, y tu dirección se usa solo para responderte.", en: "Your email app opens with the message ready. Nothing is sent until you send it, and your address is used only to reply." }
+fans_nl_privacy_link: { es: "Cómo se usan tus datos", en: "How your data is used" }
+fans_nl_perks_title: { es: "Qué vas a recibir", en: "What you will get" }
+fans_nl_perks_lead: { es: "Una idea de cómo sería la lista. Todo es de ejemplo hasta que la artista lo confirme.", en: "An idea of what the list would be like. Everything is a sample until the artist confirms it." }
+fans_nl_sample_title: { es: "Así se vería un envío", en: "What an issue would look like" }
+fans_nl_sample_lead: { es: "Un mail de ejemplo con la estructura habitual: mix nuevo, próximas fechas y novedades.", en: "A sample email with the usual structure: new mix, upcoming dates and news." }
+fans_nl_sample_subject: { es: "Asunto", en: "Subject" }
+fans_nl_archive_title: { es: "Números anteriores", en: "Past issues" }
+fans_nl_archive_lead: { es: "El archivo de envíos pasados. Los números de abajo son inventados.", en: "The archive of past issues. The numbers below are invented." }
+fans_nl_archive_empty_title: { es: "Todavía no hay números", en: "No issues yet" }
+fans_nl_archive_empty_text: { es: "Cuando haya envíos, el archivo va a estar acá.", en: "Once there are issues, the archive will be here." }
+fans_nl_issue: { es: "N.º {n}", en: "No. {n}" }
+fans_nl_any_topic: { es: "Todo", en: "Everything" }
+fans_mail_nl_subject: { es: "Alta a la newsletter", en: "Newsletter sign-up" }
+fans_mail_nl_hello: { es: "Hola, quiero anotarme a la newsletter.", en: "Hi, I would like to sign up for the newsletter." }
+fans_mail_nl_name: { es: "Nombre", en: "Name" }
+fans_mail_nl_lang: { es: "Idioma", en: "Language" }
+fans_mail_nl_topics: { es: "Temas", en: "Topics" }
+fans_mail_nl_signoff: { es: "¡Gracias!", en: "Thanks!" }
+
+# ---- Comunidad ----------------------------------------------------------------------------------------------------
+fans_co_title: { es: "Comunidad", en: "Community" }
+fans_co_desc: { es: "Dónde seguir a Ailén Cachela, canales de difusión y niveles de membresía de ejemplo. Sin pagos ni cuentas.", en: "Where to follow Ailén Cachela, broadcast channels and sample membership tiers. No payments or accounts." }
+fans_co_lead: { es: "Los lugares donde pasa lo que pasa: perfiles, mixes y, más adelante, canales de difusión. No hay cuentas ni foros que moderar.", en: "The places where things happen: profiles, mixes and, later on, broadcast channels. There are no accounts or forums to moderate." }
+fans_co_channels_title: { es: "Canales", en: "Channels" }
+fans_co_channels_lead: { es: "Los perfiles verificados están activos. Los demás canales esperan a la artista.", en: "Verified profiles are active. The other channels are waiting on the artist." }
+fans_co_channel_live: { es: "Activo", en: "Active" }
+fans_co_channel_pending: { es: "Pendiente de la artista", en: "Pending from the artist" }
+fans_co_channel_open: { es: "Abrir {platform}", en: "Open {platform}" }
+fans_co_tiers_title: { es: "Membresía", en: "Membership" }
+fans_co_tiers_lead: { es: "Niveles de ejemplo, sin pagos conectados. Se muestran para pensar cómo podría ser una membresía.", en: "Sample tiers with no payments connected. They are shown to think through what a membership could be." }
+fans_co_tier_soon: { es: "Próximamente", en: "Coming soon" }
+fans_co_quotes_title: { es: "Lo que dicen", en: "What people say" }
+fans_co_quotes_lead: { es: "El formato de las citas aprobadas. Las de abajo son inventadas y no son de nadie.", en: "The format for approved quotes. The ones below are invented and belong to nobody." }
+fans_co_cta_title: { es: "¿Querés escribirle?", en: "Want to get in touch?" }
+fans_co_cta_text: { es: "Para fechas, colaboraciones o consultas, el canal es el mail.", en: "For dates, collaborations or enquiries, email is the channel." }
+fans_co_cta_booking: { es: "Booking y condiciones", en: "Booking and terms" }
+fans_co_cta_mail: { es: "Escribir por mail", en: "Send an email" }
+
+# ---- Links (link-in-bio) ------------------------------------------------------------------------------------------
+fans_links_title: { es: "Links", en: "Links" }
+fans_links_desc: { es: "Todos los enlaces de Ailén Cachela, DJ y productora de Buenos Aires: escuchar, redes, fechas, booking y más.", en: "All of Ailén Cachela's links, DJ & producer from Buenos Aires: listen, socials, dates, booking and more." }
+fans_links_list: { es: "Enlaces", en: "Links" }
+fans_links_site: { es: "En el sitio", en: "On the site" }
+fans_links_elsewhere: { es: "Escuchá y seguila", en: "Listen and follow" }
+fans_links_full_site: { es: "Ir al sitio completo", en: "Go to the full site" }
+fans_links_share: { es: "Compartir esta página", en: "Share this page" }
+fans_links_copy: { es: "Copiar enlace", en: "Copy link" }
+fans_links_copied: { es: "Enlace copiado", en: "Link copied" }
+fans_links_qr_label: { es: "QR que lleva a esta página de enlaces", en: "QR code that leads to this links page" }
+fans_links_qr_caption: { es: "Escaneá para abrir esta página", en: "Scan to open this page" }
+fans_links_lang: { es: "Idioma", en: "Language" }
+fans_links_ld_name: { es: "Enlaces de Ailén Cachela", en: "Ailén Cachela links" }
+
+# ---- Legales ------------------------------------------------------------------------------------------------------------
+fans_privacy_desc: { es: "Política de privacidad: este sitio no usa cookies ni rastreadores; los reproductores de terceros se cargan solo con un clic.", en: "Privacy policy: this site uses no cookies or trackers; third-party players load only on a click." }
+fans_accessibility_desc: { es: "Declaración de accesibilidad: objetivo WCAG 2.2 AA, lo que está resuelto, lo que no se verificó y cómo reportar un problema.", en: "Accessibility statement: WCAG 2.2 AA goal, what is in place, what has not been verified and how to report a problem." }
+fans_credits_desc: { es: "Créditos del sitio: tipografías y licencias, herramientas de código abierto y lo hecho a medida.", en: "Site credits: typefaces and licenses, open-source tools and what was made by hand." }
+fans_legal_notice_desc: { es: "Aviso legal con los datos de la titular como campos a completar, propiedad intelectual y ley aplicable.", en: "Legal notice with the owner's details as fields to complete, intellectual property and governing law." }
+fans_legal_updated: { es: "Última revisión: {date}", en: "Last reviewed: {date}" }
+fans_legal_disclaimer: { es: "Texto de referencia: no reemplaza el asesoramiento de un profesional matriculado.", en: "Reference text: it does not replace advice from a licensed professional." }
+fans_legal_toc: { es: "En esta página", en: "On this page" }
+fans_legal_see_also: { es: "Ver también", en: "See also" }
+fans_holder_missing: { es: "A completar", en: "To be completed" }
+fans_holder_title: { es: "Datos de la titular", en: "Owner details" }
+fans_status_done: { es: "Resuelto", en: "In place" }
+fans_status_partial: { es: "Por diseño", en: "By design" }
+fans_status_unverified: { es: "Sin verificar", en: "Unverified" }
+fans_status_limit: { es: "Límite conocido", en: "Known limit" }
+fans_fonts_role_display: { es: "Titulares y texto", en: "Headlines and text" }
+fans_fonts_role_mono: { es: "Etiquetas y datos", en: "Labels and data" }
+fans_fonts_license: { es: "Licencia", en: "License" }
+fans_fonts_source: { es: "Proyecto original", en: "Original project" }
+fans_fonts_package: { es: "Paquete", en: "Package" }
+fans_tech_col_name: { es: "Pieza", en: "Piece" }
+fans_tech_col_role: { es: "Para qué", en: "Purpose" }
+fans_tech_col_version: { es: "Versión", en: "Version" }
+fans_tech_col_license: { es: "Licencia", en: "License" }
+fans_tech_caption: { es: "Herramientas de código abierto usadas para construir el sitio", en: "Open-source tools used to build the site" }
+fans_tech_role_astro: { es: "Generador del sitio estático", en: "Static site generator" }
+fans_tech_role_sitemap: { es: "Mapa del sitio para buscadores", en: "Sitemap for search engines" }
+fans_tech_role_check: { es: "Revisión de tipos y plantillas", en: "Type and template checking" }
+fans_tech_role_typescript: { es: "Lenguaje del código", en: "Code language" }
+fans_tech_role_yaml: { es: "Lectura de los datos del sitio", en: "Reading the site's data" }
+fans_tech_role_subset: { es: "Recorte de tipografías al compilar", en: "Typeface subsetting at build time" }
+fans_sw_title: { es: "Modo sin conexión", en: "Offline mode" }
+fans_sw_on: { es: "Activo: el sitio guarda una copia de sus propios archivos en este navegador.", en: "On: the site keeps a copy of its own files in this browser." }
+fans_sw_off: { es: "Desactivado: no se guarda nada en este navegador.", en: "Off: nothing is stored in this browser." }
+fans_sw_none: { es: "Este navegador no admite el modo sin conexión, o todavía no se activó en esta versión del sitio.", en: "This browser does not support offline mode, or it has not been turned on in this version of the site yet." }
+fans_sw_disable: { es: "Desactivar y borrar la copia", en: "Turn off and delete the copy" }
+fans_sw_enable: { es: "Volver a activar", en: "Turn back on" }
+fans_sw_done_off: { es: "Listo: modo sin conexión desactivado y copia borrada.", en: "Done: offline mode turned off and copy deleted." }
+fans_sw_done_on: { es: "Listo: se vuelve a activar en la próxima visita.", en: "Done: it turns back on at your next visit." }
+
+# ---- Errores y PWA --------------------------------------------------------------------------------------------------------
+fans_404_title: { es: "Página no encontrada", en: "Page not found" }
+fans_404_text: { es: "Esta dirección no existe o cambió de lugar. Probá volver al inicio o ir a alguna de estas páginas.", en: "This address does not exist or has moved. Try going back home or to one of these pages." }
+fans_404_home: { es: "Volver al inicio", en: "Back to home" }
+fans_404_goto: { es: "Ir a", en: "Go to" }
+fans_404_hint: { es: "Mové el mouse o el dedo: el metal responde.", en: "Move your mouse or finger: the metal responds." }
+fans_pwa_name: { es: "Ailén Cachela", en: "Ailén Cachela" }
+fans_pwa_short: { es: "Ailén", en: "Ailén" }
+fans_egg_message: { es: "Modo cromo · 33 1/3", en: "Chrome mode · 33 1/3" }
+fans_egg_hint: { es: "Hola. Sin cookies ni rastreadores. ↑ ↑ ↓ ↓ ← → ← → B A", en: "Hi. No cookies, no trackers. ↑ ↑ ↓ ↓ ← → ← → B A" }

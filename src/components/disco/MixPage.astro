@@ -1,0 +1,126 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DataList from '../ui/DataList.astro';
+import DataTable from '../ui/DataTable.astro';
+import Embed from '../ui/Embed.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import Waveform from './Waveform.astro';
+import { t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { series } from '../../lib/disco/data';
+import { neighbours } from '../../lib/disco/releases';
+import { tracklistText } from '../../lib/disco/format';
+import type { Mix } from '../../lib/disco/mixes';
+
+interface Props { lang: Lang; mix: Mix }
+const { lang, mix: m } = Astro.props;
+const isSeries = m.kind === 'series';
+const heading = isSeries ? `${t('disco_mix_code', lang, { code: m.code })} · ${m.title}` : m.title;
+const description = isSeries
+  ? t('disco_mix_desc_series', lang, { code: m.code, title: m.title, venue: m.venue, duration: m.duration })
+  : t('disco_mix_desc_sc', lang, { title: m.title });
+const longDate = (iso: string) => formatDate(iso, lang, { day: 'numeric', month: 'long', year: 'numeric' });
+const spec = isSeries
+  ? [
+      { label: t('disco_mix_number', lang), value: m.code },
+      { label: t('disco_mix_date', lang), value: longDate(m.date) },
+      { label: t('disco_mix_venue', lang), value: m.venue },
+      { label: t('disco_mix_duration', lang), value: m.duration },
+      ...(m.tags.length ? [{ label: t('disco_mix_tags', lang), value: m.tags.join(' · ') }] : []),
+    ]
+  : [];
+const { prev, next } = isSeries ? neighbours(series.slice().reverse(), m.slug) : { prev: null, next: null };
+const hasId = m.tracklist.some((tr) => tr.artist === 'ID');
+const copyText = isSeries ? tracklistText(heading, m.tracklist) : '';
+---
+
+<PageLayout lang={lang} route="mix" params={{ slug: m.slug }} title={heading} crumbTail={heading} kicker={isSeries ? t('disco_series_tag', lang) : t('disco_unclassified', lang)} description={description} demo={m.demo}>
+  <p slot="lead">{isSeries ? pick(m.description, lang) : t('disco_mix_unclassified_note', lang)}</p>
+  <Fragment slot="meta">
+    {m.tags.map((tag) => <Chip>{tag}</Chip>)}
+    {m.demo && <DemoBadge lang={lang} variant="inline" />}
+  </Fragment>
+
+  <section class="page-block mxp" aria-labelledby="player-title">
+    <SectionHead lang={lang} id="player-title" title={t('disco_mix_player', lang)} lead={isSeries ? t('disco_mix_player_demo', lang) : undefined} />
+    {
+      isSeries ? (
+        <div class="mxp__stage">
+          <Embed lang={lang} provider="soundcloud" title={heading} demo inert />
+          <div class="mxp__wave">
+            <Waveform seed={m.waveSeed} shape="mix" count={200} size="lg" label={t('disco_wave_label', lang, { title: heading })} />
+            <p class="label">{t('disco_wave_note', lang)}</p>
+          </div>
+        </div>
+      ) : (
+        <div class="mxp__stage">
+          <Embed lang={lang} provider="soundcloud" title={m.title} url={m.url} />
+          <div class="mxp__actions"><Button href={m.url} variant="primary" external lang={lang}>{t('disco_mix_open_sc', lang)}</Button></div>
+        </div>
+      )
+    }
+  </section>
+
+  {
+    spec.length > 0 && (
+      <section class="page-block" aria-labelledby="spec-title">
+        <SectionHead lang={lang} id="spec-title" title={t('disco_mix_spec', lang)} />
+        <DataList items={spec} layout="rows" />
+      </section>
+    )
+  }
+
+  {
+    m.tracklist.length > 0 && (
+      <section class="page-block" aria-labelledby="tl-title">
+        <SectionHead lang={lang} id="tl-title" title={t('disco_tracklist_mix', lang)} lead={t('disco_tracklist_mix_lead', lang)} demo />
+        <DataTable
+          lang={lang}
+          caption={t('disco_tracklist_mix_caption', lang, { title: heading })}
+          columns={[
+            { key: 'n', label: t('disco_col_pos', lang), numeric: true, nowrap: true },
+            { key: 'artist', label: t('disco_col_artist', lang) },
+            { key: 'title', label: t('disco_col_title', lang) },
+            { key: 'label', label: t('disco_col_label', lang) },
+            { key: 'bpm', label: t('disco_col_bpm', lang), numeric: true, nowrap: true },
+            { key: 'key', label: t('disco_col_key', lang), nowrap: true },
+          ]}
+          rows={m.tracklist.map((tr) => ({ n: String(tr.n).padStart(2, '0'), artist: tr.artist, title: tr.title, label: tr.label || '—', bpm: tr.bpm ?? '—', key: tr.key ?? '—' }))}
+        />
+        <div class="mxp__actions">
+          <button class="btn" type="button" data-copy={copyText} data-done={t('disco_tracklist_copied', lang)}>
+            <span data-copy-label>{t('disco_tracklist_copy', lang)}</span>
+          </button>
+          {hasId && <p class="label">{t('disco_tracklist_id', lang)}</p>}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    (prev || next) && (
+      <nav class="page-block mxp__nav" aria-label={t('disco_all_mixes', lang)}>
+        {prev ? <a class="mxp__nav-link" href={router.path('mix', lang, { slug: prev.slug })} rel="prev"><span class="label">← {t('disco_prev', lang)}</span><span class="display">{t('disco_mix_code', lang, { code: prev.code })} · {prev.title}</span></a> : <span></span>}
+        {next ? <a class="mxp__nav-link mxp__nav-link--next" href={router.path('mix', lang, { slug: next.slug })} rel="next"><span class="label">{t('disco_next', lang)} →</span><span class="display">{t('disco_mix_code', lang, { code: next.code })} · {next.title}</span></a> : <span></span>}
+      </nav>
+    )
+  }
+  <p class="page-block"><Button href={router.path('mixes', lang)}>← {t('disco_back_mixes', lang)}</Button></p>
+</PageLayout>
+
+<style>
+  .mxp__stage { display: grid; gap: var(--space-m); max-width: 56rem; }
+  .mxp__wave { display: grid; gap: var(--space-2xs); }
+  .mxp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-s); margin-top: var(--space-m); }
+  .mxp__stage > .mxp__actions { margin-top: 0; }
+  .mxp__nav { display: grid; gap: var(--space-s); grid-template-columns: 1fr; }
+  @media (min-width: 40rem) { .mxp__nav { grid-template-columns: 1fr 1fr; } }
+  .mxp__nav-link { display: grid; gap: var(--space-3xs); padding: var(--space-s); min-height: var(--tap-lg); border: var(--card-border); background: var(--card-bg); transition: border-color var(--dur-base) var(--ease); }
+  .mxp__nav-link .display { font-size: var(--step-1); line-height: var(--lh-title); overflow-wrap: anywhere; }
+  .mxp__nav-link--next { text-align: right; }
+  .mxp__nav-link:focus-visible { border-color: var(--chrome-300); }
+  @media (hover: hover) { .mxp__nav-link:hover { border-color: var(--chrome-300); } }
+</style>

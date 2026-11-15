@@ -1,0 +1,68 @@
+# Link-in-bio (/links/). Los destinos reales salen de site.yaml (links, contacto) y del registro de rutas:
+# acá solo se decide el orden, el rótulo y cuáles destacan. Una ruta aparece solo si la página existe y tiene contenido.
+items:
+  - id: escuchar
+    kind: link
+    ref: soundcloud
+    label: { es: "Escuchar en SoundCloud", en: "Listen on SoundCloud" }
+    hint: { es: "Mixes y tracks", en: "Mixes and tracks" }
+    primary: true
+  - id: instagram
+    kind: link
+    ref: instagram
+    label: { es: "Instagram", en: "Instagram" }
+    hint: { es: "", en: "" }
+  - id: fechas
+    kind: route
+    ref: shows
+    label: { es: "Próximas fechas", en: "Upcoming shows" }
+    hint: { es: "Agenda y calendario", en: "Schedule and calendar" }
+  - id: musica
+    kind: route
+    ref: music
+    label: { es: "Música", en: "Music" }
+    hint: { es: "Discografía", en: "Discography" }
+  - id: mixes
+    kind: route
+    ref: mixes
+    label: { es: "Mixes", en: "Mixes" }
+    hint: { es: "Serie de sets", en: "Set series" }
+  - id: booking
+    kind: route
+    ref: booking
+    label: { es: "Booking", en: "Booking" }
+    hint: { es: "Riders y condiciones", en: "Riders and terms" }
+  - id: prensa
+    kind: route
+    ref: press
+    label: { es: "Prensa y EPK", en: "Press and EPK" }
+    hint: { es: "Bios y materiales", en: "Bios and materials" }
+  - id: newsletter
+    kind: route
+    ref: newsletter
+    label: { es: "Newsletter", en: "Newsletter" }
+    hint: { es: "Alta por mail", en: "Sign up by email" }
+  - id: tienda
+    kind: route
+    ref: shop
+    label: { es: "Tienda", en: "Shop" }
+    hint: { es: "Maqueta de ejemplo", en: "Sample mock-up" }
+  - id: senka
+    kind: link
+    ref: senka-instagram
+    label: { es: "SENKA", en: "SENKA" }
+    hint: { es: "Proyecto artístico", en: "Artistic project" }
+  - id: pinterest
+    kind: link
+    ref: pinterest
+    label: { es: "Pinterest", en: "Pinterest" }
+    hint: { es: "", en: "" }
+  - id: linktree
+    kind: link
+    ref: linktree
+    label: { es: "Linktree", en: "Linktree" }
+    hint: { es: "", en: "" }
+  - id: mail
+    kind: mail
+    label: { es: "Escribir por mail", en: "Send an email" }
+    hint: { es: "Booking y consultas", en: "Booking and enquiries" }

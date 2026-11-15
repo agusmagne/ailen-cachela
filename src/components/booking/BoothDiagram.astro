@@ -1,0 +1,158 @@
+---
+import { t, type Lang } from '../../lib/content';
+import { boothLayout, type GearInput } from '../../lib/booking/booth';
+
+/**
+ * Diagrama de cabina / stage plot en SVG propio (vista desde arriba). La geometría sale de lib/booking/booth.ts; los
+ * colores, de los tokens --bd-* (src/styles/tokens/booking.css), así el mismo dibujo sirve en pantalla y en papel.
+ * La leyenda numerada repite todo en texto (el SVG lleva <title> y <desc>).
+ */
+interface Props {
+  lang: Lang;
+  gear: GearInput[];
+  /** Nombre del diagrama (accesible). */
+  title: string;
+  /** Descripción para lectores de pantalla. */
+  desc: string;
+  /** Id único dentro de la página. */
+  uid: string;
+  /** "booth" (cabina de DJ) o "stage" (stage plot de live / híbrido): cambia los rótulos fijos. */
+  variant?: 'booth' | 'stage';
+  class?: string;
+}
+const { lang, gear, title, desc, uid, variant = 'booth', class: cls } = Astro.props;
+const L = boothLayout(gear);
+const { table, view } = L;
+const kind = (k: string) => t(`booking_k_${k}`, lang);
+const short = (k: string) => t(`booking_ks_${k}`, lang);
+const tbc = t('booking_gear_tbc', lang);
+const unlabeled = new Set(['monitor', 'mic']);
+---
+
+<figure class:list={['bd', cls]}>
+  <svg class="bd__svg" viewBox={`0 0 ${view.w} ${view.h}`} role="img" aria-labelledby={`${uid}-t ${uid}-d`} focusable="false">
+    <title id={`${uid}-t`}>{title}</title>
+    <desc id={`${uid}-d`}>{desc}</desc>
+    <defs>
+      <marker id={`${uid}-arrow`} viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L8 4 L0 8 z" class="bd__arrow" />
+      </marker>
+    </defs>
+
+    <text class="bd__note" x={L.floor.x} y={L.floor.y} text-anchor="middle">{t(variant === 'stage' ? 'booking_d_floor_stage' : 'booking_d_floor', lang)}</text>
+    <rect class="bd__table" x={table.x} y={table.y} width={table.w} height={table.h} />
+    <text class="bd__note" x={table.x + 8} y={table.y + table.h - 8}>{t('booking_d_table', lang)}</text>
+
+    {
+      L.cables.map((c) => (
+        <>
+          <path class:list={['bd__cable', `bd__cable--${c.kind}`]} d={c.d} marker-end={c.kind === 'audio' ? `url(#${uid}-arrow)` : undefined} />
+          <text class="bd__note bd__note--cable" x={c.label.x} y={c.label.y}>{t(c.kind === 'audio' ? 'booking_d_pa' : 'booking_d_link', lang)}</text>
+        </>
+      ))
+    }
+
+    {
+      L.units.map((u) => {
+        const cx = u.x + u.w / 2;
+        const cy = u.y + u.h / 2;
+        const label = unlabeled.has(u.kind) ? null : (u.short ?? short(u.kind));
+        return (
+          <g class:list={['bd__unit', `bd__unit--${u.kind}`, { 'is-tbc': u.confirm }]}>
+            {u.kind === 'mic' ? (
+              <>
+                <circle class="bd__body" cx={cx} cy={cy} r={u.w / 2} />
+                <circle class="bd__detail" cx={cx} cy={cy} r={3} />
+              </>
+            ) : u.kind === 'monitor' ? (
+              <>
+                <rect class="bd__body" x={u.x} y={u.y} width={u.w} height={u.h} rx="2" />
+                <circle class="bd__detail" cx={cx} cy={u.y + u.h * 0.34} r="5" />
+                <circle class="bd__detail" cx={cx} cy={u.y + u.h * 0.7} r="8" />
+              </>
+            ) : (
+              <>
+                <rect class="bd__body" x={u.x} y={u.y} width={u.w} height={u.h} rx="2" />
+                {u.kind === 'deck' || u.kind === 'turntable' ? (
+                  <>
+                    <circle class="bd__detail" cx={cx} cy={u.y + 44} r={Math.min(u.w / 2 - 8, u.kind === 'turntable' ? 38 : 34)} />
+                    <circle class="bd__detail" cx={cx} cy={u.y + 44} r="3" />
+                    {u.kind === 'turntable' && <path class="bd__detail" d={`M${u.x + u.w - 12} ${u.y + 12} L${cx + 6} ${u.y + 44}`} />}
+                    {u.kind === 'deck' && <rect class="bd__detail" x={u.x + 8} y={u.y + 8} width={u.w - 16} height="8" />}
+                  </>
+                ) : u.kind === 'mixer' ? (
+                  <>
+                    {[0, 1, 2, 3].map((i) => <path class="bd__detail" d={`M${u.x + 22 + i * ((u.w - 44) / 3)} ${u.y + 36} v38`} />)}
+                    {[0, 1, 2, 3].map((i) => <circle class="bd__detail" cx={u.x + 22 + i * ((u.w - 44) / 3)} cy={u.y + 16} r="4" />)}
+                    <path class="bd__detail" d={`M${u.x + 24} ${u.y + 86} h${u.w - 48}`} />
+                  </>
+                ) : u.kind === 'laptop' ? (
+                  <rect class="bd__detail" x={u.x + 8} y={u.y + 8} width={u.w - 16} height={u.h - 26} />
+                ) : u.kind === 'synth' ? (
+                  <>{Array.from({ length: Math.max(3, Math.floor((u.w - 12) / 9)) }, (_, i) => <path class="bd__detail" d={`M${u.x + 8 + i * 9} ${u.y + u.h - 38} v18`} />)}</>
+                ) : u.kind === 'drum' ? (
+                  <>{[0, 1, 2, 3].map((i) => <rect class="bd__detail" x={u.x + 8 + i * ((u.w - 16) / 4)} y={u.y + 12} width={(u.w - 16) / 4 - 4} height="10" />)}</>
+                ) : (
+                  <>{[0, 1, 2].map((i) => <circle class="bd__detail" cx={u.x + 16 + i * ((u.w - 32) / 2)} cy={u.y + 16} r="4" />)}</>
+                )}
+                {label && (
+                  <text class="bd__label" x={cx} y={u.y + u.h - 8} text-anchor="middle">{label}</text>
+                )}
+              </>
+            )}
+            <circle class="bd__badge" cx={u.kind === 'mic' ? cx : u.x + 11} cy={u.y - 7} r="7.5" />
+            <text class="bd__badge-n" x={u.kind === 'mic' ? cx : u.x + 11} y={u.y - 4} text-anchor="middle">{u.n}</text>
+          </g>
+        );
+      })
+    }
+
+    <g class="bd__dj">
+      <circle cx={L.dj.x} cy={L.dj.y - 2} r="11" />
+      <text x={L.dj.x} y={L.dj.y + 2} text-anchor="middle">DJ</text>
+    </g>
+    <text class="bd__note" x={L.dj.x + 22} y={L.dj.y + 2}>{t('booking_d_artist', lang)}</text>
+  </svg>
+
+  <figcaption class="bd__legend">
+    <p class="label bd__legend-title">{t('booking_d_legend', lang)}</p>
+    <ol class="bd__list">
+      {
+        L.units.map((u) => (
+          <li>
+            <span class="bd__n" aria-hidden="true">{u.n}</span>
+            <span>
+              <strong>{u.model}</strong>
+              {u.confirm ? <em class="bd__tbc"> · {tbc}</em> : <span class="bd__kind"> · {kind(u.kind)}</span>}
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </figcaption>
+</figure>
+
+<style>
+  .bd { margin: 0; display: grid; gap: var(--space-s); }
+  .bd__svg { width: 100%; height: auto; display: block; background: var(--bd-bg); border: var(--stroke) solid var(--bd-line); }
+  .bd__table { fill: var(--bd-table); stroke: var(--bd-line); stroke-width: 1; }
+  .bd__body { fill: var(--bd-fill); stroke: var(--bd-ink); stroke-width: 1.2; }
+  .bd__detail { fill: none; stroke: var(--bd-ink); stroke-width: 1; opacity: 0.7; }
+  .is-tbc .bd__body { stroke-dasharray: 4 3; }
+  .bd__label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.04em; fill: var(--bd-ink); }
+  .bd__note { font-family: var(--font-ui); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--bd-muted); }
+  .bd__note--cable { fill: var(--bd-accent); }
+  .bd__cable { fill: none; stroke: var(--bd-ink); stroke-width: 1.4; }
+  .bd__cable--link { stroke: var(--bd-accent); stroke-dasharray: 5 4; }
+  .bd__arrow { fill: var(--bd-ink); }
+  .bd__badge { fill: var(--bd-ink); }
+  .bd__badge-n { font-family: var(--font-ui); font-size: 9.5px; font-weight: 700; fill: var(--bd-bg); }
+  .bd__dj circle { fill: none; stroke: var(--bd-ink); stroke-width: 1.4; }
+  .bd__dj text { font-family: var(--font-ui); font-size: 9px; font-weight: 700; fill: var(--bd-ink); }
+  .bd__legend-title { margin-bottom: var(--space-2xs); }
+  .bd__list { display: grid; gap: var(--space-3xs) var(--space-m); grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); font-size: var(--step--1); color: var(--bd-text); }
+  .bd__list li { display: flex; gap: var(--space-2xs); align-items: baseline; }
+  .bd__n { flex: none; display: inline-grid; place-items: center; min-width: 1.4rem; height: 1.4rem; padding-inline: 0.2rem; background: var(--bd-ink); color: var(--bd-bg); font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; }
+  .bd__kind { color: var(--bd-muted); }
+  .bd__tbc { color: var(--bd-muted); font-style: normal; }
+</style>

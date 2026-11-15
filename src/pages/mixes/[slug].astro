@@ -1,0 +1,11 @@
+---
+import MixPage from '../../components/disco/MixPage.astro';
+import { mixes } from '../../lib/disco/data';
+
+export function getStaticPaths() {
+  return mixes.map((mix) => ({ params: { slug: mix.slug }, props: { mix } }));
+}
+const { mix } = Astro.props;
+---
+
+<MixPage lang="es" mix={mix} />

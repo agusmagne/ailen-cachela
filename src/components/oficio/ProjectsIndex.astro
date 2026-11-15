@@ -1,0 +1,138 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Card from '../ui/Card.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Media from '../Media.astro';
+import Flyer from '../Flyer.astro';
+import { site, t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/collective';
+import { mergeProjects, editionShow } from '../../lib/oficio/projects';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const collective = domain('collective', schema);
+const projects = mergeProjects(site.projects, collective.items);
+const empty = projects.length === 0;
+const L = (k: string) => t(k, lang);
+const anyDemo = projects.some((p) => p.extra.manifesto.length + p.extra.editions.length + p.extra.residents.length + p.extra.log.length + p.extra.calls.length > 0);
+const firstWithEditions = projects.find((p) => p.extra.editions.length > 0);
+---
+
+<PageLayout lang={lang} route="projects" title={L('oficio_projects_title')} description={L('oficio_projects_desc')} demo={anyDemo} empty={empty}>
+  <p slot="lead">{L('oficio_projects_lead')}</p>
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    !empty && (
+      <section class="page-block" aria-labelledby="proj-map">
+        <SectionHead lang={lang} id="proj-map" kicker={L('oficio_kicker_world')} title={L('oficio_map_title')} lead={L('oficio_map_lead')} />
+        <div class="tree">
+          <p class="tree__root display">{site.artist.name}</p>
+          <ol class="tree__list">
+            {projects.map((p) => (
+              <li class="tree__node">
+                <a class="tree__link" href={router.path('project', lang, { slug: p.slug })}>
+                  <span class="tree__name display">{p.project.name}</span>
+                  <span class="tree__rel label">{pick(p.extra.relation, lang)}</span>
+                  <span class="tree__kind label">{L(`oficio_pkind_${p.extra.kind}`)}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    !empty && (
+      <section class="page-block" aria-labelledby="proj-list">
+        <SectionHead lang={lang} id="proj-list" kicker={L('oficio_kicker_projects')} title={L('oficio_list_title')} />
+        <ul class="plist">
+          {projects.map((p, i) => (
+            <li class="plist__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <Card title={p.project.name} lang={lang} href={router.path('project', lang, { slug: p.slug })} kicker={`${String(i + 1).padStart(2, '0')} · ${L(`oficio_pkind_${p.extra.kind}`)}`} as="div" level="h3">
+                <div slot="media"><Media seed={p.extra.seed} kicker={L(`oficio_pkind_${p.extra.kind}`)} label={p.project.name} ratio="4 / 3" /></div>
+                {pick(p.project.status, lang) && <p class="label plist__status">{pick(p.project.status, lang)}</p>}
+                <p>{pick(p.project.text, lang)}</p>
+                <p class="label plist__rel">{pick(p.extra.relation, lang)}</p>
+                <div slot="footer" class="plist__foot">
+                  {p.project.url ? (
+                    <a class="link" href={p.project.url} target="_blank" rel="noopener noreferrer">
+                      {t('projects_open', lang, { platform: p.project.platform })} {p.project.handle}
+                      <span class="arrow" aria-hidden="true">↗</span>
+                      <span class="sr-only"> {t('new_tab', lang)}</span>
+                    </a>
+                  ) : (
+                    p.project.handle && (
+                      <span class="label">
+                        {p.project.handle} · {t('projects_nolink', lang)}
+                      </span>
+                    )
+                  )}
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    firstWithEditions && (
+      <section class="page-block" aria-labelledby="proj-archive">
+        <SectionHead lang={lang} id="proj-archive" kicker={L('oficio_kicker_archive')} title={L('oficio_archive_title')} lead={L('oficio_archive_lead')} demo />
+        <ul class="strip">
+          {firstWithEditions.extra.editions.map((ed) => (
+            <li class:list={['strip__item', { 'has-demo-badge': ed.demo }]} data-gen-host>
+              {ed.demo && <DemoBadge lang={lang} />}
+              <div class="strip__art" aria-hidden="true"><Flyer show={editionShow(ed, firstWithEditions.slug)} tier="card" /></div>
+              <p class="strip__cap">
+                <time class="label" datetime={ed.date}>{formatDate(ed.date, lang, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+                <strong>{pick(ed.title, lang)}</strong>
+              </p>
+            </li>
+          ))}
+        </ul>
+        <p class="strip__more"><a class="link" href={`${router.path('project', lang, { slug: firstWithEditions.slug })}#ediciones`}>{L('oficio_archive_more')}</a></p>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .tree { display: grid; gap: var(--space-m); }
+  .tree__root { display: inline-block; justify-self: start; padding: var(--space-xs) var(--space-m); font-size: var(--step-2); color: var(--chrome-50); border: var(--stroke) solid var(--chrome-300); background: var(--card-bg); }
+  .tree__list { position: relative; display: grid; gap: var(--space-xs); margin-left: var(--space-m); padding-left: var(--space-l); border-left: var(--oficio-line); }
+  .tree__node { position: relative; }
+  .tree__node::before { content: ''; position: absolute; left: calc(var(--space-l) * -1); top: 50%; width: var(--space-l); height: var(--stroke); background: var(--chrome-600); }
+  .tree__link { display: grid; gap: var(--space-3xs) var(--space-m); grid-template-columns: minmax(0, 1fr); align-items: center; padding: var(--space-xs) var(--space-s); min-height: var(--tap); border: var(--card-border); background: var(--card-bg); transition: border-color var(--dur-base) var(--ease); }
+  .tree__link:focus-visible { border-color: var(--chrome-50); }
+  @media (hover: hover) { .tree__link:hover { border-color: var(--chrome-300); } }
+  .tree__link:active { background: var(--press-bg); }
+  .tree__name { font-size: var(--step-1); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .tree__kind { color: var(--accent); }
+  @media (min-width: 52rem) { .tree__link { grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) auto; } .tree__kind { text-align: right; } }
+
+  .plist { display: grid; gap: var(--oficio-gap); }
+  @media (min-width: 62rem) { .plist { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .plist__item { display: grid; }
+  .plist__item :global(.card) { height: 100%; }
+  .plist__status { color: var(--accent); }
+  .plist__rel { color: var(--subtle); }
+  .plist__foot :global(.link) { display: inline-block; padding-block: 0.6rem; overflow-wrap: anywhere; }
+
+  .strip { display: grid; gap: var(--oficio-gap); grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); }
+  .strip__item { position: relative; display: grid; gap: var(--space-xs); align-content: start; }
+  .strip__art { position: relative; aspect-ratio: var(--oficio-ratio-flyer); border: var(--card-border); overflow: hidden; }
+  .strip__cap { display: grid; gap: var(--space-3xs); color: var(--chrome-100); }
+  .strip__cap .label { color: var(--subtle); }
+  .strip__more { margin-top: var(--space-m); }
+  .strip__more .link { display: inline-block; padding-block: 0.7rem; }
+</style>

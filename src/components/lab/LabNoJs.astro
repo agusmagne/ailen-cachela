@@ -1,0 +1,14 @@
+---
+/** Estado digno sin JavaScript o sin Web Audio: se ve hasta que el módulo arranca (o se explica por qué no puede). */
+import { t, type Lang } from '../../lib/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<div class="lab-nojs" data-nojs>
+  <p><slot /></p>
+  <p>{t('lab_needs_js', lang)}</p>
+</div>
+<div class="lab-unsupported" data-unsupported hidden role="status">
+  <p>{t('lab_unsupported_audio', lang)}</p>
+</div>

@@ -1,0 +1,71 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Accordion from '../ui/Accordion.astro';
+import Button from '../ui/Button.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/booking';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+
+/** Condiciones de contratación: acordeón de plantilla de ejemplo, siempre "a revisar" con la artista y un profesional. */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const empty = data.terms.length === 0;
+---
+
+<PageLayout lang={lang} route="booking-terms" title={t('booking_terms_title', lang)} description={t('booking_terms_desc', lang)} kicker={t('booking_terms_kicker', lang)} demo={!empty} empty={empty}>
+  <p slot="lead">{t('booking_terms_lead', lang)}</p>
+  <Fragment slot="meta">
+    <Button href={router.path('booking', lang) + '#consulta'} variant="primary">{t('booking_cta_form', lang)}</Button>
+    <Button href={router.path('booking-tech', lang)}>{t('booking_route_tech', lang)}</Button>
+  </Fragment>
+
+  {
+    empty ? (
+      <EmptyState lang={lang} title={t('booking_empty_title', lang)} text={t('booking_empty_text', lang)}>
+        <Button href={router.path('booking', lang)} variant="primary">{t('booking_back_to_booking', lang)}</Button>
+      </EmptyState>
+    ) : (
+      <>
+        <aside class="tm-warning" aria-labelledby="tm-warning-h">
+          <p class="label" id="tm-warning-h">{t('booking_terms_warning_label', lang)}</p>
+          <p>{t('booking_terms_warning', lang)}</p>
+        </aside>
+
+        <section class="page-block" id="condiciones" aria-labelledby="cond-h">
+          <SectionHead lang={lang} id="cond-h" title={t('booking_terms_list_title', lang)} kicker={t('booking_terms_list_kicker', lang)} lead={t('booking_terms_list_lead', lang)} demo />
+          <Accordion items={data.terms.map((x, i) => ({ id: x.id, title: `${String(i + 1).padStart(2, '0')} · ${x.title[lang]}`, open: i === 0 }))}>
+            {data.terms.map((x) => (
+              <div slot={x.id} class="tm-body">
+                <p>{x.text[lang]}</p>
+                {x.points.length > 0 && <ul>{x.points.map((p) => <li>{p[lang]}</li>)}</ul>}
+                <p class="tm-review"><strong>{t('booking_terms_review', lang)}</strong> {x.review[lang]}</p>
+              </div>
+            ))}
+          </Accordion>
+        </section>
+
+        <section class="page-block" id="siguiente" aria-labelledby="sig-h">
+          <SectionHead lang={lang} id="sig-h" title={t('booking_terms_next_title', lang)} kicker={t('booking_terms_next_kicker', lang)} lead={t('booking_terms_next_lead', lang)} />
+          <div class="tm-links">
+            <Button href={router.path('booking', lang) + '#consulta'} variant="primary">{t('booking_cta_form', lang)}</Button>
+            <Button href={router.path('booking-tech', lang)}>{t('booking_route_tech', lang)}</Button>
+            <Button href={router.path('booking-hospitality', lang)}>{t('booking_route_hospitality', lang)}</Button>
+          </div>
+        </section>
+      </>
+    )
+  }
+</PageLayout>
+
+<style>
+  .tm-warning { display: grid; gap: var(--space-2xs); max-width: 48rem; padding: var(--space-m); border: var(--stroke) dashed var(--demo-line); background: var(--demo-bg); }
+  .tm-body { display: grid; gap: var(--space-s); }
+  .tm-review { padding-top: var(--space-xs); border-top: var(--divider); font-size: var(--step--1); color: var(--muted); }
+  .tm-links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+</style>

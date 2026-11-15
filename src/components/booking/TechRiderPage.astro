@@ -1,0 +1,191 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Tabs from '../ui/Tabs.astro';
+import DataList from '../ui/DataList.astro';
+import DataTable from '../ui/DataTable.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import Download from '../ui/Download.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import BoothDiagram from './BoothDiagram.astro';
+import { domain } from '../../lib/data';
+import { schema, RIG_MODES, type Rig, type RigMode } from '../../lib/schemas/booking';
+import { t, withBase, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { demoOn } from '../../lib/demo';
+import { publicFileSize } from '../../lib/downloads/response';
+import { dl, dlPath, gearInputs } from './ui';
+
+/** Rider técnico: configuraciones de cabina con diagrama, requisitos de sala y variantes DJ / live / híbrido. */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const empty = data.rigs.length === 0;
+const tbc = t('booking_gear_tbc', lang);
+const pdfFile = dl.tech(lang);
+const pdfSize = publicFileSize(dlPath(pdfFile)) ?? undefined;
+const modes = RIG_MODES.filter((m) => data.rigs.some((r) => r.mode === m));
+const rigsOf = (m: RigMode) => data.rigs.filter((r) => r.mode === m);
+const gearLine = (rig: Rig) => rig.gear.map((g) => `${g.qty} × ${g.model[lang]}${g.confirm ? ` (${tbc})` : ''}`).join(', ');
+const desc = (rig: Rig) => t('booking_tech_diagram_desc', lang, { gear: gearLine(rig) });
+const title = (rig: Rig) => t('booking_tech_diagram_title', lang, { name: rig.name[lang] });
+const inputRows = data.inputs.map((i) => ({ ch: i.ch, source: i.source[lang], connection: i.connection, note: i.note[lang] }));
+const cueRows = data.cues.map((c) => ({ at: c.at, cue: c.cue[lang], signal: c.signal[lang], action: c.action[lang], fallback: c.fallback[lang] }));
+---
+
+<PageLayout lang={lang} route="booking-tech" title={t('booking_tech_title', lang)} description={t('booking_tech_desc', lang)} kicker={t('booking_tech_kicker', lang)} demo={!empty} empty={empty}>
+  <p slot="lead">{t('booking_tech_lead', lang)}</p>
+  <Fragment slot="meta">
+    <Button href={router.path('booking', lang) + '#consulta'} variant="primary">{t('booking_cta_form', lang)}</Button>
+    <Button href={router.path('booking-hospitality', lang)}>{t('booking_route_hospitality', lang)}</Button>
+  </Fragment>
+
+  {
+    empty ? (
+      <EmptyState lang={lang} title={t('booking_empty_title', lang)} text={t('booking_empty_text', lang)}>
+        <Button href={router.path('booking', lang)} variant="primary">{t('booking_back_to_booking', lang)}</Button>
+      </EmptyState>
+    ) : (
+      <>
+        <section class="page-block" id="como-leerlo" aria-labelledby="como-h">
+          <SectionHead lang={lang} id="como-h" title={t('booking_tech_how_title', lang)} kicker={t('booking_tech_how_kicker', lang)} demo />
+          <div class="tr-how">
+            <div class="prose">
+              <p>{t('booking_tech_how_1', lang)}</p>
+              <p>{t('booking_tech_how_2', lang)}</p>
+            </div>
+            <aside class="tr-note" aria-label={t('booking_tech_note_label', lang)}>
+              <p class="label">{t('booking_tech_note_label', lang)}</p>
+              <p>{t('booking_tech_note', lang)}</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page-block" id="configuraciones" aria-labelledby="config-h">
+          <SectionHead lang={lang} id="config-h" title={t('booking_tech_config_title', lang)} kicker={t('booking_tech_config_kicker', lang)} lead={t('booking_tech_config_lead', lang)} demo />
+          <Tabs lang={lang} label={t('booking_tech_modes_label', lang)} tabs={modes.map((m) => ({ id: m, label: t(`booking_mode_${m}`, lang) }))}>
+            {modes.map((m) => (
+              <div slot={m} class="tr-mode">
+                <p class="tr-mode__intro">{t(`booking_mode_${m}_intro`, lang)}</p>
+                {rigsOf(m).map((rig) => (
+                  <article class:list={['tr-rig', 'has-demo-badge', { 'tr-rig--primary': rig.primary }]}>
+                    <DemoBadge lang={lang} />
+                    <header class="tr-rig__head">
+                      <h4 class="tr-rig__name display">{rig.name[lang]}</h4>
+                      {rig.primary && <Chip tone="accent">{t('booking_tech_preferred', lang)}</Chip>}
+                    </header>
+                    <p class="tr-rig__gear">{gearLine(rig)}</p>
+                    <BoothDiagram lang={lang} gear={gearInputs(rig, lang)} title={title(rig)} desc={desc(rig)} uid={`bd-${rig.id}`} variant={m === 'dj' ? 'booth' : 'stage'} />
+                    <p class="tr-rig__note">{rig.note[lang]}</p>
+                  </article>
+                ))}
+                {m !== 'dj' && inputRows.length > 0 && (
+                  <div class="tr-table">
+                    <h4 class="label">{t('booking_tech_inputs', lang)}</h4>
+                    <DataTable
+                      lang={lang}
+                      caption={t('booking_tech_inputs', lang)}
+                      columns={[
+                        { key: 'ch', label: t('booking_col_ch', lang), numeric: true },
+                        { key: 'source', label: t('booking_col_source', lang) },
+                        { key: 'connection', label: t('booking_col_connection', lang), nowrap: true },
+                        { key: 'note', label: t('booking_col_note', lang) },
+                      ]}
+                      rows={inputRows}
+                    />
+                  </div>
+                )}
+                {m !== 'dj' && cueRows.length > 0 && (
+                  <div class="tr-table">
+                    <h4 class="label">{t('booking_tech_cues', lang)}</h4>
+                    <DataTable
+                      lang={lang}
+                      caption={t('booking_tech_cues', lang)}
+                      columns={[
+                        { key: 'at', label: t('booking_col_at', lang), nowrap: true },
+                        { key: 'cue', label: t('booking_col_cue', lang) },
+                        { key: 'signal', label: t('booking_col_signal', lang) },
+                        { key: 'action', label: t('booking_col_action', lang) },
+                        { key: 'fallback', label: t('booking_col_fallback', lang) },
+                      ]}
+                      rows={cueRows}
+                    />
+                    <p class="tr-table__note">{t('booking_tech_cues_note', lang)}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </Tabs>
+        </section>
+
+        {
+          data.requirements.length > 0 && (
+            <section class="page-block" id="requisitos" aria-labelledby="req-h">
+              <SectionHead lang={lang} id="req-h" title={t('booking_tech_req_title', lang)} kicker={t('booking_tech_req_kicker', lang)} demo />
+              <DataList layout="rows" items={data.requirements.map((r) => ({ label: r.label[lang], value: r.text[lang], wide: true }))} />
+            </section>
+          )
+        }
+
+        <section class="page-block" id="artista" aria-labelledby="artista-h">
+          <SectionHead lang={lang} id="artista-h" title={t('booking_tech_artist_title', lang)} kicker={t('booking_tech_artist_kicker', lang)} demo />
+          <div class="tr-cols">
+            {data.brings.length > 0 && (
+              <div>
+                <h3 class="label">{t('booking_tech_brings', lang)}</h3>
+                <ul class="prose tr-list">{data.brings.map((b) => <li>{b.text[lang]}</li>)}</ul>
+              </div>
+            )}
+            {data.mismatch.length > 0 && (
+              <div>
+                <h3 class="label">{t('booking_tech_mismatch', lang)}</h3>
+                <ul class="prose tr-list">{data.mismatch.map((b) => <li>{b.text[lang]}</li>)}</ul>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section class="page-block" id="descargas" aria-labelledby="desc-h">
+          <SectionHead lang={lang} id="desc-h" title={t('booking_tech_dl_title', lang)} kicker={t('booking_tech_dl_kicker', lang)} />
+          <div class="tr-dl">
+            {demoOn && <Download lang={lang} href={withBase(`/${dlPath(pdfFile)}`)} label={t('booking_tech_pdf', lang)} kind="PDF" size={pdfSize} description={t('booking_tech_pdf_desc', lang)} filename={pdfFile} demo />}
+            <div class="tr-dl__links">
+              <Button href={router.path('booking-hospitality', lang)}>{t('booking_route_hospitality', lang)}</Button>
+              <Button href={router.path('booking-terms', lang)}>{t('booking_route_terms', lang)}</Button>
+              <Button href={router.path('booking', lang) + '#advance'}>{t('booking_doc_advance_title', lang)}</Button>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
+</PageLayout>
+
+<style>
+  .tr-how { display: grid; gap: var(--space-l); grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; }
+  .tr-note { padding: var(--space-m); border: var(--stroke) solid var(--chrome-600); background: var(--demo-bg); display: grid; gap: var(--space-2xs); }
+  .tr-mode { display: grid; gap: var(--space-l); padding-top: var(--space-m); }
+  .tr-mode__intro { color: var(--muted); max-width: var(--measure); }
+  .tr-rig { position: relative; display: grid; gap: var(--space-s); padding: var(--space-m); border: var(--card-border); background: var(--card-bg); }
+  .tr-rig--primary { border-color: var(--chrome-400); }
+  .tr-rig__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); padding-right: 8rem; }
+  .tr-rig__name { font-size: var(--step-2); color: var(--chrome-50); }
+  .tr-rig__gear { font-family: var(--font-ui); font-size: var(--step--1); color: var(--chrome-100); }
+  .tr-rig__note { color: var(--muted); max-width: var(--measure); }
+  .tr-table { display: grid; gap: var(--space-xs); }
+  .tr-table__note { color: var(--muted); font-size: var(--step--1); }
+  .tr-cols { display: grid; gap: var(--space-l); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .tr-cols h3 { margin-bottom: var(--space-xs); }
+  .tr-list { padding-left: 1.1em; }
+  .tr-dl { display: grid; gap: var(--space-m); max-width: 44rem; }
+  .tr-dl__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  @media (max-width: 52rem) {
+    .tr-how { grid-template-columns: 1fr; }
+    .tr-rig__head { padding-right: 0; padding-top: var(--space-m); }
+    .tr-rig { padding: var(--space-s); }
+  }
+</style>

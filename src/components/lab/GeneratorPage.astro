@@ -1,0 +1,109 @@
+---
+/** /lab/generador/ y /en/lab/generator/: formulario + vista previa. La lógica está en src/scripts/modules/lab-generator.ts. */
+import LabPage from './LabPage.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { t, type Lang } from '../../lib/content';
+import { FORMATS, KIND_CHOICES, LIMITS, DEFAULT_STATE } from '../../lib/lab/generator';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const labels = {
+  lang,
+  rendering: t('lab_gen_rendering', lang),
+  done: t('lab_gen_done', lang),
+  fail: t('lab_gen_fail', lang),
+  noWebgl: t('lab_gen_nowebgl', lang),
+  dims: t('lab_gen_dims', lang),
+  diceDone: t('lab_gen_dice_done', lang),
+  shared: t('lab_gen_shared', lang),
+};
+---
+
+<LabPage lang={lang} route="lab-generator" title={t('lab_gen_title', lang)} description={t('lab_gen_desc', lang)} lead={t('lab_gen_lead', lang)} sound={false}>
+  <LazyModule name="lab-generator" props={{ labels }} class="lab-tool" when="visible">
+    <div class="lab-nojs" data-nojs>
+      <p>{t('lab_gen_desc', lang)}</p>
+      <p>{t('lab_needs_js', lang)}</p>
+    </div>
+
+    <div data-app hidden class="gen-grid">
+      <form class="lab-panel" data-form novalidate autocomplete="off">
+        <h2>{t('lab_gen_form', lang)}</h2>
+        <div class="gen-form">
+          <div class="field field--wide">
+            <label for="gen-title">{t('lab_gen_title_label', lang)}</label>
+            <input id="gen-title" name="title" class="input" type="text" maxlength={LIMITS.title} value={DEFAULT_STATE.title} />
+          </div>
+          <div class="field field--wide">
+            <label for="gen-lineup">{t('lab_gen_lineup_label', lang)}</label>
+            <input id="gen-lineup" name="lineup" class="input" type="text" maxlength={LIMITS.lineup} value="" />
+          </div>
+          <div class="field">
+            <label for="gen-date">{t('lab_gen_date_label', lang)}</label>
+            <input id="gen-date" name="date" class="input" type="date" value="" />
+          </div>
+          <div class="field">
+            <label for="gen-time">{t('lab_gen_time_label', lang)}</label>
+            <input id="gen-time" name="time" class="input" type="text" maxlength={LIMITS.time} placeholder={t('lab_gen_time_ph', lang)} value="" />
+          </div>
+          <div class="field field--wide">
+            <label for="gen-place">{t('lab_gen_place_label', lang)}</label>
+            <input id="gen-place" name="place" class="input" type="text" maxlength={LIMITS.place} value="" />
+          </div>
+          <div class="field field--wide">
+            <label for="gen-footer">{t('lab_gen_footer_label', lang)}</label>
+            <input id="gen-footer" name="footer" class="input" type="text" maxlength={LIMITS.footer} value="" />
+          </div>
+          <div class="field">
+            <label for="gen-seed">{t('lab_gen_seed_label', lang)}</label>
+            <input id="gen-seed" name="seed" class="input" type="text" maxlength={LIMITS.seed} value={DEFAULT_STATE.seed} autocapitalize="off" spellcheck="false" />
+          </div>
+          <div class="field">
+            <label for="gen-kind">{t('lab_gen_kind_label', lang)}</label>
+            <select id="gen-kind" name="kind" class="lab-select">
+              {KIND_CHOICES.map((k) => <option value={k}>{t(`lab_gen_kind_${k}`, lang)}</option>)}
+            </select>
+          </div>
+          <div class="field field--wide">
+            <button type="button" class="btn" data-dice>{t('lab_gen_dice', lang)}</button>
+          </div>
+        </div>
+
+        <fieldset class="gen-formats field">
+          <legend>{t('lab_gen_format', lang)}</legend>
+          {
+            FORMATS.map((f) => (
+              <label class="gen-format">
+                <input type="radio" name="format" value={f.id} checked={f.id === DEFAULT_STATE.format} />
+                <span>{t(`lab_gen_fmt_${f.id}`, lang)}<small>{f.w} × {f.h}</small></span>
+              </label>
+            ))
+          }
+        </fieldset>
+        <p class="lab-hint">{t('lab_gen_fmt_phone_hint', lang)} {t('lab_gen_fmt_poster_hint', lang)}</p>
+        <p class="lab-hint">{t('lab_gen_privacy', lang)}</p>
+      </form>
+
+      <div class="gen-preview lab-tool">
+        <div class="lab-panel">
+          <p class="lab-sub">{t('lab_gen_preview', lang)} · <span data-dims></span></p>
+          <div class="gen-frame" data-frame>
+            <canvas data-preview role="img" aria-label={t('lab_gen_preview_label', lang)}></canvas>
+          </div>
+          <div class="lab-row">
+            <button type="button" class="btn btn--primary" data-download>{t('lab_gen_download', lang)}</button>
+            <button type="button" class="btn" data-share hidden>{t('lab_gen_share', lang)}</button>
+          </div>
+          <p class="lab-hint" data-webgl-note>{t('lab_gen_nowebgl', lang)}</p>
+          <p class="lab-status" role="status" aria-live="polite" aria-atomic="true" data-status></p>
+        </div>
+      </div>
+    </div>
+  </LazyModule>
+</LabPage>
+
+<style is:global>
+  /* la nota de WebGL solo aparece si el shader no se pudo dibujar */
+  [data-webgl-note] { display: none; }
+  [data-webgl='off'] [data-webgl-note] { display: block; }
+</style>

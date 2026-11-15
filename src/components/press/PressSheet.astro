@@ -1,0 +1,252 @@
+---
+import PrintLayout from '../../layouts/PrintLayout.astro';
+import QrCode from '../ui/QrCode.astro';
+import { t, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import { paragraphs } from '../../lib/press/model';
+import { isotipoSvg } from '../../lib/press/logo';
+import { loadPress, palette } from '../../lib/press/context';
+
+/**
+ * Vista de impresión de la prensa (A4, papel claro). `kind="epk"`: EPK de 3 páginas (portada con bio y ficha;
+ * trayectoria y apoyos; palabras de terceros, statement y marca). `kind="one"`: one-sheet de una página.
+ * Si hay contenido de ejemplo, el sello va en el encabezado y en el pie de CADA página (PrintLayout + .sheet__foot).
+ */
+interface Props {
+  lang: Lang;
+  kind: 'epk' | 'one';
+}
+const { lang, kind } = Astro.props;
+const ctx = loadPress(lang);
+const { press } = ctx;
+const pal = palette();
+const one = kind === 'one';
+const bio = (id: string) => ctx.bios.find((b) => b.id === id);
+const lead = bio('medium') ?? bio('short')!;
+const long = bio('long');
+const stamp = demoOn && ctx.hasDemo;
+const doc = one ? t('press_print_doc_one', lang) : t('press_print_doc_epk', lang);
+const iso = isotipoSvg('negro', pal);
+const timeline = one ? ctx.timeline.slice(-3) : ctx.timeline;
+const chips = ['void', 'chrome-700', 'chrome-400', 'chrome-200', 'chrome-50', 'accent', 'accent-b', 'accent-c'] as const;
+const pageNote = (n: number, total: number) => t('press_print_page', lang, { n, total });
+const pages = one ? 1 : 3;
+const mark = (demo: boolean) => demo && demoOn;
+---
+<PrintLayout lang={lang} title={`${t('press_title', lang)} · ${doc}`} doc={doc} demo={ctx.hasDemo}>
+  <!-- Página 1 -->
+  <section class:list={['sheet__page', 'press-sheet', { 'is-one': one }]}>
+    <div class="ps-hero">
+      <div>
+        <h1>Ailén<br />Cachela</h1>
+        <p class="ps-tag">{ctx.tagline}</p>
+      </div>
+      <div class="ps-iso" aria-hidden="true" set:html={iso} />
+    </div>
+
+    <h2>{t('press_s_bio', lang)}</h2>
+    <div class="ps-bio">
+      {paragraphs(lead.text).map((p) => <p>{p}</p>)}
+      {mark(lead.demo) && <p class="ps-mark"><span class="sheet__demo">{t('base_demo_badge_short', lang)}</span></p>}
+    </div>
+
+    <h2>{t('press_s_facts', lang)}</h2>
+    <dl>
+      {
+        ctx.facts.map((f) => (
+          <>
+            <dt>{f.label}</dt>
+            <dd>{f.value}{mark(f.demo) ? <span class="ps-star" title={t('base_demo_badge', lang)}> *</span> : ''}</dd>
+          </>
+        ))
+      }
+    </dl>
+    {ctx.facts.some((f) => mark(f.demo)) && <p class="ps-note">* {t('press_print_demo_rows', lang)}</p>}
+
+    {
+      one && (
+        <>
+          <h2>{t('press_s_timeline', lang)}</h2>
+          <table>
+            <tbody>
+              {timeline.map((e) => (
+                <tr>
+                  <td class="ps-year">{e.year}</td>
+                  <td>{e.title}{mark(e.demo) ? ' *' : ''}</td>
+                  <td class="ps-place">{e.place}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )
+    }
+
+    <div class="ps-contact">
+      <div>
+        <h2>{t('press_contact_booking', lang)}</h2>
+        <p class="ps-mail">{ctx.email}</p>
+        <ul class="ps-links">
+          {ctx.links.filter((l) => l.contact).map((l) => <li><span>{l.label || l.platform}</span> {l.handle}</li>)}
+        </ul>
+      </div>
+      <div class="ps-qr">
+        <QrCode text={ctx.pageUrl} label={t('press_qr_label', lang)} size="26mm" plain />
+        <p class="ps-url">{ctx.pageUrl.replace(/^https?:\/\//, '')}</p>
+      </div>
+    </div>
+
+    <footer class="sheet__foot">
+      <span>{ctx.pageUrl.replace(/^https?:\/\//, '')}</span>
+      {stamp && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}
+      <span>{pageNote(1, pages)}</span>
+    </footer>
+  </section>
+
+  {
+    !one && (
+      <section class="sheet__page press-sheet">
+        {long && (
+          <>
+            <h2>{t('press_bio_long', lang)}</h2>
+            <div class="ps-bio ps-bio--long">
+              {paragraphs(long.text).map((p) => <p>{p}</p>)}
+              {mark(long.demo) && <p class="ps-mark"><span class="sheet__demo">{t('base_demo_badge_short', lang)}</span></p>}
+            </div>
+          </>
+        )}
+        <h2>{t('press_s_timeline', lang)}</h2>
+        <table>
+          <tbody>
+            {timeline.map((e) => (
+              <tr>
+                <td class="ps-year">{e.year}</td>
+                <td>{e.title}{mark(e.demo) ? ' *' : ''}</td>
+                <td class="ps-place">{e.place}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {press.supports.length > 0 && (
+          <>
+            <h2>{t('press_supports_title', lang)}</h2>
+            <ul class="ps-supports">
+              {press.supports.map((s) => <li><strong>{s.name[lang]}</strong> <span>{s.place[lang]}</span></li>)}
+            </ul>
+          </>
+        )}
+        {ctx.timeline.some((e) => mark(e.demo)) && <p class="ps-note">* {t('press_print_demo_rows', lang)}</p>}
+        <footer class="sheet__foot">
+          <span>{ctx.pageUrl.replace(/^https?:\/\//, '')}</span>
+          {stamp && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}
+          <span>{pageNote(2, pages)}</span>
+        </footer>
+      </section>
+    )
+  }
+
+  {
+    !one && (
+      <section class="sheet__page press-sheet">
+        {press.quotes.length > 0 && (
+          <>
+            <h2>{t('press_quotes_title', lang)}</h2>
+            <ul class="ps-quotes">
+              {press.quotes.map((q) => (
+                <li>
+                  <p>“{q.text[lang]}”</p>
+                  <p class="ps-src">{q.outlet[lang]} · {q.year}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {press.testimonials.length > 0 && (
+          <>
+            <h2>{t('press_testimonials_title', lang)}</h2>
+            <ul class="ps-quotes">
+              {press.testimonials.map((q) => (
+                <li>
+                  <p>{q.text[lang]}</p>
+                  <p class="ps-src">{q.author[lang]} · {q.org[lang]}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {press.statement.map((s) => (
+          <>
+            <h2>{t('press_s_statement', lang)}</h2>
+            <div class="ps-bio">{paragraphs(s.text[lang]).map((p) => <p>{p}</p>)}</div>
+          </>
+        ))}
+        <h2>{t('press_s_brand', lang)}</h2>
+        <div class="ps-brand">
+          <div class="ps-iso ps-iso--sm" aria-hidden="true" set:html={iso} />
+          <ul class="ps-chips">
+            {chips.map((c) => <li><span style={`background:var(--${c})`}></span><em>--{c}</em></li>)}
+          </ul>
+        </div>
+        <p class="ps-note">{t('press_print_brand_note', lang)}</p>
+        {press.quotes.length + press.testimonials.length + press.statement.length > 0 && stamp && <p class="ps-note">* {t('press_print_demo_rows', lang)}</p>}
+        <footer class="sheet__foot">
+          <span>{ctx.pageUrl.replace(/^https?:\/\//, '')}</span>
+          {stamp && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}
+          <span>{pageNote(3, pages)}</span>
+        </footer>
+      </section>
+    )
+  }
+</PrintLayout>
+
+<style is:global>
+  .press-sheet .ps-hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 10mm; margin-bottom: 4mm; }
+  .press-sheet .ps-hero h1 { font-size: 30pt; line-height: 0.9; margin-bottom: 3mm; }
+  .press-sheet .ps-tag { font-size: 12pt; line-height: 1.3; max-width: 105mm; color: var(--paper-ink); }
+  .press-sheet .ps-iso { width: 24mm; height: 24mm; flex: none; }
+  .press-sheet h2 { margin: 4.5mm 0 1.5mm; padding-top: 2mm; }
+  .press-sheet .ps-iso svg { width: 100%; height: 100%; }
+  .press-sheet .ps-iso--sm { width: 22mm; height: 22mm; }
+  .press-sheet .ps-bio p { font-size: 9.4pt; line-height: 1.4; max-width: 172mm; }
+  .press-sheet .ps-bio--long p { font-size: 9.6pt; }
+  .press-sheet .ps-mark { margin-top: 1.5mm; }
+  .press-sheet .ps-star { font-family: var(--font-ui); }
+  .press-sheet .ps-note { margin-top: 2mm; font-family: var(--font-ui); font-size: 7pt; letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--paper-muted); }
+  .press-sheet dl { grid-template-columns: 25mm minmax(0, 1fr) 25mm minmax(0, 1fr); gap: 0.8mm 4mm; }
+  .press-sheet dl dd { font-size: 9.4pt; }
+  .press-sheet dt { font-size: 6.8pt; }
+  .press-sheet .ps-year { width: 16mm; font-family: var(--font-display); font-weight: var(--font-display-weight); font-stretch: var(--stretch-display); font-size: 11pt; padding-right: 3mm; }
+  .press-sheet .ps-place { color: var(--paper-muted); font-size: 8.6pt; width: 52mm; }
+  .press-sheet .ps-contact { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8mm; align-items: end; break-inside: avoid; }
+  .press-sheet .ps-mail { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: 15pt; }
+  .press-sheet .ps-links { margin-top: 2mm; display: grid; gap: 0.8mm; font-size: 9pt; }
+  .press-sheet .ps-links span { font-family: var(--font-ui); font-size: 7pt; letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--paper-muted); margin-right: 2mm; }
+  .press-sheet .ps-qr { display: grid; gap: 1.5mm; justify-items: center; }
+  .press-sheet .ps-url { font-family: var(--font-ui); font-size: 6.5pt; color: var(--paper-muted); max-width: 40mm; text-align: center; overflow-wrap: anywhere; }
+  .press-sheet .ps-supports { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2mm 6mm; font-size: 9.5pt; }
+  .press-sheet .ps-supports span { color: var(--paper-muted); font-size: 8.4pt; }
+  .press-sheet .ps-quotes { display: grid; gap: 4mm; }
+  .press-sheet .ps-quotes li { padding-left: 4mm; border-left: 1.2pt solid var(--paper-ink); break-inside: avoid; }
+  .press-sheet .ps-quotes p:first-child { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: 12pt; line-height: 1.2; }
+  .press-sheet .ps-src { margin-top: 1mm; font-family: var(--font-ui); font-size: 7pt; letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--paper-muted); }
+  .press-sheet .ps-brand { display: flex; gap: 8mm; align-items: center; }
+  .press-sheet .ps-chips { display: flex; flex-wrap: wrap; gap: 2mm; }
+  .press-sheet .ps-chips li { display: grid; gap: 1mm; justify-items: center; }
+  .press-sheet .ps-chips span { display: block; width: 13mm; height: 13mm; border: 0.4pt solid var(--paper-line); }
+  .press-sheet .ps-chips em { font-style: normal; font-family: var(--font-ui); font-size: 5.5pt; color: var(--paper-muted); }
+  .press-sheet .sheet__foot { align-items: center; }
+  .press-sheet.is-one .ps-hero { margin-bottom: 1mm; align-items: center; }
+  .press-sheet.is-one .ps-hero h1 { font-size: 27pt; margin-bottom: 2mm; }
+  .press-sheet.is-one .ps-hero h1 br { display: none; }
+  .press-sheet.is-one .ps-tag { font-size: 10.5pt; }
+  .press-sheet.is-one .ps-iso { width: 20mm; height: 20mm; }
+  .press-sheet.is-one h2 { margin: 4mm 0 1.5mm; padding-top: 2mm; }
+  .press-sheet.is-one .ps-bio p { font-size: 9pt; line-height: 1.42; max-width: none; }
+  .press-sheet.is-one dl { gap: 1mm 3mm; }
+  .press-sheet.is-one dl dd { font-size: 8.8pt; }
+  .press-sheet.is-one dt { font-size: 6.6pt; }
+  .press-sheet.is-one table { font-size: 8.8pt; }
+  .press-sheet.is-one td { padding-block: 1mm; }
+  .press-sheet.is-one .ps-mail { font-size: 13pt; }
+  .press-sheet.is-one .sheet__foot { margin-top: 4mm; }
+</style>

@@ -1,0 +1,183 @@
+# Estudio (paquete oficio). TODO es contenido de EJEMPLO: ningún equipo, sala ni nota es un dato verificado de la artista.
+# El equipo se describe de forma genérica (tipo de aparato), sin marcas ni modelos. Los textos de las notas son de muestra.
+gear:
+  # ---- Monitoreo ----
+  - id: monitores-campo-cercano
+    demo: true
+    category: monitoring
+    name: { es: "Monitores activos de campo cercano de 5 pulgadas", en: "5-inch active near-field monitors" }
+    role: { es: "Referencia principal para mezclar: respuesta pareja y estéreo estable.", en: "Main mixing reference: even response and a stable stereo image." }
+    specs:
+      - { label: { es: "Tamaño", en: "Size" }, value: { es: "Woofer de 5″", en: "5″ woofer" } }
+      - { label: { es: "Tipo", en: "Type" }, value: { es: "Biamplificado, activo", en: "Bi-amplified, active" } }
+      - { label: { es: "Ubicación", en: "Placement" }, value: { es: "Triángulo equilátero, a la altura de las orejas", en: "Equilateral triangle, at ear height" } }
+  - id: subwoofer-activo
+    demo: true
+    category: monitoring
+    name: { es: "Subwoofer activo de 8 pulgadas", en: "8-inch active subwoofer" }
+    role: { es: "Para juzgar el kick y el bajo por debajo de 60 Hz sin adivinar.", en: "To judge kick and bass below 60 Hz without guessing." }
+    specs:
+      - { label: { es: "Tamaño", en: "Size" }, value: { es: "Woofer de 8″", en: "8″ woofer" } }
+      - { label: { es: "Corte", en: "Crossover" }, value: { es: "Ajustable, medido en la sala", en: "Adjustable, measured in the room" } }
+  - id: auriculares-cerrados
+    demo: true
+    category: monitoring
+    name: { es: "Auriculares de estudio cerrados", en: "Closed-back studio headphones" }
+    role: { es: "Chequeo de detalles, clics y colas de reverb; segunda opinión de la mezcla.", en: "Checking details, clicks and reverb tails; a second opinion on the mix." }
+    specs:
+      - { label: { es: "Formato", en: "Format" }, value: { es: "Circumaurales, cerrados", en: "Over-ear, closed-back" } }
+  # ---- Sintetizadores y cajas ----
+  - id: sinte-monofonico
+    demo: true
+    category: synth
+    name: { es: "Sintetizador analógico monofónico", en: "Monophonic analog synthesizer" }
+    role: { es: "Bajos y leads con carácter: filtro en cascada y mucho margen para torcer el sonido.", en: "Bass and leads with character: cascading filter and plenty of room to twist the sound." }
+    specs:
+      - { label: { es: "Voces", en: "Voices" }, value: { es: "1", en: "1" } }
+      - { label: { es: "Osciladores", en: "Oscillators" }, value: { es: "2, con sub", en: "2, plus sub" } }
+      - { label: { es: "Conexión", en: "Connection" }, value: { es: "MIDI y CV", en: "MIDI and CV" } }
+  - id: sinte-bajo-secuenciador
+    demo: true
+    category: synth
+    name: { es: "Sintetizador de bajo con secuenciador de pasos", en: "Bass synthesizer with step sequencer" }
+    role: { es: "Líneas de bajo ácidas con deslizamientos y acentos; el patrón se toca en vivo.", en: "Acid bass lines with slides and accents; patterns are played live." }
+    specs:
+      - { label: { es: "Secuenciador", en: "Sequencer" }, value: { es: "16 pasos", en: "16 steps" } }
+      - { label: { es: "Filtro", en: "Filter" }, value: { es: "Pasabajos resonante", en: "Resonant low-pass" } }
+  - id: caja-ritmos
+    demo: true
+    category: synth
+    name: { es: "Caja de ritmos analógica", en: "Analog drum machine" }
+    role: { es: "Kicks y percusión sintetizados; cada voz se afina y se satura por separado.", en: "Synthesized kicks and percussion; each voice is tuned and saturated separately." }
+    specs:
+      - { label: { es: "Salidas", en: "Outputs" }, value: { es: "Individuales por voz", en: "Individual per voice" } }
+      - { label: { es: "Sincronía", en: "Sync" }, value: { es: "MIDI y pulso analógico", en: "MIDI and analog pulse" } }
+  - id: modular-semi
+    demo: true
+    category: synth
+    name: { es: "Sistema modular semimodular de mesa", en: "Desktop semi-modular system" }
+    role: { es: "Texturas, ruido y modulación lenta para las atmósferas de los temas.", en: "Textures, noise and slow modulation for the atmospheres of the tracks." }
+    specs:
+      - { label: { es: "Formato", en: "Format" }, value: { es: "Mesa, parcheable", en: "Desktop, patchable" } }
+  # ---- DJ ----
+  - id: reproductores-usb
+    demo: true
+    category: dj
+    name: { es: "Dos reproductores de DJ con lectura USB", en: "Two USB-reading DJ players" }
+    role: { es: "Para ensayar sets con el mismo flujo que en cabina y preparar la música.", en: "To rehearse sets with the same workflow as in the booth and prepare music." }
+    specs:
+      - { label: { es: "Cantidad", en: "Quantity" }, value: { es: "2", en: "2" } }
+      - { label: { es: "Medio", en: "Media" }, value: { es: "USB", en: "USB" } }
+  - id: mixer-cuatro-canales
+    demo: true
+    category: dj
+    name: { es: "Mixer de DJ de cuatro canales", en: "Four-channel DJ mixer" }
+    role: { es: "Filtros y efectos por canal; sirve también para sumar sintes en vivo.", en: "Per-channel filters and effects; also used to sum synths live." }
+    specs:
+      - { label: { es: "Canales", en: "Channels" }, value: { es: "4", en: "4" } }
+      - { label: { es: "Salida", en: "Output" }, value: { es: "Principal y cabina", en: "Master and booth" } }
+  - id: controlador-pads
+    demo: true
+    category: dj
+    name: { es: "Controlador MIDI con pads y perillas", en: "MIDI controller with pads and knobs" }
+    role: { es: "Disparo de loops y control de parámetros en el modo en vivo.", en: "Loop triggering and parameter control in live mode." }
+    specs:
+      - { label: { es: "Pads", en: "Pads" }, value: { es: "16, sensibles a la velocidad", en: "16, velocity sensitive" } }
+  # ---- Procesamiento ----
+  - id: interfaz-audio
+    demo: true
+    category: processing
+    name: { es: "Interfaz de audio de 8 entradas y 8 salidas", en: "8-in / 8-out audio interface" }
+    role: { es: "Corazón del estudio: convierte, enruta y alimenta los monitores.", en: "The heart of the studio: converts, routes and feeds the monitors." }
+    specs:
+      - { label: { es: "Entradas", en: "Inputs" }, value: { es: "8 analógicas", en: "8 analog" } }
+      - { label: { es: "Resolución", en: "Resolution" }, value: { es: "24 bits", en: "24-bit" } }
+  - id: compresor-bus
+    demo: true
+    category: processing
+    name: { es: "Compresor de bus estéreo analógico", en: "Analog stereo bus compressor" }
+    role: { es: "Pega la mezcla con compresión suave de uno o dos decibeles.", en: "Glues the mix with gentle compression of one or two decibels." }
+    specs:
+      - { label: { es: "Ataque", en: "Attack" }, value: { es: "Conmutable", en: "Switchable" } }
+  - id: ecualizador-pasivo
+    demo: true
+    category: processing
+    name: { es: "Ecualizador de cuatro bandas de curva ancha", en: "Four-band wide-curve equalizer" }
+    role: { es: "Retoques amplios al final de la cadena; nunca para arreglar problemas de origen.", en: "Broad touches at the end of the chain; never to fix source problems." }
+    specs:
+      - { label: { es: "Bandas", en: "Bands" }, value: { es: "4", en: "4" } }
+  # ---- Software ----
+  - id: daw
+    demo: true
+    category: software
+    name: { es: "Estación de trabajo de audio digital (DAW)", en: "Digital audio workstation (DAW)" }
+    role: { es: "Arreglo, edición y mezcla; plantillas propias para empezar rápido.", en: "Arrangement, editing and mixing; custom templates to start fast." }
+    specs:
+      - { label: { es: "Sesiones", en: "Sessions" }, value: { es: "Plantilla por tipo de tema", en: "One template per kind of track" } }
+  - id: suite-dinamica
+    demo: true
+    category: software
+    name: { es: "Suite de plugins de dinámica y saturación", en: "Dynamics and saturation plugin suite" }
+    role: { es: "Compresión, limitado y saturación cuando el hardware no alcanza.", en: "Compression, limiting and saturation when hardware is not enough." }
+    specs:
+      - { label: { es: "Formato", en: "Format" }, value: { es: "VST3 / AU", en: "VST3 / AU" } }
+  - id: analisis-espectro
+    demo: true
+    category: software
+    name: { es: "Herramientas de análisis de espectro, fase y sonoridad", en: "Spectrum, phase and loudness analysis tools" }
+    role: { es: "Verificación objetiva antes de entregar: balance tonal, mono y sonoridad.", en: "Objective checks before delivery: tonal balance, mono and loudness." }
+    specs:
+      - { label: { es: "Controles", en: "Checks" }, value: { es: "Espectro, correlación, LUFS", en: "Spectrum, correlation, LUFS" } }
+
+tour:
+  - { id: sala-control, demo: true, seed: "tour-control", layout: wide, title: { es: "Sala de control", en: "Control room" }, caption: { es: "Escritorio al centro, monitores en triángulo y paneles absorbentes en los primeros reflejos.", en: "Desk in the middle, monitors in a triangle and absorbers at the first reflections." } }
+  - { id: rack, demo: true, seed: "tour-rack", layout: narrow, title: { es: "Rack de procesadores", en: "Processor rack" }, caption: { es: "Compresor y ecualizador de bus, a mano para el último retoque.", en: "Bus compressor and equalizer, within reach for the final touch." } }
+  - { id: sintes, demo: true, seed: "tour-synths", layout: narrow, title: { es: "Rincón de sintetizadores", en: "Synth corner" }, caption: { es: "Todo enchufado y listo: una idea no espera a que se arme el cableado.", en: "Everything plugged in and ready: an idea should not wait for cabling." } }
+  - { id: cabina, demo: true, seed: "tour-booth", layout: wide, title: { es: "Cabina de ensayo", en: "Rehearsal booth" }, caption: { es: "Dos reproductores y un mixer para practicar los sets tal como se tocan.", en: "Two players and a mixer to practice sets exactly as they are played." } }
+  - { id: archivo, demo: true, seed: "tour-archive", layout: full, title: { es: "Archivo de sesiones", en: "Session archive" }, caption: { es: "Cada proyecto con su carpeta, sus versiones y su nota de proceso.", en: "Every project with its folder, its versions and its process note." } }
+
+workflow:
+  - { id: escucha, demo: true, title: { es: "Escucha y referencias", en: "Listening and references" }, text: { es: "Se define qué se busca: energía, espacio, tempo. Se eligen tres referencias y se mide qué tienen en común.", en: "We define what we are after: energy, space, tempo. Three references are chosen and we measure what they share." }, output: { es: "Una hoja con intención y referencias", en: "A sheet with intent and references" } }
+  - { id: boceto, demo: true, title: { es: "Boceto de ritmo y bajo", en: "Rhythm and bass sketch" }, text: { es: "Primero el kick, el bajo y un elemento que cambie. Si no funciona con tres sonidos, no se arregla con treinta.", en: "Kick, bass and one element that changes come first. If it does not work with three sounds, thirty will not fix it." }, output: { es: "Loop de 16 compases", en: "A 16-bar loop" } }
+  - { id: arreglo, demo: true, title: { es: "Arreglo y estructura", en: "Arrangement and structure" }, text: { es: "Se estira el loop en un recorrido: entradas, rupturas, tensión. Se piensa para la pista, no para los auriculares.", en: "The loop is stretched into a journey: entries, breaks, tension. It is built for the floor, not for headphones." }, output: { es: "Versión de arreglo completa", en: "Full arrangement version" } }
+  - { id: mezcla, demo: true, title: { es: "Mezcla", en: "Mixing" }, text: { es: "Balance, espacio y dinámica. Se mezcla a volumen bajo y se contrasta con auriculares y con el subwoofer.", en: "Balance, space and dynamics. Mixed at low volume and cross-checked on headphones and the subwoofer." }, output: { es: "Mezcla estéreo y stems", en: "Stereo mix and stems" } }
+  - { id: prueba, demo: true, title: { es: "Prueba en sistema grande", en: "Big-system test" }, text: { es: "Se escucha en otro sistema, de ser posible con gente. Se anotan correcciones y se vuelve.", en: "Listened to on another system, with people if possible. Corrections are noted and we go back." }, output: { es: "Lista de correcciones", en: "List of corrections" } }
+  - { id: master, demo: true, title: { es: "Master y entrega", en: "Master and delivery" }, text: { es: "Ajuste final de sonoridad y formatos. Se entrega con la sesión archivada y una nota de proceso.", en: "Final loudness adjustment and formats. Delivered with the session archived and a process note." }, output: { es: "Archivos finales y nota", en: "Final files and note" } }
+
+notes:
+  - id: kick-que-respira
+    demo: true
+    date: "2026-10-02"
+    title: { es: "Un kick que respira", en: "A kick that breathes" }
+    tags: [{ es: "Mezcla", en: "Mixing" }, { es: "Dinámica", en: "Dynamics" }]
+    summary: { es: "Por qué el hueco entre el golpe y el bajo importa más que el nivel de cada uno.", en: "Why the gap between the hit and the bass matters more than the level of each." }
+    body:
+      - { es: "Cuando un kick y un bajo pelean, la tentación es subir uno. Casi siempre el problema es de tiempo, no de volumen: el bajo entra antes de que el golpe termine de decir lo suyo.", en: "When a kick and a bass fight, the temptation is to turn one up. Most of the time the problem is timing, not volume: the bass comes in before the hit has finished speaking." }
+      - { es: "En esta nota de ejemplo se describe un método simple: acortar la cola del kick, hacer que el bajo se agache unos milisegundos y escuchar en mono. Si el golpe se entiende en mono, se entiende en cualquier sistema.", en: "This sample note describes a simple method: shorten the kick tail, let the bass duck for a few milliseconds and listen in mono. If the hit reads in mono, it reads on any system." }
+  - id: tres-sonidos
+    demo: true
+    date: "2026-09-12"
+    title: { es: "El boceto de tres sonidos", en: "The three-sound sketch" }
+    tags: [{ es: "Composición", en: "Composition" }, { es: "Flujo de trabajo", en: "Workflow" }]
+    summary: { es: "Empezar con un kick, un bajo y una voz que cambia, y no sumar nada hasta que funcione.", en: "Start with a kick, a bass and one voice that changes, and add nothing until it works." }
+    body:
+      - { es: "Un loop con muchos elementos esconde sus problemas. Con tres sonidos, cada decisión se escucha: la rítmica, el registro, la modulación.", en: "A loop with many elements hides its problems. With three sounds every decision is audible: rhythm, register, modulation." }
+      - { es: "La regla de este ejemplo es dejar el boceto sonando diez minutos antes de tocar nada. Si sigue interesando, vale la pena. Si no, se descarta sin culpa.", en: "The rule in this example is to leave the sketch playing for ten minutes before touching anything. If it still holds attention, it is worth keeping. If not, drop it without guilt." }
+  - id: mono-primero
+    demo: true
+    date: "2026-08-20"
+    title: { es: "Mono primero", en: "Mono first" }
+    tags: [{ es: "Mezcla", en: "Mixing" }, { es: "Sistemas de sonido", en: "Sound systems" }]
+    summary: { es: "Revisar la mezcla en mono antes de entregar evita sorpresas en sistemas grandes.", en: "Checking the mix in mono before delivery avoids surprises on large systems." }
+    body:
+      - { es: "Muchos sistemas de club suman los canales por debajo de cierta frecuencia. Lo que se cancela en el estudio desaparece en la pista.", en: "Many club systems sum the channels below a certain frequency. What cancels in the studio disappears on the floor." }
+      - { es: "Esta nota de muestra propone un chequeo de cinco minutos: sumar a mono, buscar lo que cae, corregir la fase de los graves y volver a escuchar en estéreo.", en: "This sample note proposes a five-minute check: sum to mono, find what drops out, fix the phase of the lows and listen in stereo again." }
+  - id: ruido-como-instrumento
+    demo: true
+    date: "2026-07-05"
+    title: { es: "El ruido como instrumento", en: "Noise as an instrument" }
+    tags: [{ es: "Diseño sonoro", en: "Sound design" }]
+    summary: { es: "Capas de ruido filtrado como atmósfera y como pegamento entre secciones.", en: "Layers of filtered noise as atmosphere and as glue between sections." }
+    body:
+      - { es: "Una capa de ruido, filtrada y modulada lento, une dos secciones que de otro modo suenan pegadas con cinta.", en: "A layer of noise, filtered and slowly modulated, joins two sections that would otherwise sound taped together." }
+      - { es: "El ejemplo detalla tres usos: barridos para tensión, un colchón bajo el hi-hat y una cola larga que se corta con una compuerta.", en: "The example details three uses: sweeps for tension, a bed under the hi-hat and a long tail cut by a gate." }

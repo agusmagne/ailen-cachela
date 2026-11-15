@@ -1,0 +1,137 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Accordion from '../ui/Accordion.astro';
+import Chip from '../ui/Chip.astro';
+import Media from '../Media.astro';
+import Steps from './Steps.astro';
+import Inquiry from './Inquiry.astro';
+import { t, pick, type Lang } from '../../lib/content';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/services';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const svc = domain('services', schema);
+const empty = svc.items.length === 0;
+const anyDemo = [...svc.items, ...svc.process, ...svc.faq].some((i) => i.demo);
+const L = (k: string) => t(k, lang);
+const fields = [
+  { key: 'name', label: L('oficio_f_name'), type: 'text' as const, autocomplete: 'name' },
+  { key: 'email', label: `${L('oficio_f_email')} *`, type: 'email' as const, required: true, autocomplete: 'email' },
+  { key: 'service', label: L('oficio_f_service'), type: 'select' as const, options: [...svc.items.map((s) => ({ value: s.id, label: pick(s.title, lang) })), { value: 'other', label: L('oficio_f_other') }] },
+  { key: 'link', label: L('oficio_f_link'), type: 'url' as const, hint: L('oficio_f_link_hint') },
+  { key: 'deadline', label: L('oficio_f_deadline'), type: 'text' as const },
+  { key: 'message', label: `${L('oficio_f_project')} *`, type: 'textarea' as const, required: true, hint: L('oficio_f_project_hint') },
+];
+---
+
+<PageLayout lang={lang} route="services" title={L('oficio_services_title')} description={L('oficio_services_desc')} demo={anyDemo} empty={empty}>
+  <p slot="lead">{L('oficio_services_lead')}</p>
+
+  {empty && <EmptyState lang={lang} />}
+
+  {
+    !empty && (
+      <section class="page-block" aria-labelledby="serv-list">
+        <SectionHead lang={lang} id="serv-list" kicker={L('oficio_kicker_services')} title={L('oficio_services_list')} lead={L('oficio_services_list_lead')} demo />
+        <div class="svc-list">
+          {svc.items.map((s, i) => (
+            <article class:list={['svc', { 'has-demo-badge': s.demo }]} id={`servicio-${s.id}`} data-reveal>
+              {s.demo && <DemoBadge lang={lang} />}
+              <div class="svc__intro">
+                <p class="label svc__n" aria-hidden="true">{String(i + 1).padStart(2, '0')} / {String(svc.items.length).padStart(2, '0')}</p>
+                <h3 class="svc__title display">{pick(s.title, lang)}</h3>
+                <p class="svc__summary">{pick(s.summary, lang)}</p>
+                <p class="svc__chips">
+                  <Chip>{L('oficio_price')}: {L('oficio_on_request')}</Chip>
+                  <Chip>{pick(s.timing, lang)}</Chip>
+                </p>
+                <div class="svc__media"><Media seed={s.seed} kicker={String(i + 1).padStart(2, '0')} label={pick(s.title, lang)} ratio="16 / 9" /></div>
+              </div>
+              <div class="svc__cols">
+                <section aria-labelledby={`${s.id}-scope`}>
+                  <h4 class="label svc__h" id={`${s.id}-scope`}>{L('oficio_scope')}</h4>
+                  <ul class="svc__ul">{s.scope.map((x) => <li>{pick(x, lang)}</li>)}</ul>
+                </section>
+                <section aria-labelledby={`${s.id}-deliv`}>
+                  <h4 class="label svc__h" id={`${s.id}-deliv`}>{L('oficio_deliverables')}</h4>
+                  <ul class="svc__ul">{s.deliverables.map((x) => <li>{pick(x, lang)}</li>)}</ul>
+                </section>
+                <section aria-labelledby={`${s.id}-needs`}>
+                  <h4 class="label svc__h" id={`${s.id}-needs`}>{L('oficio_needs')}</h4>
+                  <ul class="svc__ul">{s.needs.map((x) => <li>{pick(x, lang)}</li>)}</ul>
+                </section>
+              </div>
+              <p class="svc__cta"><a class="link" href="#consulta">{L('oficio_ask_about')} {pick(s.title, lang).toLowerCase()}</a></p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    svc.process.length > 0 && (
+      <section class="page-block" aria-labelledby="serv-process">
+        <SectionHead lang={lang} id="serv-process" kicker={L('oficio_kicker_process')} title={L('oficio_process_title')} demo />
+        <Steps cols={4} steps={svc.process.map((p) => ({ title: pick(p.title, lang), text: pick(p.text, lang) }))} />
+      </section>
+    )
+  }
+
+  {
+    svc.faq.length > 0 && (
+      <section class="page-block" aria-labelledby="serv-faq">
+        <SectionHead lang={lang} id="serv-faq" kicker={L('oficio_kicker_faq')} title={L('oficio_faq_title')} demo />
+        <Accordion items={svc.faq.map((f) => ({ id: f.id, title: pick(f.q, lang) }))} exclusive>
+          {svc.faq.map((f) => <p slot={f.id}>{pick(f.a, lang)}</p>)}
+        </Accordion>
+      </section>
+    )
+  }
+
+  {
+    !empty && (
+      <section class="page-block" id="consulta" aria-label={L('oficio_svc_form_title')}>
+        <Inquiry lang={lang} id="svc" title={L('oficio_svc_form_title')} lead={L('oficio_svc_form_lead')} fields={fields} subject={L('oficio_svc_subject')} greeting={L('oficio_svc_greeting')} closing={L('oficio_svc_closing')} messageKey="message" demo={anyDemo} />
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .svc-list { display: grid; gap: var(--oficio-gap); }
+  .svc {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: var(--space-l) var(--space-xl);
+    padding: var(--space-l) var(--card-pad) var(--space-m);
+    border: var(--card-border);
+    background: var(--card-bg);
+    scroll-margin-top: var(--header-h);
+  }
+  .svc__intro { display: grid; gap: var(--space-xs); align-content: start; }
+  .svc__n { color: var(--accent); }
+  .svc__title { font-size: var(--step-3); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .svc__summary { max-width: 48ch; color: var(--chrome-200); font-size: var(--step-1); line-height: 1.35; }
+  .svc__chips { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .svc__media { max-width: 26rem; margin-top: var(--space-xs); border: var(--card-border); }
+  .svc__cols { display: grid; gap: var(--space-m); align-content: start; }
+  .svc__h { margin-bottom: var(--space-2xs); padding-bottom: var(--space-2xs); border-bottom: var(--divider); color: var(--chrome-300); }
+  .svc__ul { display: grid; gap: var(--space-2xs); color: var(--chrome-200); }
+  .svc__ul li { position: relative; padding-left: 1.1rem; }
+  .svc__ul li::before { content: ''; position: absolute; left: 0; top: 0.65em; width: 0.4rem; height: var(--stroke); background: var(--accent); }
+  .svc__cta { grid-column: 1 / -1; padding-top: var(--space-xs); border-top: var(--divider); }
+  .svc__cta .link { display: inline-block; padding-block: 0.7rem; }
+  @media (min-width: 62rem) {
+    .svc { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+    .svc__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 40rem) and (max-width: 61.99rem) {
+    .svc__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

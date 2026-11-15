@@ -1,0 +1,31 @@
+---
+import Card from '../ui/Card.astro';
+import Media from '../Media.astro';
+import { t, pick, formatDate, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import type { Release } from '../../lib/disco/releases';
+
+/** Tarjeta de un release en la discografía. Lleva data-* para el filtro (módulo disco-filter). */
+interface Props { lang: Lang; release: Release; priority?: boolean }
+const { lang, release: r, priority = false } = Astro.props;
+const kind = t(`disco_kind_${r.kind}`, lang);
+const when = r.status === 'upcoming' ? t('disco_out_on', lang, { date: formatDate(r.date, lang, { day: 'numeric', month: 'short', year: 'numeric' }) }) : String(r.year);
+---
+
+<li class="tile" data-release data-kind={r.kind} data-year={r.year} data-label={r.label.name}>
+  <Card lang={lang} as="div" level="h3" title={r.title} href={router.path('release', lang, { slug: r.slug })} kicker={`${kind} · ${when}`} demo={r.demo}>
+    <Media slot="media" src={r.cover} alt={r.coverAlt ? pick(r.coverAlt, lang) : ''} label={r.catalog || r.title} kicker={r.label.name} variant="cover" seed={r.slug} sizes="(min-width: 60rem) 22vw, (min-width: 40rem) 45vw, 90vw" priority={priority} />
+    <p class="tile__meta label">
+      <span>{r.label.name}</span>{r.catalog && <span aria-hidden="true"> · </span>}{r.catalog && <span>{r.catalog}</span>}
+    </p>
+    {r.status === 'upcoming' && <p class="tile__soon label">{t('disco_status_upcoming', lang)}</p>}
+  </Card>
+</li>
+
+<style>
+  .tile { list-style: none; display: grid; }
+  .tile > :global(.card) { height: 100%; }
+  .tile__meta { color: var(--muted); overflow-wrap: anywhere; }
+  .tile__soon { color: var(--accent); }
+  .tile[hidden] { display: none; }
+</style>

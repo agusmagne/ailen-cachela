@@ -1,0 +1,178 @@
+---
+/** /lab/secuenciador/ y /en/lab/sequencer/: marcado de la caja de ritmos. La lógica está en src/scripts/modules/lab-sequencer.ts. */
+import LabPage from './LabPage.astro';
+import SoundBar from './SoundBar.astro';
+import LabNoJs from './LabNoJs.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { t, pick, withBase, type Lang } from '../../lib/content';
+import { PRESETS } from '../../lib/lab/presets';
+import { keyName } from '../../lib/lab/params';
+import { PAD_IDS } from '../../lib/lab/voices';
+import { BPM_MAX, BPM_MIN, STEPS, TRACKS } from '../../lib/lab/pattern';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const rows = [...TRACKS, 'acid'] as const;
+const steps = Array.from({ length: STEPS }, (_, i) => i);
+const trackName = (id: string) => t(`lab_seq_track_${id}`, lang);
+const labels = {
+  lang,
+  tracks: Object.fromEntries(rows.map((r) => [r, trackName(r)])),
+  step: t('lab_seq_step', lang),
+  noteOff: t('lab_seq_note_off', lang),
+  accent: t('lab_seq_accent', lang),
+  slide: t('lab_seq_slide', lang),
+  play: t('lab_seq_play', lang),
+  stop: t('lab_seq_stop', lang),
+  copied: t('lab_seq_copied', lang),
+  copyFail: t('lab_seq_copy_fail', lang),
+  invalidLink: t('lab_seq_invalid_link', lang),
+  loaded: t('lab_seq_loaded', lang),
+  cleared: t('lab_seq_cleared', lang),
+  exporting: t('lab_seq_exporting', lang),
+  exported: t('lab_seq_exported', lang),
+  exportFail: t('lab_seq_export_fail', lang),
+  recOn: t('lab_seq_rec_on', lang),
+  recOff: t('lab_seq_rec_off', lang),
+  recNeedsPlay: t('lab_seq_rec_needs_play', lang),
+  noAudio: t('lab_seq_no_audio', lang),
+  stepNote: t('lab_seq_step_label', lang),
+  stepRest: t('lab_seq_step_rest', lang),
+  shareTitle: t('lab_seq_title', lang),
+  sessionTitle: t('lab_session_seq', lang),
+  sessionAlbum: t('lab_session_album', lang),
+  sessionArtist: t('lab_session_artist', lang),
+  icon: withBase('/apple-touch-icon.png'),
+};
+const knobs = ['cutoff', 'res', 'env', 'decay', 'drive'] as const;
+const keys = Array.from({ length: 12 }, (_, i) => i);
+---
+
+<LabPage lang={lang} route="lab-sequencer" title={t('lab_seq_title', lang)} description={t('lab_seq_desc', lang)} lead={t('lab_seq_lead', lang)}>
+  <LazyModule name="lab-sequencer" props={{ labels }} class="lab-tool">
+    <LabNoJs lang={lang}>{t('lab_seq_desc', lang)}</LabNoJs>
+
+    <div data-app hidden class="lab-tool">
+      <!-- Transporte y sonido: compacto y pegajoso, el silencio siempre a mano -->
+      <div class="lab-bar" role="group" aria-label={t('lab_seq_transport', lang)}>
+        <button type="button" class="btn btn--primary" data-play><span data-play-label>{t('lab_seq_play', lang)}</span></button>
+        <SoundBar lang={lang} />
+      </div>
+
+      <div class="lab-panel lab-params">
+        <div class="lab-ctl">
+          <label for="seq-bpm"><span>{t('lab_seq_tempo', lang)}</span><output data-bpm-out>130</output></label>
+          <input id="seq-bpm" class="lab-range" type="range" min={BPM_MIN} max={BPM_MAX} step="1" value="130" data-bpm aria-describedby="seq-bpm-unit" />
+          <span id="seq-bpm-unit" class="sr-only">{t('lab_seq_tempo_unit', lang)}</span>
+        </div>
+        <div class="lab-ctl">
+          <label for="seq-swing"><span>{t('lab_seq_swing', lang)}</span><output data-swing-out>0%</output></label>
+          <input id="seq-swing" class="lab-range" type="range" min="0" max="100" step="1" value="0" data-swing />
+        </div>
+        <div class="lab-ctl">
+          <label for="seq-key"><span>{t('lab_seq_key', lang)}</span></label>
+          <select id="seq-key" class="lab-select" data-key>
+            {keys.map((k) => <option value={k}>{keyName(k)}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div class="lab-panel">
+        <p class="lab-sub" id="seq-presets-label">{t('lab_seq_presets', lang)}</p>
+        <div class="lab-chips" role="group" aria-labelledby="seq-presets-label">
+          {PRESETS.map((p) => <button type="button" class="lab-toggle" data-preset={p.id}>{pick(p.name, lang)}</button>)}
+          <button type="button" class="lab-toggle" data-clear>{t('lab_seq_clear', lang)}</button>
+        </div>
+      </div>
+
+      <!-- Grilla: tabla ARIA (role=grid). Las filas son display: contents; en pantallas angostas CSS la traspone. -->
+      <div>
+        <div class="seq-grid" role="grid" aria-label={t('lab_seq_grid', lang)} aria-rowcount={rows.length + 1} aria-colcount={STEPS + 1} data-grid>
+          <div role="row" class="seq-row seq-row--nums">
+            <div role="columnheader" class="seq-corner"><span class="sr-only">{t('lab_seq_grid', lang)}</span></div>
+            {steps.map((i) => <div role="columnheader" class="seq-num" data-beat={i % 4 === 0 ? '1' : '0'}>{i + 1}</div>)}
+          </div>
+          {
+            rows.map((tr) => (
+              <div role="row" class="seq-row" data-row={tr}>
+                <div role="rowheader" class="seq-head">
+                  <button type="button" class="seq-mute" data-mute-track={tr} aria-pressed="false" aria-label={t('lab_seq_mute_track', lang, { track: trackName(tr) })}>{trackName(tr)}</button>
+                </div>
+                {steps.map((i) => (
+                  <div role="gridcell" class="seq-cellwrap" data-beat={i % 4 === 0 ? '1' : '0'}>
+                    <button type="button" class="seq-cell" data-cell data-track={tr} data-step={i} aria-pressed="false" aria-label={`${trackName(tr)}, ${t('lab_seq_step', lang, { n: i + 1 })}`}>
+                      {tr === 'acid' && <span data-note></span>}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+        </div>
+        <p class="lab-hint">{t('lab_seq_grid_hint', lang)} {t('lab_seq_keys', lang)}</p>
+      </div>
+
+      <!-- Acid -->
+      <section class="lab-panel" aria-labelledby="seq-acid-title">
+        <h2 id="seq-acid-title">{t('lab_seq_acid_title', lang)}</h2>
+        <p>{t('lab_seq_acid_lead', lang)}</p>
+        <div class="lab-row">
+          <strong class="lab-sub" data-step-label aria-live="off"></strong>
+        </div>
+        <div class="lab-row" role="group" aria-label={t('lab_seq_acid_title', lang)}>
+          <button type="button" class="lab-toggle" data-oct-dec>−12</button>
+          <button type="button" class="lab-toggle" data-note-dec aria-label={t('lab_seq_note_down', lang)}>−1</button>
+          <button type="button" class="lab-toggle" data-note-inc aria-label={t('lab_seq_note_up', lang)}>+1</button>
+          <button type="button" class="lab-toggle" data-oct-inc>+12</button>
+          <button type="button" class="lab-toggle" data-accent aria-pressed="false">{t('lab_seq_accent', lang)}</button>
+          <button type="button" class="lab-toggle" data-slide aria-pressed="false">{t('lab_seq_slide', lang)}</button>
+        </div>
+        <p class="lab-hint">{t('lab_seq_acid_keys', lang)}</p>
+        <p class="lab-sub">{t('lab_seq_knobs', lang)}</p>
+        <div class="lab-knobs">
+          {
+            knobs.map((k) => (
+              <div class="lab-ctl" style="max-width:none">
+                <label for={`seq-knob-${k}`}><span>{t(`lab_seq_knob_${k}`, lang)}</span><output data-knob-out={k}>0</output></label>
+                <input id={`seq-knob-${k}`} class="lab-range" type="range" min="0" max="100" step="1" value="50" data-knob={k} />
+              </div>
+            ))
+          }
+          <div class="lab-ctl" style="max-width:none">
+            <span class="lab-ctl__label" id="seq-wave-label">{t('lab_seq_wave', lang)}</span>
+            <div class="lab-seg" role="group" aria-labelledby="seq-wave-label">
+              <button type="button" class="lab-toggle" data-wave="0" aria-pressed="true">{t('lab_seq_wave_saw', lang)}</button>
+              <button type="button" class="lab-toggle" data-wave="1" aria-pressed="false">{t('lab_seq_wave_square', lang)}</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pads -->
+      <section class="lab-panel" aria-labelledby="seq-pads-title">
+        <h2 id="seq-pads-title">{t('lab_seq_pads_title', lang)}</h2>
+        <p>{t('lab_seq_pads_lead', lang)}</p>
+        <div class="lab-pads">
+          {PAD_IDS.map((id, i) => <button type="button" class="lab-pad" data-pad={id}><span>{t(`lab_seq_pad_${id}`, lang)}</span><kbd aria-hidden="true">{i + 1}</kbd></button>)}
+        </div>
+        <div class="lab-row"><button type="button" class="lab-toggle lab-toggle--rec" data-rec aria-pressed="false">{t('lab_seq_rec', lang)}</button></div>
+      </section>
+
+      <!-- Compartir y exportar -->
+      <section class="lab-panel" aria-labelledby="seq-share-title">
+        <h2 id="seq-share-title">{t('lab_seq_share_title', lang)}</h2>
+        <div class="field">
+          <label for="seq-link">{t('lab_seq_link_label', lang)}</label>
+          <div class="lab-link">
+            <input id="seq-link" class="input" type="text" readonly data-link spellcheck="false" autocomplete="off" />
+            <button type="button" class="btn" data-copy-link>{t('lab_seq_copy_link', lang)}</button>
+            <button type="button" class="btn" data-share hidden>{t('lab_seq_share', lang)}</button>
+          </div>
+        </div>
+        <div class="lab-row"><button type="button" class="btn btn--primary" data-export>{t('lab_seq_export', lang)}</button></div>
+      </section>
+
+      <p class="lab-status" role="status" aria-live="polite" aria-atomic="true" data-status></p>
+    </div>
+  </LazyModule>
+</LabPage>

@@ -1,0 +1,421 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Tabs from '../ui/Tabs.astro';
+import Button from '../ui/Button.astro';
+import Chip from '../ui/Chip.astro';
+import Card from '../ui/Card.astro';
+import Embed from '../ui/Embed.astro';
+import Download from '../ui/Download.astro';
+import QrCode from '../ui/QrCode.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import Timeline from './Timeline.astro';
+import PhotoGrid from './PhotoGrid.astro';
+import Voices from './Voices.astro';
+import BrandKit from './BrandKit.astro';
+import { site, t, formatDate, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import { router } from '../../lib/routes';
+import { getShows } from '../../lib/shows';
+import { countryLabel, showDate, showTime, type Show } from '../../lib/show-map';
+import { paragraphs } from '../../lib/press/model';
+import { formatBytes } from '../../lib/downloads/response';
+import { buildKitZip, vcardText, fileHref, FILES, loadPress, palette, publicSize } from '../../lib/press/context';
+import type { PieceShape } from '../../lib/press/art';
+
+/** Cuerpo de /prensa/ y /en/press/ (las dos páginas son una línea que lo invoca con `lang`). */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ctx = loadPress(lang);
+const { press } = ctx;
+const pal = palette();
+const other: Lang = lang === 'es' ? 'en' : 'es';
+
+const { upcoming } = await getShows();
+const featured = site.listen.tracks.find((x) => x.id === site.listen.featured) ?? site.listen.tracks[0];
+const soundcloud = site.links.find((l) => l.id === 'soundcloud' && l.url);
+const bookingHref = router.exists('booking') ? router.path('booking', lang) : null;
+const showsHref = router.exists('shows') ? router.path('shows', lang) : null;
+
+const hasVoices = press.quotes.length + press.supports.length + press.testimonials.length > 0;
+const hasStatement = press.statement.length + press.safer.length > 0;
+const sections = [
+  { id: 'bio', key: 'press_s_bio', on: true },
+  { id: 'ficha', key: 'press_s_facts', on: true },
+  { id: 'escuchar', key: 'press_s_listen', on: !!featured },
+  { id: 'fechas', key: 'press_s_shows', on: true },
+  { id: 'fotos', key: 'press_s_photos', on: true },
+  { id: 'prensa', key: 'press_s_voices', on: hasVoices },
+  { id: 'trayectoria', key: 'press_s_timeline', on: ctx.timeline.length > 0 },
+  { id: 'statement', key: 'press_s_statement', on: hasStatement },
+  { id: 'marca', key: 'press_s_brand', on: true },
+  { id: 'descargas', key: 'press_s_downloads', on: true },
+  { id: 'contacto', key: 'press_s_contact', on: true },
+].filter((s) => s.on);
+
+const kitSize = buildKitZip(lang).length;
+const pdf = (name: string) => ({ name, size: publicSize(name) });
+const epk = pdf(FILES.epk(lang));
+const epkOther = pdf(FILES.epk(other));
+const one = pdf(FILES.onesheet(lang));
+const oneOther = pdf(FILES.onesheet(other));
+const pressContact = press.contacts[0];
+
+const dayParts = (s: Show) => {
+  const d = showDate(s);
+  return { iso: d, day: formatDate(d, lang, { day: 'numeric' }), mon: formatDate(d, lang, { month: 'short' }).replace(/\.$/, ''), year: formatDate(d, lang, { year: 'numeric' }) };
+};
+const placeOf = (s: Show) => [s.city ?? s.location, countryLabel(s, lang)].filter(Boolean).join(', ');
+const shown = upcoming.slice(0, 4);
+const backupLink = site.links.find((l) => l.id === 'instagram' && l.url);
+const copyDone = t('press_copied', lang);
+const pageDemo = ctx.hasDemo;
+---
+<PageLayout lang={lang} route="press" title={t('press_title', lang)} description={t('press_desc', lang)} demo={pageDemo}>
+  <Fragment slot="lead">
+    <p>{ctx.tagline}</p>
+  </Fragment>
+  <Fragment slot="meta">
+    {epk.size !== null && <Button href={fileHref(epk.name)} variant="primary" download lang={lang}>{t('press_cta_epk', lang)} <span class="sr-only">({formatBytes(epk.size)})</span></Button>}
+    <Button href={fileHref(FILES.kit(lang))} variant={epk.size === null ? 'primary' : 'default'} download lang={lang}>{t('press_cta_kit', lang)}</Button>
+    <Button href={fileHref(FILES.vcard)} download lang={lang}>{t('press_cta_vcard', lang)}</Button>
+  </Fragment>
+
+  <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
+
+  <nav class="jump" aria-label={t('press_jump', lang)}>
+    <ul class="jump__list">
+      {sections.map((s) => <li><Chip href={`#${s.id}`}>{t(s.key, lang)}</Chip></li>)}
+    </ul>
+  </nav>
+
+  <!-- BIO ------------------------------------------------------------------------------------------------ -->
+  <section class="page-block" aria-labelledby="bio">
+    <SectionHead id="bio" lang={lang} title={t('press_s_bio', lang)} lead={t('press_bio_lead', lang)} demo={ctx.bios.some((b) => b.demo)} />
+    <Tabs lang={lang} label={t('press_bio_tabs', lang)} tabs={ctx.bios.map((b) => ({ id: b.id, label: t(`press_bio_${b.id}`, lang) }))} initial="short">
+      {
+        ctx.bios.map((b) => (
+          <div slot={b.id} class:list={['bio', { 'has-demo-badge is-demo': b.demo }]}>
+            {b.demo && <DemoBadge lang={lang} />}
+            <p class="label bio__meta">{t('press_bio_words', lang, { n: b.words })}{b.id === 'short' ? ` · ${t('press_bio_verified', lang)}` : ''}</p>
+            <div class="bio__text prose">{paragraphs(b.text).map((para) => <p>{para}</p>)}</div>
+            <button type="button" class="btn bio__copy" data-copy={b.text} data-done={copyDone}>
+              <span data-copy-label>{t('press_copy', lang)}</span>
+            </button>
+          </div>
+        ))
+      }
+    </Tabs>
+  </section>
+
+  <!-- FICHA TÉCNICA --------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="ficha">
+    <SectionHead id="ficha" lang={lang} title={t('press_s_facts', lang)} lead={t('press_facts_lead', lang)} demo={ctx.facts.some((f) => f.demo)} />
+    <div class="facts-wrap">
+      <dl class="facts facts--rows">
+        {
+          ctx.facts.map((f) => (
+            <div class="fact">
+              <dt class="label">{f.label}</dt>
+              <dd>
+                {f.href ? <a class="link" href={f.href} target="_blank" rel="noopener noreferrer">{f.value}<span class="sr-only"> {t('new_tab', lang)}</span></a> : f.value}
+                {f.demo && <DemoBadge lang={lang} variant="item" class="fact__badge" />}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      {
+        press.pronunciation.map((pr) => (
+          <aside class="pron has-demo-badge is-demo" aria-labelledby="pron-title">
+            <DemoBadge lang={lang} />
+            <h3 class="label pron__title" id="pron-title">{t('press_pron_title', lang)}</h3>
+            <p class="pron__name display">{pr.name}</p>
+            <p class="pron__phonetic">{pr.phonetic[lang]}</p>
+            <p class="pron__note">{pr.note[lang]}</p>
+            <button type="button" class="btn" data-copy={pr.phonetic[lang]} data-done={copyDone}>
+              <span data-copy-label>{t('press_copy', lang)}</span>
+            </button>
+          </aside>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ESCUCHAR ------------------------------------------------------------------------------------------- -->
+  {
+    featured && (
+      <section class="page-block" aria-labelledby="escuchar">
+        <SectionHead id="escuchar" lang={lang} title={t('press_s_listen', lang)} lead={t('press_listen_lead', lang)} />
+        <div class="listen">
+          <Embed lang={lang} provider="soundcloud" title={featured.title} url={featured.url} />
+          <div class="listen__list">
+            <h3 class="label listen__label">{t('listen_list', lang)}</h3>
+            <ul>
+              {
+                site.listen.tracks.map((tr) => (
+                  <li>
+                    <a class="listen__item link" href={tr.url} target="_blank" rel="noopener noreferrer">{tr.title}<span class="sr-only"> {t('new_tab', lang)}</span></a>
+                  </li>
+                ))
+              }
+            </ul>
+            {soundcloud && <Button href={soundcloud.url} external arrow lang={lang}>{t('listen_view_all', lang)}</Button>}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- FECHAS --------------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="fechas">
+    <SectionHead id="fechas" lang={lang} title={t('press_s_shows', lang)} lead={t('press_shows_lead', lang)} />
+    {
+      shown.length > 0 ? (
+        <ol class="gigs">
+          {shown.map((s) => {
+            const d = dayParts(s);
+            const time = showTime(s);
+            return (
+              <li class="gig">
+                <time class="gig__date" datetime={d.iso}>
+                  <span class="gig__day display">{d.day.padStart(2, '0')}</span>
+                  <span class="label">{d.mon} {d.year}</span>
+                </time>
+                <div class="gig__what">
+                  <h3 class="gig__title">{s.title}</h3>
+                  <p class="label gig__where">{[placeOf(s), time ? t('shows_time', lang, { time }) : ''].filter(Boolean).join(' · ')}</p>
+                </div>
+                {s.url && <a class="link gig__link" href={s.url} target="_blank" rel="noopener noreferrer">{t('shows_info', lang)}<span class="sr-only"> {t('new_tab', lang)}</span></a>}
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <EmptyState lang={lang} title={t('shows_none', lang)} text={t('press_shows_empty', lang)}>
+          {backupLink && <Button href={backupLink.url} external arrow lang={lang}>{t('shows_follow', lang, { handle: backupLink.handle })}</Button>}
+        </EmptyState>
+      )
+    }
+    {showsHref && <p class="more"><Button href={showsHref} arrow>{t('press_shows_all', lang)}</Button></p>}
+  </section>
+
+  <!-- FOTOS ---------------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="fotos">
+    <SectionHead id="fotos" lang={lang} title={t('press_s_photos', lang)} lead={t('press_photos_lead', lang)} demo={press.photos.length > 0} />
+    {
+      press.photos.length > 0 ? (
+        <PhotoGrid lang={lang} palette={pal} photos={press.photos.map((p) => ({ id: p.id, seed: p.seed, shape: p.shape as PieceShape, caption: p.caption }))} />
+      ) : (
+        <EmptyState lang={lang} title={t('press_photos_empty_title', lang)} text={t('press_photos_empty_text', lang)} />
+      )
+    }
+  </section>
+
+  <!-- PRENSA Y APOYOS --------------------------------------------------------------------------------------- -->
+  {
+    hasVoices && (
+      <section class="page-block" aria-labelledby="prensa">
+        <SectionHead id="prensa" lang={lang} title={t('press_s_voices', lang)} lead={t('press_voices_lead', lang)} demo />
+        <Voices lang={lang} quotes={press.quotes} supports={press.supports} testimonials={press.testimonials} />
+      </section>
+    )
+  }
+
+  <!-- TRAYECTORIA ------------------------------------------------------------------------------------------ -->
+  {
+    ctx.timeline.length > 0 && (
+      <section class="page-block" aria-labelledby="trayectoria">
+        <SectionHead id="trayectoria" lang={lang} title={t('press_s_timeline', lang)} lead={t('press_timeline_lead', lang)} demo={ctx.timeline.some((e) => e.demo)} />
+        <Timeline lang={lang} entries={ctx.timeline} />
+      </section>
+    )
+  }
+
+  <!-- STATEMENT Y SAFER SPACES ------------------------------------------------------------------------------ -->
+  {
+    hasStatement && (
+      <section class="page-block" aria-labelledby="statement">
+        <SectionHead id="statement" lang={lang} title={t('press_s_statement', lang)} lead={t('press_statement_lead', lang)} demo />
+        {press.statement.map((s) => (
+          <div class="statement has-demo-badge is-demo">
+            <DemoBadge lang={lang} />
+            <div class="statement__text">{paragraphs(s.text[lang]).map((para) => <p>{para}</p>)}</div>
+          </div>
+        ))}
+        {press.safer.length > 0 && (
+          <>
+            <h3 class="label safer__label">{t('press_safer_title', lang)}</h3>
+            <ul class="grid-cards safer">
+              {press.safer.map((p) => (
+                <Card as="li" lang={lang} title={p.title[lang]} level="h4" demo>
+                  <p>{p.text[lang]}</p>
+                </Card>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    )
+  }
+
+  <!-- MARCA ---------------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="marca">
+    <SectionHead id="marca" lang={lang} title={t('press_s_brand', lang)} lead={t('press_brand_lead', lang)} />
+    <BrandKit lang={lang} palette={pal} />
+  </section>
+
+  <!-- DESCARGAS --------------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="descargas">
+    <SectionHead id="descargas" lang={lang} title={t('press_s_downloads', lang)} lead={t('press_downloads_lead', lang)} demo={pageDemo} />
+    <div class="downloads">
+      <Download lang={lang} href={fileHref(FILES.kit(lang))} label={t('press_dl_kit', lang)} kind="ZIP" size={kitSize} description={t('press_dl_kit_desc', lang)} demo={demoOn} />
+      {epk.size !== null && <Download lang={lang} href={fileHref(epk.name)} label={t('press_dl_epk', lang)} kind="PDF" size={epk.size} description={t('press_dl_epk_desc', lang)} demo={demoOn} />}
+      {one.size !== null && <Download lang={lang} href={fileHref(one.name)} label={t('press_dl_one', lang)} kind="PDF" size={one.size} description={t('press_dl_one_desc', lang)} demo={demoOn} />}
+      <Download lang={lang} href={fileHref(FILES.vcard)} label={t('press_dl_vcard', lang)} kind="VCF" size={new TextEncoder().encode(vcardText()).length} description={t('press_dl_vcard_desc', lang)} />
+      {epkOther.size !== null && <Download lang={lang} href={fileHref(epkOther.name)} label={t('press_dl_epk_other', lang)} kind="PDF" size={epkOther.size} demo={demoOn} />}
+      {oneOther.size !== null && <Download lang={lang} href={fileHref(oneOther.name)} label={t('press_dl_one_other', lang)} kind="PDF" size={oneOther.size} demo={demoOn} />}
+    </div>
+  </section>
+
+  <!-- CONTACTO ------------------------------------------------------------------------------------------- -->
+  <section class="page-block" aria-labelledby="contacto">
+    <SectionHead id="contacto" lang={lang} title={t('press_s_contact', lang)} lead={t('press_contact_lead', lang)} demo={!!pressContact} />
+    <div class="contact">
+      <div class="contact__card">
+        <p class="label contact__role">{t('press_contact_booking', lang)}</p>
+        <a class="contact__mail display" href={`mailto:${ctx.email}`}>{ctx.email}</a>
+        <div class="contact__actions">
+          <Button href={`mailto:${ctx.email}`} variant="primary">{t('contact_write', lang)}</Button>
+          <button type="button" class="btn" data-copy={ctx.email} data-done={t('contact_copied', lang)}><span data-copy-label>{t('contact_copy', lang)}</span></button>
+          <Button href={fileHref(FILES.vcard)} download lang={lang}>{t('press_cta_vcard', lang)}</Button>
+          {bookingHref && <Button href={bookingHref} arrow>{t('press_contact_booking_page', lang)}</Button>}
+        </div>
+      </div>
+      {
+        pressContact ? (
+          <div class="contact__card has-demo-badge is-demo">
+            <DemoBadge lang={lang} />
+            <p class="label contact__role">{t('press_contact_press', lang)}</p>
+            <p class="contact__mail contact__mail--demo display">{pressContact.email}</p>
+            <p class="contact__note">{pressContact.note[lang]}</p>
+          </div>
+        ) : (
+          <div class="contact__card">
+            <p class="label contact__role">{t('press_contact_press', lang)}</p>
+            <p class="contact__note">{t('press_contact_press_same', lang)}</p>
+          </div>
+        )
+      }
+      <div class="contact__qr">
+        <QrCode text={ctx.pageUrl} label={t('press_qr_label', lang)} size="9.5rem" />
+        <div>
+          <p class="label contact__role">{t('press_qr_title', lang)}</p>
+          <p class="contact__note">{t('press_qr_text', lang)}</p>
+          <p class="contact__dl"><a class="link" href={fileHref(FILES.qr(lang))} download>{t('press_qr_download', lang)}</a></p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="label links__label">{t('press_links_title', lang)}</h3>
+    <ul class="links">
+      {
+        ctx.links.map((l) => (
+          <li>
+            <a class="links__item" href={l.url} target="_blank" rel="noopener noreferrer">
+              <span class="label">{l.label || l.platform}</span>
+              <span class="links__handle">{l.handle}</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+              <span class="sr-only">{t('new_tab', lang)}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</PageLayout>
+
+<style>
+  .jump { margin-bottom: var(--space-xl); }
+  .jump__list { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+
+  /* Bios */
+  .bio { position: relative; display: grid; gap: var(--space-s); justify-items: start; }
+  .bio.is-demo { padding: var(--space-xl) var(--space-m) var(--space-m); background-color: var(--bg-raised); }
+  .bio__meta { color: var(--muted); }
+  .bio__text { font-size: var(--step-0); }
+  .bio__text :global(p:first-child) { color: var(--chrome-100); }
+
+  /* Ficha */
+  .facts-wrap { display: grid; gap: var(--space-xl); grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: start; }
+  .facts { display: grid; border-top: var(--divider); }
+  .fact { display: grid; grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr); align-items: baseline; gap: var(--space-xs); padding-block: var(--space-xs); border-bottom: var(--divider); }
+  .fact dt { margin: 0; color: var(--muted); }
+  .fact dd { margin: 0; color: var(--chrome-50); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2xs) var(--space-xs); }
+  .pron { position: relative; display: grid; gap: var(--space-xs); justify-items: start; padding: var(--space-xl) var(--space-m) var(--space-m); background-color: var(--bg-raised); }
+  .pron__title { color: var(--accent); }
+  .pron__name { font-size: var(--step-1); }
+  .pron__phonetic { font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-2); letter-spacing: 0.02em; color: var(--chrome-50); overflow-wrap: anywhere; }
+  .pron__note { color: var(--chrome-200); font-size: var(--step--1); }
+
+  /* Escuchar */
+  .listen { display: grid; gap: var(--space-l); grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; }
+  .listen__label { color: var(--accent); margin-bottom: var(--space-xs); }
+  .listen__list { display: grid; gap: var(--space-s); justify-items: start; }
+  .listen__list ul { display: grid; width: 100%; border-top: var(--divider); }
+  .listen__list li { border-bottom: var(--divider); }
+  .listen__item { display: inline-block; padding-block: var(--space-xs); color: var(--chrome-100); }
+
+  /* Fechas */
+  .gigs { display: grid; border-top: var(--divider); }
+  .gig { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) auto; align-items: center; gap: var(--space-m); padding-block: var(--space-s); border-bottom: var(--divider); }
+  .gig__date { display: grid; gap: 0.15rem; }
+  .gig__day { font-size: var(--step-3); line-height: 0.95; }
+  .gig__date .label { color: var(--muted); }
+  .gig__title { font-weight: 600; font-size: var(--step-1); line-height: 1.2; color: var(--chrome-50); overflow-wrap: anywhere; }
+  .gig__where { color: var(--muted); margin-top: 0.2rem; }
+  .gig__link { padding-block: 0.7rem; }
+  .more { margin-top: var(--space-m); }
+
+  /* Statement */
+  .statement { position: relative; padding: var(--space-xl) var(--space-m) var(--space-m); background-color: var(--bg-raised); }
+  .statement__text { display: grid; gap: var(--space-s); max-width: 52ch; }
+  .statement__text :global(p) { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: var(--step-2); line-height: 1.15; color: var(--chrome-50); text-wrap: balance; }
+  .statement__text :global(p + p) { font-size: var(--step-0); font-family: var(--font-body); font-weight: 400; font-stretch: var(--stretch-body); line-height: var(--lh-body); color: var(--chrome-200); }
+  .safer__label { color: var(--accent); margin: var(--space-xl) 0 var(--space-s); }
+
+  /* Descargas */
+  .downloads { display: grid; gap: var(--space-s); grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr)); }
+
+  /* Contacto */
+  .contact { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); align-items: stretch; }
+  .contact__card { position: relative; display: grid; gap: var(--space-s); align-content: start; justify-items: start; padding: var(--space-m); border: var(--card-border); background: var(--card-bg); }
+  .contact__card.is-demo { padding-top: var(--space-xl); }
+  .contact__role { color: var(--accent); }
+  .contact__mail { font-size: var(--step-2); line-height: 1.1; overflow-wrap: anywhere; text-transform: none; font-stretch: var(--stretch-title); }
+  .contact__mail--demo { color: var(--chrome-200); }
+  .contact__note { color: var(--chrome-200); font-size: var(--step--1); max-width: 44ch; }
+  .contact__actions { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+  .contact__qr { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-m); align-items: center; padding: var(--space-m); border: var(--card-border); background: var(--card-bg); }
+  .contact__dl { margin-top: var(--space-2xs); }
+  .links__label { color: var(--accent); margin: var(--space-xl) 0 var(--space-s); }
+  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); border-top: var(--divider); border-left: var(--divider); }
+  .links__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.1rem var(--space-xs); align-items: center; min-height: var(--tap-lg); padding: var(--space-xs) var(--space-s); border-right: var(--divider); border-bottom: var(--divider); }
+  .links__item .label { grid-column: 1; color: var(--muted); }
+  .links__handle { grid-column: 1; color: var(--chrome-50); overflow-wrap: anywhere; }
+  .links__item .arrow { grid-column: 2; grid-row: 1 / span 2; color: var(--chrome-300); }
+  @media (hover: hover) { .links__item:hover { background: var(--press-bg); } }
+  .links__item:focus-visible { outline-offset: -3px; }
+
+  @media (max-width: 52rem) {
+    .facts-wrap, .listen { grid-template-columns: minmax(0, 1fr); gap: var(--space-l); }
+    .fact { grid-template-columns: minmax(6.5rem, 8rem) minmax(0, 1fr); }
+    .gig { grid-template-columns: 5.5rem minmax(0, 1fr); gap: var(--space-s); }
+    .gig__link { grid-column: 2; justify-self: start; padding-block: 0.7rem; margin-block: -0.7rem; }
+    .contact__qr { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+    .bio.is-demo, .statement { padding-inline: var(--space-s); }
+  }
+</style>

@@ -1,0 +1,48 @@
+# Herramientas del Lab (hub y franja de la home). Los textos largos de cada herramienta viven en src/content/ui/lab.yaml.
+items:
+  - id: secuenciador
+    route: lab-sequencer
+    title: { es: "Secuenciador", en: "Sequencer" }
+    text:
+      es: "Caja de ritmos de 16 pasos con bombo, clap, hats, bajo y una línea acid 303. Swing, tonalidad y un patrón que se comparte por enlace."
+      en: "A 16-step drum machine with kick, clap, hats, bass and an acid 303 line. Swing, key and a pattern you can share as a link."
+    tags:
+      - { es: "16 pasos", en: "16 steps" }
+      - { es: "Acid 303", en: "Acid 303" }
+      - { es: "Exporta WAV", en: "WAV export" }
+  - id: visualizador
+    route: lab-visualizer
+    title: { es: "Visualizador", en: "Visualizer" }
+    text:
+      es: "El cromo líquido del sitio reacciona a graves, medios y agudos del sonido. Pantalla completa incluida."
+      en: "The site's liquid chrome reacts to the bass, mids and highs of the sound. Fullscreen included."
+    tags:
+      - { es: "WebGL", en: "WebGL" }
+      - { es: "Reactivo al audio", en: "Audio reactive" }
+  - id: scratch
+    route: lab-scratch
+    title: { es: "Scratch", en: "Scratch" }
+    text:
+      es: "Agarrá el vinilo y rayá un loop sintetizado: la velocidad y el sentido del plato mueven el sonido."
+      en: "Grab the vinyl and scratch a synthesized loop: the platter's speed and direction move the sound."
+    tags:
+      - { es: "Vinilo", en: "Vinyl" }
+      - { es: "Táctil", en: "Touch" }
+  - id: generador
+    route: lab-generator
+    title: { es: "Generador de flyers", en: "Flyer generator" }
+    text:
+      es: "Flyers, pósters y fondos de pantalla con el arte generativo del sitio, tu texto y descarga en PNG. Nada se sube."
+      en: "Flyers, posters and wallpapers with the site's generative art, your text and PNG download. Nothing is uploaded."
+    tags:
+      - { es: "PNG", en: "PNG" }
+      - { es: "Historias y fondos", en: "Stories and wallpapers" }
+  - id: en-vivo
+    route: lab-live
+    title: { es: "Visualizador en vivo", en: "Live visualizer" }
+    text:
+      es: "Pantalla completa pensada para proyectar en una fiesta. Con el loop del Lab o con tu micrófono, que se procesa en tu equipo y nunca se graba."
+      en: "Fullscreen made for projecting at a party. With the Lab loop or your microphone, processed on your device and never recorded."
+    tags:
+      - { es: "Pantalla completa", en: "Fullscreen" }
+      - { es: "Micrófono opcional", en: "Optional mic" }

@@ -1,0 +1,248 @@
+# Textos legales. Describen lo que el sitio HACE hoy (verificado en el código, ver tests/fans-privacy.test.ts) y dejan como
+# CAMPOS A COMPLETAR los datos de la titular, que no se inventan. No reemplazan asesoramiento profesional.
+
+# Datos de la titular del sitio (aviso legal). value vacío = se muestra "A completar".
+items:
+  - { id: nombre, label: { es: "Nombre y apellido", en: "Full name" }, hint: { es: "Persona titular del sitio", en: "Person who owns the site" }, value: "" }
+  - { id: nombre-artistico, label: { es: "Nombre artístico", en: "Artist name" }, hint: { es: "Ailén Cachela, si corresponde", en: "Ailén Cachela, if applicable" }, value: "" }
+  - { id: documento, label: { es: "CUIT / CUIL / DNI", en: "Tax / ID number" }, hint: { es: "Según la forma en que factura", en: "Depending on how invoices are issued" }, value: "" }
+  - { id: domicilio, label: { es: "Domicilio", en: "Address" }, hint: { es: "Ciudad y provincia como mínimo", en: "City and province at least" }, value: "" }
+  - { id: email, label: { es: "Correo de contacto", en: "Contact email" }, hint: { es: "El de booking figura en la página de contacto", en: "The booking email appears on the contact page" }, value: "" }
+  - { id: dominio, label: { es: "Dominio del sitio", en: "Site domain" }, hint: { es: "Todavía sin confirmar", en: "Not confirmed yet" }, value: "" }
+
+docs:
+  privacy:
+    title: { es: "Privacidad", en: "Privacy" }
+    lead:
+      es: "Este sitio no usa cookies ni rastreadores. Acá se explica con precisión qué pasa cuando lo abrís, qué carga solo si vos querés y qué se guarda en tu dispositivo."
+      en: "This site uses no cookies and no trackers. Here is exactly what happens when you open it, what loads only if you choose, and what is stored on your device."
+    updated: "2026-11-15"
+    sections:
+      - id: resumen
+        title: { es: "En pocas palabras", en: "In short" }
+        bullets:
+          es:
+            - "No se instala ninguna cookie."
+            - "No hay analítica, píxeles, publicidad ni mapas de calor."
+            - "No hay cuentas, registros ni formularios que envíen datos a un servidor."
+            - "Las tipografías están en el propio sitio: no se descargan de Google ni de otro servicio."
+            - "El reproductor de SoundCloud y los videos de YouTube se cargan solo cuando tocás “Reproducir”."
+          en:
+            - "No cookie is set."
+            - "There is no analytics, pixels, advertising or heatmaps."
+            - "There are no accounts, sign-ups or forms that send data to a server."
+            - "Typefaces are served from the site itself: nothing is downloaded from Google or any other service."
+            - "The SoundCloud player and YouTube videos load only when you tap “Play”."
+      - id: al-abrir
+        title: { es: "Qué pasa cuando abrís una página", en: "What happens when you open a page" }
+        paras:
+          es:
+            - "El navegador pide al servidor los archivos del sitio (páginas, estilos, scripts, tipografías e imágenes), todos del mismo origen. No se conecta a ningún otro dominio para mostrar la página."
+            - "Las fechas de los shows se leen de un calendario público al compilar el sitio, no cuando lo visitás: tu navegador no se conecta a ese calendario."
+          en:
+            - "Your browser requests the site's files (pages, styles, scripts, typefaces and images) from the server, all from the same origin. It connects to no other domain to display the page."
+            - "Show dates are read from a public calendar when the site is built, not when you visit it: your browser does not connect to that calendar."
+      - id: terceros
+        title: { es: "Servicios de terceros (solo con un clic)", en: "Third-party services (only after a click)" }
+        paras:
+          es:
+            - "Si tocás “Reproducir” se carga el reproductor de SoundCloud (w.soundcloud.com) o, en los videos, YouTube en modo sin cookies (youtube-nocookie.com). Recién entonces ese proveedor recibe tu dirección IP y datos técnicos del navegador, y puede usar cookies o almacenamiento propios según su política. Antes del clic no se envía nada."
+            - "Los enlaces a Instagram, SoundCloud, Bandcamp, Linktree, Pinterest y otros abren sitios ajenos, con sus propias políticas de privacidad."
+          en:
+            - "If you tap “Play”, the SoundCloud player (w.soundcloud.com) or, for videos, YouTube in no-cookie mode (youtube-nocookie.com) is loaded. Only then does that provider receive your IP address and technical browser data, and it may use its own cookies or storage under its own policy. Nothing is sent before the click."
+            - "Links to Instagram, SoundCloud, Bandcamp, Linktree, Pinterest and others open third-party sites with their own privacy policies."
+      - id: correo
+        title: { es: "Formularios y mails", en: "Forms and emails" }
+        paras:
+          es:
+            - "Los formularios del sitio (consultas, newsletter, tienda de ejemplo) no envían nada: arman un mensaje y abren tu programa de correo con el texto ya escrito. Lo que escribas llega recién cuando lo enviás desde tu cuenta, y pasa por tu proveedor de correo."
+            - "Si escribís, tu dirección y el contenido del mensaje se usan solo para responderte. No se agregan a ninguna lista sin que lo pidas."
+          en:
+            - "The site's forms (enquiries, newsletter, sample shop) send nothing: they build a message and open your email app with the text already written. What you write arrives only when you send it from your account, and it goes through your email provider."
+            - "If you write, your address and the message are used only to reply. You are not added to any list unless you ask."
+      - id: dispositivo
+        title: { es: "Lo que se guarda en tu dispositivo", en: "What is stored on your device" }
+        paras:
+          es:
+            - "Para abrir más rápido y mostrar una página sin conexión, el sitio puede guardar en tu navegador una copia de sus propios archivos (modo sin conexión, mediante un service worker). No contiene datos personales, no incluye audio ni contenido de terceros, y las páginas se vuelven a pedir al servidor cada vez que hay conexión."
+            - "Si desactivás el modo sin conexión, se guarda una marca local (“fans-sw”) para no volver a activarlo. Es una marca local que nunca se envía. Si alguna herramienta del sitio guardara preferencias, lo avisa en esa herramienta y quedan solo en tu dispositivo."
+          en:
+            - "To open faster and show a page offline, the site may store a copy of its own files in your browser (offline mode, using a service worker). It holds no personal data, no audio and no third-party content, and pages are requested from the server again whenever you are online."
+            - "If you turn offline mode off, a local flag (“fans-sw”) is stored so it is not turned on again. It is a local flag that is never sent anywhere. If any tool on the site stored preferences, it says so on that tool and they stay on your device only."
+        widget: offline
+      - id: hosting
+        title: { es: "Dónde se aloja", en: "Where it is hosted" }
+        paras:
+          es:
+            - "El sitio son archivos estáticos publicados en un servicio de alojamiento (según la configuración actual del proyecto, GitHub Pages). Quien aloja el sitio puede registrar datos técnicos de cada conexión, como la IP, bajo su propia política. El sitio no tiene acceso a esos registros ni los usa."
+            - "Si el alojamiento cambia, esta sección se actualiza."
+          en:
+            - "The site is static files published on a hosting service (under the project's current setup, GitHub Pages). The host may log technical data for each connection, such as the IP, under its own policy. The site has no access to those logs and does not use them."
+            - "If hosting changes, this section is updated."
+      - id: derechos
+        title: { es: "Tus derechos y contacto", en: "Your rights and contact" }
+        paras:
+          es:
+            - "Como el sitio no guarda datos personales, no hay nada para rectificar ni borrar en él. Si escribiste por mail y querés que se borre tu mensaje, pedilo respondiendo ese mismo correo."
+            - "Esta política es una descripción de referencia de lo que el sitio hace. Antes de publicar de forma definitiva conviene que la revise un profesional, por ejemplo respecto de la Ley 25.326 de protección de datos personales de Argentina."
+          en:
+            - "Because the site stores no personal data, there is nothing in it to correct or delete. If you wrote by email and want your message deleted, ask by replying to that same email."
+            - "This policy is a reference description of what the site does. Before final publication it should be reviewed by a professional, for instance regarding Argentina's Law 25,326 on personal data protection."
+        link: { route: legal-notice, label: { es: "Datos de la titular: aviso legal", en: "Owner details: legal notice" } }
+
+  accessibility:
+    title: { es: "Accesibilidad", en: "Accessibility" }
+    lead:
+      es: "El objetivo es que el sitio cumpla WCAG 2.2 nivel AA. Esta declaración dice con honestidad qué está resuelto, qué se hizo solo por diseño y qué todavía no se verificó."
+      en: "The goal is for the site to meet WCAG 2.2 level AA. This statement says honestly what is solved, what was done by design only, and what has not been verified yet."
+    updated: "2026-11-15"
+    sections:
+      - id: estado
+        title: { es: "Estado de conformidad", en: "Conformance status" }
+        paras:
+          es:
+            - "El sitio tiene como meta WCAG 2.2 AA. No hay una auditoría externa ni una certificación: no se declara conformidad total, sino el trabajo hecho y sus límites."
+            - "La revisión se hizo sobre el código y con comprobaciones automáticas de estructura (títulos, idioma, imágenes con texto alternativo, enlaces). No se probó con lectores de pantalla ni con herramientas como axe o Lighthouse."
+          en:
+            - "The goal is WCAG 2.2 AA. There is no external audit or certification: full conformance is not claimed, only the work done and its limits."
+            - "The review covered the code and automated structure checks (headings, language, images with alt text, links). It was not tested with screen readers or tools such as axe or Lighthouse."
+      - id: resuelto
+        title: { es: "Lo que está resuelto", en: "What is in place" }
+        checks:
+          - { id: estructura, status: done, area: { es: "Estructura", en: "Structure" }, text: { es: "Cada página tiene un único título principal, regiones semánticas (cabecera, navegación, contenido principal, pie) y un enlace para saltar al contenido. Lo comprueba una verificación automática del build.", en: "Every page has a single main heading, semantic regions (header, navigation, main content, footer) and a skip link. An automated build check verifies it." } }
+          - { id: idioma, status: done, area: { es: "Idioma", en: "Language" }, text: { es: "Cada página declara su idioma (español o inglés) y su alternativa en el otro idioma.", en: "Every page declares its language (Spanish or English) and its alternate in the other language." } }
+          - { id: imagenes, status: done, area: { es: "Imágenes", en: "Images" }, text: { es: "Toda imagen tiene texto alternativo (comprobado en el build). Las piezas generativas y los efectos de fondo son decorativos y se ocultan a los lectores de pantalla.", en: "Every image has alt text (checked at build). Generative pieces and background effects are decorative and hidden from screen readers." } }
+          - { id: foco, status: done, area: { es: "Foco y teclado", en: "Focus and keyboard" }, text: { es: "Hay un anillo de foco visible en todos los controles. Acordeones y pestañas usan elementos nativos o patrones estándar.", en: "A visible focus ring appears on every control. Accordions and tabs use native elements or standard patterns." } }
+          - { id: movimiento, status: done, area: { es: "Movimiento", en: "Motion" }, text: { es: "Con “reducir movimiento” activado en el sistema, las animaciones, el grano y el glitch se desactivan y el fondo de cromo queda en un cuadro fijo.", en: "With “reduce motion” enabled in the system, animations, grain and glitch are turned off and the chrome background stays on a still frame." } }
+          - { id: sinjs, status: done, area: { es: "Sin JavaScript", en: "Without JavaScript" }, text: { es: "El contenido se ve sin JavaScript; los scripts solo suman mejoras (menú, filtros, cuentas regresivas).", en: "Content shows without JavaScript; scripts only add enhancements (menu, filters, countdowns)." } }
+          - { id: contenido, status: done, area: { es: "Contenido de ejemplo", en: "Sample content" }, text: { es: "El contenido inventado se rotula como ejemplo con texto visible, no solo con color.", en: "Invented content is labelled as sample with visible text, not just colour." } }
+      - id: parcial
+        title: { es: "Hecho por diseño, sin medir", en: "Done by design, not measured" }
+        checks:
+          - { id: tactil, status: partial, area: { es: "Áreas táctiles", en: "Touch targets" }, text: { es: "Los controles se diseñaron de al menos 44 px. No se midieron en dispositivos reales.", en: "Controls were designed at 44 px or more. They were not measured on real devices." } }
+          - { id: contraste, status: partial, area: { es: "Contraste", en: "Contrast" }, text: { es: "La paleta se definió con contrastes calculados para el texto sobre negro (el gris más tenue ronda 5,2:1). No se midió cada combinación de cada página.", en: "The palette was defined with calculated contrast for text on black (the dimmest grey is about 5.2:1). Not every combination on every page was measured." } }
+          - { id: cuenta, status: partial, area: { es: "Cuentas regresivas", en: "Countdowns" }, text: { es: "Se actualizan cada segundo sin anunciarse a los lectores de pantalla; la fecha completa está escrita como texto. No se probó con lectores.", en: "They update every second without being announced to screen readers; the full date is written as text. Not tested with readers." } }
+          - { id: formularios, status: partial, area: { es: "Formularios", en: "Forms" }, text: { es: "Cada campo tiene etiqueta y los grupos usan fieldset y leyenda. No se probó con tecnologías de asistencia.", en: "Every field has a label and groups use fieldset and legend. Not tested with assistive technologies." } }
+      - id: sinverificar
+        title: { es: "Lo que no se verificó", en: "What has not been verified" }
+        checks:
+          - { id: lectores, status: unverified, area: { es: "Lectores de pantalla", en: "Screen readers" }, text: { es: "Sin pruebas con NVDA, JAWS, VoiceOver ni TalkBack.", en: "No testing with NVDA, JAWS, VoiceOver or TalkBack." } }
+          - { id: herramientas, status: unverified, area: { es: "Herramientas automáticas", en: "Automated tools" }, text: { es: "Sin corridas de axe, WAVE ni Lighthouse.", en: "No runs of axe, WAVE or Lighthouse." } }
+          - { id: zoom, status: unverified, area: { es: "Zoom y reflujo", en: "Zoom and reflow" }, text: { es: "El diseño es fluido, pero no se comprobó el zoom al 200 % ni el reflujo a 320 px en navegadores reales.", en: "The layout is fluid, but 200 % zoom and 320 px reflow were not checked in real browsers." } }
+          - { id: destellos, status: unverified, area: { es: "Destellos", en: "Flashing" }, text: { es: "El efecto glitch dura medio segundo y solo lo dispara quien interactúa. No se midió contra el umbral de destellos de WCAG.", en: "The glitch effect lasts half a second and is triggered only by the user. It was not measured against the WCAG flash threshold." } }
+          - { id: pdf, status: unverified, area: { es: "Documentos PDF", en: "PDF documents" }, text: { es: "Los PDF descargables se generan desde páginas de impresión; no se verificó que estén etiquetados.", en: "Downloadable PDFs are generated from print pages; it was not verified that they are tagged." } }
+      - id: limites
+        title: { es: "Límites conocidos", en: "Known limits" }
+        checks:
+          - { id: embeds, status: limit, area: { es: "Reproductores externos", en: "External players" }, text: { es: "Los reproductores de SoundCloud y YouTube son de terceros y su accesibilidad no depende de este sitio. Siempre hay un enlace para abrir el audio o el video en su plataforma.", en: "The SoundCloud and YouTube players belong to third parties and their accessibility is not under this site's control. There is always a link to open the audio or video on its platform." } }
+          - { id: shader, status: limit, area: { es: "Fondo de cromo", en: "Chrome background" }, text: { es: "El metal líquido es decorativo y usa WebGL. Sin WebGL o con reducir movimiento queda un degradé fijo; el texto no depende de él.", en: "The liquid metal is decorative and uses WebGL. Without WebGL or with reduced motion a still gradient shows; text does not depend on it." } }
+      - id: contacto
+        title: { es: "Contacto", en: "Feedback" }
+        paras:
+          es:
+            - "Si algo del sitio no se puede usar, escribí a {email} con la página y el problema. Es el único canal por ahora."
+          en:
+            - "If something on the site cannot be used, write to {email} with the page and the problem. It is the only channel for now."
+
+  legal-notice:
+    title: { es: "Aviso legal", en: "Legal notice" }
+    lead:
+      es: "Texto de referencia con los datos de la titular como campos a completar. Nada de lo que falta está inventado."
+      en: "Reference text with the owner's details as fields to complete. Nothing that is missing has been made up."
+    updated: "2026-11-15"
+    sections:
+      - id: titular
+        title: { es: "Titular del sitio", en: "Site owner" }
+        paras:
+          es:
+            - "Los datos de la titular todavía no están cargados. Se completan con información real antes de publicar de forma definitiva."
+          en:
+            - "The owner's details are not loaded yet. They are filled in with real information before final publication."
+        widget: holder
+      - id: objeto
+        title: { es: "Objeto del sitio", en: "Purpose of the site" }
+        paras:
+          es:
+            - "Este es el sitio oficial de Ailén Cachela, DJ y productora de Buenos Aires, Argentina. Presenta su música, sus fechas y sus proyectos."
+          en:
+            - "This is the official site of Ailén Cachela, a DJ and producer from Buenos Aires, Argentina. It presents her music, her dates and her projects."
+      - id: propiedad
+        title: { es: "Propiedad intelectual", en: "Intellectual property" }
+        paras:
+          es:
+            - "El nombre, la música, los textos y las marcas asociadas a la artista y sus proyectos pertenecen a sus titulares. No se pueden reproducir con fines comerciales sin permiso."
+            - "El código, el efecto de metal líquido, los códigos QR y los íconos son de elaboración propia. Las tipografías se usan bajo licencia SIL Open Font License 1.1; el detalle está en Créditos."
+            - "Los nombres de plataformas y servicios que aparecen en el sitio pertenecen a sus dueños. Mencionarlos no implica acuerdo ni patrocinio."
+          en:
+            - "The name, music, texts and trademarks associated with the artist and her projects belong to their owners. They may not be reproduced for commercial purposes without permission."
+            - "The code, the liquid-metal effect, the QR codes and the icons are original work. Typefaces are used under the SIL Open Font License 1.1; details are on the Credits page."
+            - "Names of platforms and services shown on the site belong to their owners. Mentioning them implies no agreement or sponsorship."
+        link: { route: credits, label: { es: "Ver créditos", en: "See credits" } }
+      - id: ejemplo
+        title: { es: "Contenido de ejemplo", en: "Sample content" }
+        paras:
+          es:
+            - "Mientras esté activa la versión de prueba, parte del contenido (tienda, newsletter, comunidad, cuotas, citas y fechas de muestra) es inventado y se marca como ejemplo. No representa productos, acuerdos, precios ni personas reales."
+          en:
+            - "While the preview version is active, part of the content (shop, newsletter, community, fees, quotes and sample dates) is made up and labelled as sample. It does not represent real products, agreements, prices or people."
+      - id: enlaces
+        title: { es: "Enlaces y responsabilidad", en: "Links and liability" }
+        paras:
+          es:
+            - "El sitio enlaza a páginas de terceros por conveniencia. No controla su contenido ni responde por él. Se procura que la información propia sea correcta, pero puede cambiar sin aviso."
+          en:
+            - "The site links to third-party pages for convenience. It does not control their content or answer for it. Care is taken for its own information to be correct, but it may change without notice."
+      - id: ley
+        title: { es: "Ley aplicable", en: "Governing law" }
+        paras:
+          es:
+            - "A confirmar con asesoramiento profesional. Por defecto se entiende la normativa de la República Argentina."
+          en:
+            - "To be confirmed with professional advice. By default, the law of the Argentine Republic is understood."
+        link: { route: privacy, label: { es: "Política de privacidad", en: "Privacy policy" } }
+
+  credits:
+    title: { es: "Créditos", en: "Credits" }
+    lead:
+      es: "Qué se usó para hacer este sitio, bajo qué licencia y qué es de elaboración propia."
+      en: "What was used to build this site, under which license, and what is original work."
+    updated: "2026-11-15"
+    sections:
+      - id: tipografias
+        title: { es: "Tipografías", en: "Typefaces" }
+        paras:
+          es:
+            - "Dos familias libres, alojadas en el propio sitio y recortadas a los caracteres necesarios. Ambas bajo SIL Open Font License 1.1, que permite usarlas y modificarlas siempre que se conserve la licencia."
+          en:
+            - "Two free families, served from the site itself and trimmed to the characters needed. Both under the SIL Open Font License 1.1, which allows using and modifying them as long as the license is kept."
+        widget: fonts
+      - id: herramientas
+        title: { es: "Código y herramientas", en: "Code and tools" }
+        paras:
+          es:
+            - "El sitio es estático: se genera una vez y se publica como archivos. Estas son las piezas de software que intervienen y su licencia."
+          en:
+            - "The site is static: it is generated once and published as files. These are the pieces of software involved and their licenses."
+        widget: tech
+      - id: propio
+        title: { es: "Hecho a medida", en: "Made by hand" }
+        bullets:
+          es:
+            - "El efecto de metal líquido (shader propio en WebGL) y las portadas generativas."
+            - "Los códigos QR, generados al compilar con código propio, sin enviar nada a un servicio externo."
+            - "Los íconos de la app y el monograma, dibujados por código."
+            - "El calendario de fechas, el cálculo de cuentas regresivas y los textos legales de referencia."
+          en:
+            - "The liquid-metal effect (a custom WebGL shader) and the generative covers."
+            - "The QR codes, generated at build time with original code, sending nothing to an external service."
+            - "The app icons and the monogram, drawn in code."
+            - "The dates calendar, the countdown calculation and the reference legal texts."
+      - id: imagenes
+        title: { es: "Imágenes y sonido", en: "Images and sound" }
+        paras:
+          es:
+            - "El sitio no usa fotos de stock ni material de terceros. Cuando haya fotografías de la artista, se acreditarán acá con su autoría y su licencia."
+            - "El audio de SoundCloud y de YouTube pertenece a sus autores y se reproduce desde esas plataformas."
+          en:
+            - "The site uses no stock photos or third-party material. When photographs of the artist exist, they will be credited here with their author and license."
+            - "Audio on SoundCloud and YouTube belongs to its authors and plays from those platforms."

@@ -1,0 +1,68 @@
+---
+import type { Lang } from '../../lib/content';
+import type { Entry } from '../../lib/agenda/entries';
+import DemoBadge from '../ui/DemoBadge.astro';
+import { placeOfEntry, shortDate, statusText } from './format';
+/**
+ * Filas del archivo (fechas pasadas): fecha, nombre, lugar y estado. Las de ejemplo llevan su marca; las canceladas y
+ * agotadas, texto + forma (nunca solo color). Misma familia visual que el archivo de la home.
+ */
+interface Props {
+  lang: Lang;
+  entries: Entry[];
+  /** Título accesible de la lista. */
+  label: string;
+}
+const { lang, entries, label } = Astro.props;
+---
+
+<ul class="archive" aria-label={label}>
+  {
+    entries.map((e) => (
+      <li class:list={['arow', `arow--${e.status}`, { 'is-demo': e.demo }]}>
+        <time class="arow__date label" datetime={e.date}>{shortDate(e.date, lang)}</time>
+        <span class="arow__title">{e.title}</span>
+        <span class="arow__place label">{placeOfEntry(e, lang)}</span>
+        <span class="arow__tags">
+          {statusText(e.status, lang) && <span class={`chip chip--${e.status}`}>{statusText(e.status, lang)}</span>}
+          {e.demo && <DemoBadge lang={lang} variant="item" />}
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .archive { display: grid; }
+  .arow {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 16rem) minmax(8.5rem, auto);
+    align-items: center;
+    gap: var(--space-s);
+    min-height: var(--tap);
+    padding: var(--space-2xs) var(--space-2xs);
+    border-bottom: var(--divider);
+  }
+  .arow.is-demo { outline: 0; }
+  .arow__date { color: var(--subtle); white-space: nowrap; }
+  .arow__title { font-weight: 600; font-stretch: var(--stretch-title); overflow-wrap: anywhere; }
+  .arow__place { overflow-wrap: anywhere; }
+  .arow__tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2xs); }
+  .arow--cancelled .arow__title { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 0.07em; }
+  @media (hover: hover) { .arow { transition: background-color var(--dur-fast) var(--ease); } .arow:hover { background: var(--press-bg); } }
+
+  .chip { display: inline-flex; align-items: center; gap: 0.55em; min-height: 1.75rem; padding: 0.15rem 0.7rem; font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); line-height: 1.2; border: var(--stroke) solid var(--chrome-200); white-space: nowrap; }
+  .chip::before { content: ''; flex: none; width: 0.7em; height: 0.7em; }
+  .chip--soldout { background: var(--chrome-100); border-color: var(--chrome-100); color: var(--bg); }
+  .chip--soldout::before { background: currentColor; }
+  .chip--cancelled { border-style: dashed; color: var(--fg); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--chrome-600) 5px 6px); }
+  .chip--cancelled::before { background: linear-gradient(45deg, transparent 44%, currentColor 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, currentColor 44% 56%, transparent 56%); }
+
+  @media (max-width: 52rem) {
+    .arow { grid-template-columns: auto minmax(0, 1fr); gap: 0 var(--space-s); padding-block: var(--space-xs); }
+    .arow__date { grid-row: 1 / span 3; align-self: start; padding-top: 0.15rem; max-width: 6rem; white-space: normal; }
+    .arow__title, .arow__place, .arow__tags { grid-column: 2; }
+    .arow__tags { justify-content: flex-start; margin-top: var(--space-3xs); }
+    .arow__tags:empty { display: none; }
+  }
+</style>

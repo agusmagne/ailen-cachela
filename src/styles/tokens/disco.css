@@ -1,0 +1,22 @@
+/* Tokens del paquete Música (discografía, releases, mixes). Todo valor visual de src/components/disco/ nace acá. */
+:root {
+  /* Formas de onda de ejemplo: barras de cromo con la parte "ya sonada" en el acento al pasar/enfocar */
+  --disco-wave-h: 3.5rem;
+  --disco-wave-h-lg: clamp(5rem, 12vw, 8rem);
+  --disco-wave-bar: var(--chrome-400);
+  --disco-wave-bar-hi: var(--chrome-100);
+  --disco-wave-base: var(--chrome-700);
+
+  /* Portadas */
+  --disco-cover-shadow: 0 0 0 var(--stroke) var(--chrome-600), 0 2.5rem 5rem -2rem color-mix(in srgb, var(--chrome-300) 18%, transparent);
+  --disco-cover-max: 36rem;
+
+  /* Numeral de la serie de mixes */
+  --disco-serial-size: clamp(3.4rem, 2.2rem + 6vw, 7rem);
+  --disco-serial-stroke: var(--stroke) solid var(--chrome-400);
+
+  /* Filtros y filas de pistas */
+  --disco-grid-min: 15.5rem;
+  --disco-row-line: var(--stroke) solid var(--chrome-700);
+  --disco-track-pad: var(--space-xs);
+}

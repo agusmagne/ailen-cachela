@@ -11,6 +11,10 @@
  *  - la cara de la fachada la dibuja chrome.ts (modo disco) en el contexto WebGL compartido;
  *    el metal se deforma muy lento y el reflejo sigue apenas al cursor. Sin WebGL queda el CSS.
  *  - pausa fuera de pantalla y con la pestaña oculta; con reduced-motion, cuadro fijo y sin giro.
+ *  - opt-in para el Lab: si la fachada lleva `data-disc-emit`, emite sobre ella los eventos
+ *      `disc:drag`  { phase: 'start' | 'move' | 'end', angle, delta, velocity }  (grados, grados/s)
+ *      `disc:spin`  { vel, angle, dragging, live }  en cada cuadro del giro (~20 a 60 por segundo)
+ *    Sin ese atributo no se emite nada y el comportamiento es el de siempre.
  */
 import { drawChromeDisc } from './chrome';
 import { register } from './active';
@@ -36,6 +40,11 @@ const scopes = Array.from(document.querySelectorAll<HTMLElement>('[data-disc-sco
 const lg = discs.find((d) => d.dataset.disc === 'lg') ?? null;
 const canvas = lg?.querySelector<HTMLCanvasElement>('[data-disc-gl]') ?? null;
 const facade = lg?.closest<HTMLElement>('[data-facade]') ?? null;
+
+const emit = facade?.hasAttribute('data-disc-emit') ?? false;
+const fire = (type: 'disc:drag' | 'disc:spin', detail: Record<string, unknown>) => {
+  if (emit) facade?.dispatchEvent(new CustomEvent(type, { detail }));
+};
 
 let angle = 0;
 let vel = DEG_IDLE; // deg/s
@@ -94,6 +103,7 @@ const tick = (now: number) => {
     angle = (angle + vel * dt) % 360;
   }
   apply();
+  if (emit) fire('disc:spin', { vel, angle, dragging, live: isLive() });
   if (ready && drawOn && lg?.isConnected && now - lastDraw >= drawDt) {
     drawT += (lastDraw ? Math.min(now - lastDraw, 100) : 0) * 0.00005;
     light += (lightT - light) * 0.1;
@@ -171,6 +181,7 @@ if (facade && lg && !reduce) {
     if (!dragging) {
       if (Math.hypot(e.clientX - x0, e.clientY - y0) < 6) return;
       dragging = true;
+      fire('disc:drag', { phase: 'start', angle, delta: 0, velocity: vel });
       facade.classList.add('is-scratching');
       try {
         facade.setPointerCapture(id);
@@ -187,6 +198,7 @@ if (facade && lg && !reduce) {
       angle = (angle + d) % 360;
       vel = vel * 0.55 + (d / dt) * 0.45;
       if (Math.abs(d) > 0.5) buzz(2);
+      fire('disc:drag', { phase: 'move', angle, delta: d, velocity: vel });
     }
     prevA = a;
     lastT = now;
@@ -198,6 +210,7 @@ if (facade && lg && !reduce) {
       // Si el dedo/mouse se detuvo antes de soltar, el plato queda detenido; si no, sigue por inercia
       if (performance.now() - lastMove > 90) vel = 0;
       vel = Math.max(-MAX_FLING, Math.min(MAX_FLING, vel));
+      fire('disc:drag', { phase: 'end', angle, delta: 0, velocity: vel });
       swallow = true;
       setTimeout(() => (swallow = false), 120);
       facade.classList.remove('is-scratching');

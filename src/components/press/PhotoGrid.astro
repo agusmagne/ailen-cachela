@@ -1,0 +1,57 @@
+---
+import DemoBadge from '../ui/DemoBadge.astro';
+import { t, type Lang } from '../../lib/content';
+import { pressPieceSvg, PIECE_SIZE, type PieceShape } from '../../lib/press/art';
+import type { Palette } from '../../lib/press/tokens';
+/**
+ * Fotos de prensa: hoy son piezas generativas de ejemplo (arte por código, determinista por semilla) y cada una
+ * dice con todas las letras que NO es una foto de la artista. Cuando haya fotos reales, reemplazan a estas.
+ */
+interface Props {
+  lang: Lang;
+  palette: Palette;
+  photos: { id: string; seed: string; shape: PieceShape; caption: { es: string; en: string } }[];
+}
+const { lang, palette, photos } = Astro.props;
+const pieces = photos.map((p, i) => {
+  const { w, h } = PIECE_SIZE[p.shape];
+  const caption = p.caption[lang];
+  return { ...p, n: i + 1, caption, w, h, svg: pressPieceSvg(p.seed, p.shape, palette) };
+});
+---
+<ul class="photos">
+  {
+    pieces.map((p) => (
+      <li class={`photo photo--${p.shape}`}>
+        <figure class="has-demo-badge is-demo photo__fig">
+          <DemoBadge lang={lang} />
+          <div class="photo__art" style={`--ratio:${p.w} / ${p.h}`} role="img" aria-label={`${t('press_photo_notreal', lang)} · ${p.caption}`} set:html={p.svg} />
+          <figcaption class="photo__cap">
+            <span class="label photo__n">{String(p.n).padStart(2, '0')} / {String(pieces.length).padStart(2, '0')}</span>
+            <span class="photo__text">{p.caption}</span>
+            <span class="label photo__credit">{t('press_photo_credit', lang)}</span>
+            <span class="label photo__spec">{t('press_photo_spec', lang, { shape: t(`press_shape_${p.shape}`, lang) })}</span>
+          </figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>
+<style>
+  .photos { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-flow: dense; gap: var(--press-photo-gap); align-items: start; }
+  .photo--landscape { grid-column: span 4; }
+  .photo--portrait, .photo--square { grid-column: span 2; }
+  .photo__fig { margin: 0; padding: var(--space-xs); background-color: var(--bg-raised); }
+  .photo__art { aspect-ratio: var(--ratio); width: 100%; background: var(--void); overflow: hidden; }
+  .photo__art :global(svg) { display: block; width: 100%; height: 100%; }
+  .photo__cap { display: grid; gap: var(--space-3xs); padding-top: var(--space-xs); }
+  .photo__n { color: var(--accent); }
+  .photo__text { font-weight: 600; color: var(--chrome-50); }
+  .photo__credit, .photo__spec { color: var(--muted); }
+  @media (max-width: 52rem) {
+    .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-s); }
+    .photo--landscape { grid-column: span 2; }
+    .photo--portrait, .photo--square { grid-column: span 1; }
+    .photo__fig { padding: var(--space-2xs); }
+  }
+</style>

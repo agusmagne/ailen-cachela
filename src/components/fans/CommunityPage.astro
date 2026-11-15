@@ -1,0 +1,133 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SiteExtras from './SiteExtras.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Card from '../ui/Card.astro';
+import Chip from '../ui/Chip.astro';
+import Button from '../ui/Button.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+import { site, t, pick, link, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/community.ts';
+
+/** Cuerpo de /comunidad/ y /en/community/. Canales reales o pendientes; niveles y citas de ejemplo; sin cuentas ni pagos. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const co = domain('community', schema);
+const hasDemo = co.items.length + co.quotes.length > 0;
+const channels = co.channels.map((c) => {
+  const real = c.siteLink ? link(c.siteLink) : undefined;
+  const url = real?.url || c.url || '';
+  return { ...c, url, handle: real?.handle ?? '' };
+});
+const bookingHref = router.listed('booking') ? router.path('booking', lang) : '';
+---
+
+<PageLayout lang={lang} route="community" title={t('fans_co_title', lang)} description={t('fans_co_desc', lang)} demo={hasDemo}>
+  <p slot="lead">{t('fans_co_lead', lang)}</p>
+
+  <section class="page-block" aria-labelledby="canales">
+    <SectionHead lang={lang} id="canales" title={t('fans_co_channels_title', lang)} lead={t('fans_co_channels_lead', lang)} />
+    <ul class="chan">
+      {
+        channels.map((c) => {
+          const live = c.status === 'live' && c.url;
+          return (
+            <li class:list={['chan__row', { 'is-demo has-demo-badge': c.demo }]}>
+              {c.demo && <DemoBadge lang={lang} />}
+              <div class="chan__main">
+                <h3 class="chan__name display">{c.platform}</h3>
+                <p class="chan__label">{pick(c.label, lang)}{c.handle && <> · <span class="chan__handle">{c.handle}</span></>}</p>
+              </div>
+              <Chip tone={live ? 'accent' : 'default'}>{live ? t('fans_co_channel_live', lang) : t('fans_co_channel_pending', lang)}</Chip>
+              {
+                live ? (
+                  <Button href={c.url} external lang={lang}>{t('fans_co_channel_open', lang, { platform: c.platform })}</Button>
+                ) : (
+                  <span class="chan__none" aria-hidden="true">—</span>
+                )
+              }
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  {
+    co.items.length > 0 && (
+      <section class="page-block" aria-labelledby="membresia">
+        <SectionHead lang={lang} id="membresia" title={t('fans_co_tiers_title', lang)} lead={t('fans_co_tiers_lead', lang)} demo />
+        <ul class="grid-cards tiers">
+          {
+            co.items.map((tier, i) => (
+              <Card as="li" lang={lang} title={pick(tier.name, lang)} kicker={pick(tier.tagline, lang)} demo={tier.demo} level="h3">
+                <p class="tier__n display" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+                <ul class="tier__perks">{tier.perks[lang].map((p) => <li>{p}</li>)}</ul>
+                <div slot="footer" class="tier__foot">
+                  <Chip tone="accent">{t('fans_co_tier_soon', lang)}</Chip>
+                  {pick(tier.cadence, lang) && <span class="label">{pick(tier.cadence, lang)}</span>}
+                </div>
+              </Card>
+            ))
+          }
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    co.quotes.length > 0 && (
+      <section class="page-block" aria-labelledby="dicen">
+        <SectionHead lang={lang} id="dicen" title={t('fans_co_quotes_title', lang)} lead={t('fans_co_quotes_lead', lang)} demo />
+        <div class="quotes">
+          {
+            co.quotes.map((q) => (
+              <figure class="quote has-demo-badge is-demo">
+                <DemoBadge lang={lang} />
+                <blockquote class="quote__text">{pick(q.text, lang)}</blockquote>
+                <figcaption class="quote__by"><span class="quote__author">{pick(q.author, lang)}</span> <span class="label">{pick(q.context, lang)}</span></figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </section>
+    )
+  }
+
+  <section class="page-block" aria-labelledby="escribir">
+    <SectionHead lang={lang} id="escribir" title={t('fans_co_cta_title', lang)} lead={t('fans_co_cta_text', lang)} />
+    <div class="cta">
+      {bookingHref && <Button href={bookingHref} variant="primary" size="xl">{t('fans_co_cta_booking', lang)}</Button>}
+      <Button href={`mailto:${site.contact.email}`} size="xl">{t('fans_co_cta_mail', lang)}</Button>
+    </div>
+  </section>
+  <SiteExtras lang={lang} />
+</PageLayout>
+
+<style>
+  .chan { border-top: var(--divider); }
+  .chan__row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: var(--space-xs) var(--space-m); padding-block: var(--space-s); border-bottom: var(--divider); }
+  .chan__name { font-size: var(--step-1); color: var(--chrome-50); }
+  .chan__label { color: var(--muted); overflow-wrap: anywhere; }
+  .chan__handle { color: var(--chrome-200); }
+  .chan__none { min-width: 4rem; text-align: center; color: var(--chrome-500); }
+  @media (max-width: 40rem) {
+    .chan__row { grid-template-columns: minmax(0, 1fr) auto; }
+    .chan__row > :global(.btn), .chan__none { grid-column: 1 / -1; }
+    .chan__none { display: none; }
+  }
+  .tiers { align-items: stretch; }
+  .tier__n { font-size: var(--step-4); line-height: 0.9; color: transparent; -webkit-text-stroke: 1px var(--chrome-500); }
+  .tier__perks { list-style: disc; padding-left: 1.2em; display: grid; gap: var(--space-3xs); }
+  .tier__foot { align-items: center; margin-top: auto; padding-top: var(--space-xs); }
+  .quotes { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .quote { position: relative; display: grid; gap: var(--space-s); align-content: space-between; margin: 0; padding: var(--space-l) var(--space-m) var(--space-m); border: var(--card-border); }
+  .quote__text { margin: 0; font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: var(--step-1); line-height: 1.25; color: var(--chrome-50); }
+  .quote__text::before { content: '“'; color: var(--accent); }
+  .quote__text::after { content: '”'; color: var(--accent); }
+  .quote__by { display: grid; gap: var(--space-3xs); }
+  .quote__author { color: var(--chrome-100); font-weight: 600; }
+  .cta { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+</style>

@@ -1,0 +1,41 @@
+---
+import { t, formatDate, type Lang } from '../../lib/content';
+import { countryLabel } from '../../lib/show-map';
+import Card from '../ui/Card.astro';
+import type { Residency } from '../../lib/schemas/tour';
+/** Residencias (ciclos que vuelven al mismo lugar). Todas son de ejemplo hoy: cada tarjeta lleva su marca. */
+interface Props {
+  lang: Lang;
+  items: Residency[];
+}
+const { lang, items } = Astro.props;
+const month = (d: string) => formatDate(d, lang, { month: 'long', year: 'numeric' });
+---
+
+<ul class="grid-cards res">
+  {
+    items.map((r) => {
+      const ongoing = r.until === '';
+      return (
+        <Card as="li" lang={lang} title={r.name[lang]} level="h3" kicker={`${r.venue} · ${r.city}, ${countryLabel({ country: null, countryCode: r.country }, lang) ?? r.country}`} demo={r.demo}>
+          <p>{r.cadence[lang]}</p>
+          <Fragment slot="footer">
+            <p class="label res__dates">
+              <span class:list={['res__state', { 'is-on': ongoing }]}>{ongoing ? t('agenda_res_active', lang) : t('agenda_res_done', lang)}</span>
+              {t('agenda_res_since', lang, { date: month(r.since) })}{!ongoing && ` · ${t('agenda_res_until', lang, { date: month(r.until) })}`}
+            </p>
+          </Fragment>
+        </Card>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .res { list-style: none; }
+  .res__dates { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-xs); }
+  .res__state { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.1rem 0.5rem; border: var(--stroke) dashed var(--chrome-400); color: var(--chrome-200); }
+  .res__state::before { content: ''; width: 0.55em; height: 0.55em; border: var(--stroke) solid currentColor; }
+  .res__state.is-on { border-style: solid; border-color: var(--accent); color: var(--accent); }
+  .res__state.is-on::before { background: currentColor; }
+</style>

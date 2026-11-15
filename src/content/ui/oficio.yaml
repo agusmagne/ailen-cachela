@@ -1,0 +1,187 @@
+# Textos de interfaz del paquete oficio (estudio, servicios, clases, videos, proyectos). Todas las claves llevan el prefijo oficio_.
+
+# ---- Estudio ----
+oficio_studio_title: { es: "Estudio", en: "Studio" }
+oficio_studio_desc: { es: "El estudio de Ailén Cachela: recorrido, equipo, flujo de trabajo y notas de proceso (contenido de ejemplo).", en: "Ailén Cachela's studio: tour, equipment, workflow and process notes (sample content)." }
+oficio_studio_lead: { es: "Un lugar para escuchar con atención: cómo es la sala, con qué se trabaja y cómo se llega de una idea a un tema terminado.", en: "A place to listen closely: what the room is like, what we work with and how an idea becomes a finished track." }
+oficio_kicker_tour: { es: "Recorrido", en: "Tour" }
+oficio_tour_title: { es: "Recorrido por el estudio", en: "Studio tour" }
+oficio_tour_lead: { es: "Cinco rincones del estudio, dibujados con el mismo cromo del sitio.", en: "Five corners of the studio, drawn with the same chrome as the site." }
+oficio_tour_note: { es: "Piezas generativas de ejemplo: no son fotos del estudio.", en: "Sample generative pieces: they are not photos of the studio." }
+oficio_kicker_gear: { es: "Equipo", en: "Gear" }
+oficio_gear_title: { es: "Equipo", en: "Equipment" }
+oficio_gear_lead: { es: "Descripción por tipo de aparato. Marcas y modelos reales se confirman con la artista.", en: "Described by type of device. Real brands and models are confirmed with the artist." }
+oficio_gear_model: { es: "Marca y modelo: a confirmar", en: "Brand and model: to be confirmed" }
+oficio_cat_monitoring: { es: "Monitoreo", en: "Monitoring" }
+oficio_cat_synth: { es: "Sintetizadores y cajas", en: "Synths and drum machines" }
+oficio_cat_dj: { es: "Cabina y DJ", en: "Booth and DJ" }
+oficio_cat_processing: { es: "Interfaz y procesamiento", en: "Interface and processing" }
+oficio_cat_software: { es: "Software", en: "Software" }
+oficio_kicker_flow: { es: "Flujo de trabajo", en: "Workflow" }
+oficio_flow_title: { es: "De la idea al master", en: "From idea to master" }
+oficio_flow_lead: { es: "Seis pasos que se repiten en cada proyecto, propios o de otras personas.", en: "Six steps repeated on every project, her own or other people's." }
+oficio_output: { es: "Entregable", en: "Deliverable" }
+oficio_kicker_notes: { es: "Diario de estudio", en: "Studio diary" }
+oficio_notes_title: { es: "Notas de proceso", en: "Process notes" }
+oficio_notes_lead: { es: "Apuntes cortos sobre decisiones de producción. Los textos son de muestra.", en: "Short notes on production decisions. The texts are samples." }
+oficio_read_note: { es: "Leer nota", en: "Read note" }
+oficio_studio_next: { es: "¿Trabajamos juntas?", en: "Shall we work together?" }
+oficio_studio_next_text: { es: "Mirá los servicios, las clases o escribí para el booking.", en: "See the services, the lessons or write for booking." }
+
+# ---- Servicios ----
+oficio_services_title: { es: "Servicios", en: "Services" }
+oficio_services_desc: { es: "Propuesta de servicios de producción: mezcla, mastering, remixes, diseño sonoro y más (contenido de ejemplo).", en: "Proposed production services: mixing, mastering, remixes, sound design and more (sample content)." }
+oficio_services_lead: { es: "Servicios de producción para artistas y sellos. Cada consulta se responde con un alcance y un plazo por escrito. Los valores son a consultar.", en: "Production services for artists and labels. Every inquiry is answered with a written scope and timeline. Fees are on request." }
+oficio_kicker_services: { es: "Qué se ofrece", en: "What is offered" }
+oficio_services_list: { es: "Servicios", en: "Services" }
+oficio_services_list_lead: { es: "Seis servicios con su alcance, qué recibís y qué necesito de vos.", en: "Six services with their scope, what you receive and what is needed from you." }
+oficio_scope: { es: "Alcance", en: "Scope" }
+oficio_deliverables: { es: "Qué recibís", en: "What you receive" }
+oficio_needs: { es: "Qué necesito de vos", en: "What is needed from you" }
+oficio_price: { es: "Valor", en: "Fee" }
+oficio_on_request: { es: "A consultar", en: "On request" }
+oficio_ask_about: { es: "Consultar por", en: "Ask about" }
+oficio_kicker_process: { es: "Proceso", en: "Process" }
+oficio_process_title: { es: "Cómo se trabaja", en: "How we work" }
+oficio_kicker_faq: { es: "Preguntas", en: "Questions" }
+oficio_faq_title: { es: "Preguntas frecuentes", en: "Frequently asked questions" }
+oficio_svc_form_title: { es: "Consultá por un servicio", en: "Ask about a service" }
+oficio_svc_form_lead: { es: "Completá lo que puedas. Se abre tu correo con el mensaje armado; nada se envía hasta que lo mandes vos.", en: "Fill in what you can. Your email opens with the message ready; nothing is sent until you send it." }
+oficio_svc_subject: { es: "Consulta de servicio", en: "Service inquiry" }
+oficio_svc_greeting: { es: "Hola Ailén, quisiera consultar por un servicio.", en: "Hi Ailén, I would like to ask about a service." }
+oficio_svc_closing: { es: "Gracias, quedo atenta a tu respuesta.", en: "Thank you, I look forward to your reply." }
+
+# ---- Clases ----
+oficio_lessons_title: { es: "Clases y mentorías", en: "Lessons and mentorships" }
+oficio_lessons_desc: { es: "Propuesta de clases individuales, mentorías y workshops de producción y DJ, con fecha y cupo (contenido de ejemplo).", en: "Proposed one-to-one classes, mentorships and production and DJ workshops, with dates and spots (sample content)." }
+oficio_lessons_lead: { es: "Aprender techno con calma y con criterio: clases individuales, mentorías de varias semanas y workshops para grupos chicos.", en: "Learn techno with patience and judgement: one-to-one classes, multi-week mentorships and workshops for small groups." }
+oficio_kicker_levels: { es: "Niveles", en: "Levels" }
+oficio_levels_title: { es: "Para quién es", en: "Who it is for" }
+oficio_levels_lead: { es: "Cada programa indica su nivel. Si dudás entre dos, escribí y lo vemos.", en: "Every program states its level. If you hesitate between two, write and we will figure it out." }
+oficio_level_beginner: { es: "Inicial", en: "Beginner" }
+oficio_level_intermediate: { es: "Intermedio", en: "Intermediate" }
+oficio_level_advanced: { es: "Avanzado", en: "Advanced" }
+oficio_mod_online: { es: "Online", en: "Online" }
+oficio_mod_inperson: { es: "Presencial", en: "In person" }
+oficio_mod_hybrid: { es: "Híbrido", en: "Hybrid" }
+oficio_kind_class: { es: "Clases individuales", en: "One-to-one classes" }
+oficio_kind_class_kicker: { es: "Clases", en: "Classes" }
+oficio_kind_class_lead: { es: "Una persona, una sesión, un objetivo concreto.", en: "One person, one session, one concrete goal." }
+oficio_kind_class_one: { es: "Clase", en: "Class" }
+oficio_kind_mentorship: { es: "Mentorías", en: "Mentorships" }
+oficio_kind_mentorship_kicker: { es: "Acompañamiento", en: "Guidance" }
+oficio_kind_mentorship_lead: { es: "Varias semanas de trabajo sobre tu propia música.", en: "Several weeks of work on your own music." }
+oficio_kind_mentorship_one: { es: "Mentoría", en: "Mentorship" }
+oficio_kind_workshop: { es: "Workshops", en: "Workshops" }
+oficio_kind_workshop_kicker: { es: "Grupos chicos", en: "Small groups" }
+oficio_kind_workshop_lead: { es: "Una tarde, un tema, con práctica desde el primer minuto.", en: "One afternoon, one topic, with hands-on practice from the first minute." }
+oficio_kind_workshop_one: { es: "Workshop", en: "Workshop" }
+oficio_topics: { es: "Temas", en: "Topics" }
+oficio_duration: { es: "Duración", en: "Duration" }
+oficio_dates: { es: "Fechas", en: "Dates" }
+oficio_spots: { es: "Cupo", en: "Spots" }
+oficio_spots_note: { es: "Fechas, lugares y cupos de ejemplo.", en: "Sample dates, places and spot counts." }
+oficio_les_form_title: { es: "Consultá por una clase", en: "Ask about a lesson" }
+oficio_les_form_lead: { es: "Contanos qué querés aprender. Se abre tu correo con el mensaje armado; nada se envía hasta que lo mandes vos.", en: "Tell us what you want to learn. Your email opens with the message ready; nothing is sent until you send it." }
+oficio_les_subject: { es: "Consulta por clases", en: "Lessons inquiry" }
+oficio_les_greeting: { es: "Hola Ailén, quisiera consultar por una clase o mentoría.", en: "Hi Ailén, I would like to ask about a class or mentorship." }
+oficio_les_closing: { es: "Gracias, quedo atenta a tu respuesta.", en: "Thank you, I look forward to your reply." }
+
+# ---- Videos ----
+oficio_videos_title: { es: "Videos", en: "Videos" }
+oficio_videos_desc: { es: "Sets filmados, aftermovies y visuales (piezas de ejemplo, sin reproducción).", en: "Filmed sets, aftermovies and visuals (sample pieces, no playback)." }
+oficio_videos_lead: { es: "Sets filmados, aftermovies y piezas visuales. Cuando un video sea real, el reproductor se carga recién al hacer clic.", en: "Filmed sets, aftermovies and visual pieces. When a video is real, the player only loads when you click." }
+oficio_kicker_featured: { es: "Destacado", en: "Featured" }
+oficio_featured_title: { es: "Video destacado", en: "Featured video" }
+oficio_videos_inert: { es: "Videos de ejemplo: no hay reproducción ni se carga nada de terceros.", en: "Sample videos: there is no playback and nothing is loaded from third parties." }
+oficio_kicker_library: { es: "Archivo", en: "Library" }
+oficio_library_title: { es: "Todos los videos", en: "All videos" }
+oficio_vfilter: { es: "Filtrar por categoría", en: "Filter by category" }
+oficio_vshown: { es: "{n} videos a la vista", en: "{n} videos shown" }
+oficio_vcat_all: { es: "Todos", en: "All" }
+oficio_vcat_live: { es: "Set en vivo", en: "Live set" }
+oficio_vcat_aftermovie: { es: "Aftermovie", en: "Aftermovie" }
+oficio_vcat_visuals: { es: "Visuales", en: "Visuals" }
+
+# ---- Proyectos ----
+oficio_projects_title: { es: "Proyectos", en: "Projects" }
+oficio_projects_desc: { es: "SENKA, fragmento.techno y ROOM: los proyectos, el colectivo y el sello alrededor de Ailén Cachela.", en: "SENKA, fragmento.techno and ROOM: the projects, collective and label around Ailén Cachela." }
+oficio_projects_lead: { es: "Un proyecto artístico, un colectivo y un sello. Cada uno tiene su página con lo que se sabe y lo que se va sumando.", en: "An artistic project, a collective and a label. Each has its own page with what is known and what is being added." }
+oficio_kicker_world: { es: "Mapa", en: "Map" }
+oficio_map_title: { es: "Cómo se relacionan", en: "How they relate" }
+oficio_map_lead: { es: "Qué papel tiene Ailén en cada uno.", en: "What Ailén's role is in each." }
+oficio_kicker_projects: { es: "Proyectos", en: "Projects" }
+oficio_list_title: { es: "Los tres proyectos", en: "The three projects" }
+oficio_pkind_project: { es: "Proyecto artístico", en: "Artistic project" }
+oficio_pkind_collective: { es: "Colectivo", en: "Collective" }
+oficio_pkind_label: { es: "Sello", en: "Label" }
+oficio_kicker_archive: { es: "Archivo", en: "Archive" }
+oficio_archive_title: { es: "Ediciones del colectivo", en: "Collective editions" }
+oficio_archive_lead: { es: "Cada noche con su flyer generativo. Las ediciones mostradas son de ejemplo.", en: "Each night with its generative flyer. The editions shown are samples." }
+oficio_archive_more: { es: "Ver todas las ediciones", en: "See all editions" }
+oficio_all_projects: { es: "Todos los proyectos", en: "All projects" }
+oficio_facts_title: { es: "Ficha del proyecto", en: "Project profile" }
+oficio_f_type: { es: "Tipo", en: "Type" }
+oficio_f_relation: { es: "Relación con Ailén", en: "Relation to Ailén" }
+oficio_f_status: { es: "Estado", en: "Status" }
+oficio_f_profile: { es: "Perfil", en: "Profile" }
+oficio_f_release: { es: "Lanzamiento", en: "Release" }
+oficio_f_released: { es: "Fecha", en: "Date" }
+oficio_f_track: { es: "Pista de Ailén", en: "Ailén's track" }
+oficio_room_note: { es: "ROOM es un sello de Buenos Aires, Argentina. Ailén lanzó ahí; no es su sello.", en: "ROOM is a label from Buenos Aires, Argentina. Ailén released there; it is not her label." }
+oficio_room_music: { es: "Ver Ellas EP [ROOM.004] en la discografía", en: "See Ellas EP [ROOM.004] in the discography" }
+oficio_kicker_manifesto: { es: "Manifiesto", en: "Manifesto" }
+oficio_manifesto_title: { es: "Manifiesto", en: "Manifesto" }
+oficio_editions_title: { es: "Ediciones", en: "Editions" }
+oficio_editions_lead: { es: "El archivo de noches, de la más reciente a la primera. Datos de ejemplo.", en: "The archive of nights, from the most recent to the first. Sample data." }
+oficio_lineup: { es: "Line-up", en: "Line-up" }
+oficio_kicker_roster: { es: "Residentes", en: "Residents" }
+oficio_residents_title: { es: "Residentes", en: "Residents" }
+oficio_residents_lead: { es: "Quienes sostienen las noches. Perfiles de ejemplo con nombres evidentemente ficticios.", en: "The people who sustain the nights. Sample profiles with obviously made-up names." }
+oficio_since: { es: "desde", en: "since" }
+oficio_kicker_call: { es: "Convocatoria", en: "Open call" }
+oficio_call_rules: { es: "Bases", en: "Guidelines" }
+oficio_call_format: { es: "Formato:", en: "Format:" }
+oficio_call_form_title: { es: "Enviá tu demo", en: "Send your demo" }
+oficio_call_form_lead: { es: "Se abre tu correo con el mensaje armado. Pegá el link de descarga; no hace falta adjuntar archivos.", en: "Your email opens with the message ready. Paste the download link; no need to attach files." }
+oficio_call_subject: { es: "Demo para {name}", en: "Demo for {name}" }
+oficio_call_greeting: { es: "Hola, les quiero mandar un demo.", en: "Hi, I would like to send you a demo." }
+oficio_call_closing: { es: "Gracias por escuchar.", en: "Thanks for listening." }
+oficio_kicker_log: { es: "Bitácora", en: "Log" }
+oficio_log_title: { es: "Bitácora de proceso", en: "Process log" }
+oficio_log_lead: { es: "Apuntes de trabajo. Las entradas son de ejemplo.", en: "Working notes. The entries are samples." }
+oficio_more_soon_title: { es: "Más información", en: "More information" }
+oficio_more_soon: { es: "Más contenido de este proyecto se suma cuando la artista lo confirme.", en: "More content for this project will be added once the artist confirms it." }
+oficio_others_title: { es: "Otros proyectos", en: "Other projects" }
+
+# ---- Formularios por mail ----
+oficio_f_name: { es: "Nombre", en: "Name" }
+oficio_f_artist: { es: "Nombre artístico", en: "Artist name" }
+oficio_f_email: { es: "Tu email", en: "Your email" }
+oficio_f_city: { es: "Ciudad", en: "City" }
+oficio_f_service: { es: "Servicio", en: "Service" }
+oficio_f_program: { es: "Programa", en: "Program" }
+oficio_f_level: { es: "Tu nivel", en: "Your level" }
+oficio_f_modality: { es: "Modalidad preferida", en: "Preferred format" }
+oficio_f_other: { es: "Otro / no sé todavía", en: "Other / not sure yet" }
+oficio_f_link: { es: "Link privado a tu música", en: "Private link to your music" }
+oficio_f_link_hint: { es: "Opcional. Un link de descarga o un enlace privado, no un adjunto.", en: "Optional. A download link or private link, not an attachment." }
+oficio_f_deadline: { es: "Fecha objetivo", en: "Target date" }
+oficio_f_project: { es: "Contanos del proyecto", en: "Tell us about the project" }
+oficio_f_project_hint: { es: "Qué querés lograr, tempo, referencias, lo que te preocupa.", en: "What you want to achieve, tempo, references, what worries you." }
+oficio_f_experience: { es: "Tu experiencia y lo que querés aprender", en: "Your experience and what you want to learn" }
+oficio_f_experience_hint: { es: "Qué programas usás, qué ya hiciste, qué te gustaría resolver.", en: "Which software you use, what you have done, what you would like to solve." }
+oficio_f_dl: { es: "Link de descarga", en: "Download link" }
+oficio_f_dl_hint: { es: "Un enlace privado a uno a tres temas.", en: "A private link to one to three tracks." }
+oficio_f_about: { es: "Sobre vos y los temas", en: "About you and the tracks" }
+oficio_open_mail: { es: "Abrir en mi correo", en: "Open in my email" }
+oficio_copy_text: { es: "Copiar texto", en: "Copy text" }
+oficio_form_note: { es: "Nada se envía desde esta página: tu programa de correo abre un mensaje y vos decidís si lo mandás. Si no se abre, usá Copiar texto.", en: "Nothing is sent from this page: your email app opens a message and you decide whether to send it. If it does not open, use Copy text." }
+oficio_subject_demo: { es: "[Ejemplo] ", en: "[Sample] " }
+oficio_err_required: { es: "Este campo es obligatorio.", en: "This field is required." }
+oficio_err_email: { es: "Escribí un email válido.", en: "Enter a valid email." }
+oficio_status_ready: { es: "Mensaje listo.", en: "Message ready." }
+oficio_status_long: { es: "El mensaje es largo y tu correo podría cortarlo. Si pasa, usá Copiar texto.", en: "The message is long and your email app may cut it. If so, use Copy text." }
+oficio_status_copied: { es: "Texto copiado. Pegalo en tu correo.", en: "Text copied. Paste it into your email." }
+oficio_status_copyfail: { es: "No se pudo copiar. Seleccioná y copiá el mensaje a mano.", en: "Could not copy. Select and copy the message by hand." }
+oficio_status_fix: { es: "Revisá los campos marcados.", en: "Check the marked fields." }

@@ -1,0 +1,64 @@
+# Comunidad. Niveles y citas son de EJEMPLO (demo: true, sin pagos ni personas reales). Los canales: Instagram es real
+# (sale de site.yaml); WhatsApp, Telegram y la lista de difusión están PENDIENTES de la artista (sin enlace).
+channels:
+  - id: instagram
+    platform: Instagram
+    label: { es: "Novedades y fechas en el perfil", en: "News and dates on the profile" }
+    status: live
+    siteLink: instagram
+  - id: soundcloud
+    platform: SoundCloud
+    label: { es: "Mixes y tracks", en: "Mixes and tracks" }
+    status: live
+    siteLink: soundcloud
+  - id: whatsapp
+    platform: WhatsApp
+    label: { es: "Canal de difusión", en: "Broadcast channel" }
+    status: pending
+  - id: telegram
+    platform: Telegram
+    label: { es: "Canal de avisos", en: "Announcements channel" }
+    status: pending
+
+items:
+  - id: oyente
+    demo: true
+    name: { es: "Oyente", en: "Listener" }
+    tagline: { es: "Gratis · ejemplo", en: "Free · example" }
+    cadence: { es: "Sin cuota", en: "No fee" }
+    perks:
+      es: ["Avisos de fechas y lanzamientos", "Acceso al archivo de newsletters"]
+      en: ["Date and release announcements", "Access to the newsletter archive"]
+  - id: pista
+    demo: true
+    name: { es: "Pista", en: "Floor" }
+    tagline: { es: "Nivel de ejemplo", en: "Example tier" }
+    cadence: { es: "Cuota mensual a definir", en: "Monthly fee to be defined" }
+    perks:
+      es: ["Un mix exclusivo por mes", "Preventa de entradas, cuando la plataforma lo permita", "Todo lo del nivel Oyente"]
+      en: ["One exclusive mix a month", "Ticket pre-sales, where the platform allows it", "Everything in the Listener tier"]
+  - id: cabina
+    demo: true
+    name: { es: "Cabina", en: "Booth" }
+    tagline: { es: "Nivel de ejemplo", en: "Example tier" }
+    cadence: { es: "Cuota mensual a definir", en: "Monthly fee to be defined" }
+    perks:
+      es: ["Notas de proceso y de estudio", "Votar el próximo tema del mix", "Todo lo del nivel Pista"]
+      en: ["Process and studio notes", "Vote on the next mix theme", "Everything in the Floor tier"]
+
+quotes:
+  - id: cita-01
+    demo: true
+    text: { es: "Acá va una cita aprobada por quien la dijo. Texto de ejemplo.", en: "An approved quote goes here, said by the person themself. Example text." }
+    author: { es: "Persona de ejemplo", en: "Example person" }
+    context: { es: "Club Ejemplo · Ciudad", en: "Example Club · City" }
+  - id: cita-02
+    demo: true
+    text: { es: "Otra cita inventada para mostrar el formato. No la dijo nadie.", en: "Another invented quote to show the format. Nobody said it." }
+    author: { es: "Medio de ejemplo", en: "Example outlet" }
+    context: { es: "Reseña de ejemplo", en: "Example review" }
+  - id: cita-03
+    demo: true
+    text: { es: "Una tercera cita de relleno, marcada como ejemplo.", en: "A third placeholder quote, marked as an example." }
+    author: { es: "Promotor de ejemplo", en: "Example promoter" }
+    context: { es: "Festival Ejemplo · Ciudad", en: "Example Festival · City" }

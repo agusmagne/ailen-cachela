@@ -48,6 +48,8 @@ uniform float uScale;
 uniform float uDim;
 uniform float uAA;
 uniform float uLight;
+// Reacción al audio (Lab). Valen 0 salvo que se pasen en DrawParams.audio: con 0 el resultado es idéntico al de siempre.
+uniform float uBass, uMid, uHigh, uBeat;
 uniform vec3 cVoid, cShadow, cSilver, cCool, cPink, cBlue, cSand;
 
 vec2 hash22(vec2 p){
@@ -95,6 +97,11 @@ float hash12(vec2 p){
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
+float audioBulge(vec2 q){ return exp(-dot(q, q) * 2.4); }
+float audioRipple(vec2 q){
+  float r = length(q);
+  return uBeat * sin(r * 13. - (1. - uBeat) * 8.) * exp(-r * 1.6);
+}
 `;
 
 const FIELD_MAIN = `
@@ -108,7 +115,7 @@ void main(){
   vec2 b = p * .75;
   vec2 q = vec2(fbm3(b + vec2(0., t * .5)), fbm3(b + vec2(5.2, 1.3) - vec2(t * .4, 0.)));
   vec2 r = vec2(fbm3(b + 2.6 * q + vec2(1.7, 9.2) + t * .3), fbm3(b + 2.6 * q + vec2(8.3, 2.8) - t * .25));
-  vec2 w = 1.8 * r;
+  vec2 w = 1.8 * r * (1. + uMid * .35);
 
   // abolladura que sigue al puntero
   float eps = .02;
@@ -120,14 +127,24 @@ void main(){
   float hx = fbm4((p + vec2(eps, 0.)) * .8 + w) + k * exp(-dot(dx, dx) * 9.);
   float hy = fbm4((p + vec2(0., eps)) * .8 + w) + k * exp(-dot(dy, dy) * 9.);
 
-  float bump = 2.9 * (1. - .5 * uScroll);
+  // audio: el grave infla el centro del metal y cada golpe lanza una onda hacia afuera
+  vec2 ux = uv + vec2(eps / uScale, 0.);
+  vec2 uy = uv + vec2(0., eps / uScale);
+  float pw = uBass * .55 + uBeat * .35;
+  if (pw > 0.) { // rama sobre un uniform: sin audio (hero, portadas) no cuesta nada
+    h  += pw * audioBulge(uv) + .06 * audioRipple(uv);
+    hx += pw * audioBulge(ux) + .06 * audioRipple(ux);
+    hy += pw * audioBulge(uy) + .06 * audioRipple(uy);
+  }
+
+  float bump = 2.9 * (1. - .5 * uScroll) * (1. + uBass * .6);
   vec3 n = normalize(vec3(-(hx - h) / eps * bump * .2, -(hy - h) / eps * bump * .2, 1.));
   vec3 refl = vec3(0., 0., -1.) + 2. * n.z * n;
   vec3 col = studio(refl);
 
   // especular duro (gotas de luz sobre el líquido)
   vec3 L = normalize(vec3(-.42, .5, .76));
-  float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 140. / uAA);
+  float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 140. / uAA) * (1. + uHigh * 2.4);
   col += cSilver * spec * 1.4;
 
   // película delgada: rosa / azul / arena, solo en bordes y brillos
@@ -136,9 +153,10 @@ void main(){
   vec3 iris = mix(mix(cPink, cBlue, film.g), cSand, film.b * .45);
   float lum = dot(col, vec3(.33));
   float edge = smoothstep(.02, .22, 1. - n.z);
-  col += iris * pow(lum, 1.6) * edge * .55 * (.35 + film.r);
+  col += iris * pow(lum, 1.6) * edge * .55 * (.35 + film.r) * (1. + uMid * 1.4);
 
-  // negros profundos y curva de contraste
+  // negros profundos y curva de contraste (un golpe de bombo aclara todo un instante)
+  col *= 1. + uBeat * .22;
   col = pow(col, vec3(1.7)) * 1.15;
   col = mix(cVoid, col, .96);
 
@@ -245,6 +263,16 @@ interface DrawParams {
   seed?: [number, number];
   scale?: number;
   dim?: number;
+  /** Reacción al audio (Lab), cada una 0..1. Sin esto (hero, portadas, flyers) el shader queda como siempre. */
+  audio?: AudioUniforms;
+}
+
+/** Bandas de audio que mueven el shader: grave, medios, agudos y golpe (decae solo). */
+export interface AudioUniforms {
+  bass: number;
+  mid: number;
+  high: number;
+  beat: number;
 }
 
 interface Program {
@@ -298,7 +326,7 @@ class ChromeGL {
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
       gl.useProgram(prog);
       const u: Program['u'] = {};
-      for (const n of ['uRes', 'uTime', 'uPtr', 'uPtrAmt', 'uScroll', 'uSeed', 'uScale', 'uDim', 'uAA', 'uLight']) u[n] = gl.getUniformLocation(prog, n);
+      for (const n of ['uRes', 'uTime', 'uPtr', 'uPtrAmt', 'uScroll', 'uSeed', 'uScale', 'uDim', 'uAA', 'uLight', 'uBass', 'uMid', 'uHigh', 'uBeat']) u[n] = gl.getUniformLocation(prog, n);
       const names = ['cVoid', 'cShadow', 'cSilver', 'cCool', 'cPink', 'cBlue', 'cSand'];
       names.forEach((n, i) => gl.uniform3fv(gl.getUniformLocation(prog, n), this.colors[i]));
       pr = this.progs[mode] = { prog, u };
@@ -328,6 +356,11 @@ class ChromeGL {
     gl.uniform2f(u.uSeed, p.seed?.[0] ?? 0, p.seed?.[1] ?? 0);
     gl.uniform1f(u.uScale, p.scale ?? 1.7);
     gl.uniform1f(u.uDim, p.dim ?? 0);
+    // audio: siempre se escribe (aunque sea 0) para que un dibujo con audio no deje valores viejos en el próximo cuadro
+    gl.uniform1f(u.uBass, p.audio?.bass ?? 0);
+    gl.uniform1f(u.uMid, p.audio?.mid ?? 0);
+    gl.uniform1f(u.uHigh, p.audio?.high ?? 0);
+    gl.uniform1f(u.uBeat, p.audio?.beat ?? 0);
     // píxeles gruesos (móvil, portadas chicas): afinar menos las tiras de luz para que no se vean como puntos
     gl.uniform1f(u.uAA, Math.min(2.2, Math.max(1, 640 / Math.min(p.w, p.h))));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -644,6 +677,41 @@ export function drawChromeDisc(target: HTMLCanvasElement, time: number, light = 
     g.drawDisc(target.width, time, light);
   } catch {
     return false; // el shader del disco no compiló: queda el disco CSS
+  }
+  ctx.drawImage(g.canvas, 0, 0);
+  return true;
+}
+
+/**
+ * Cuadro del campo de cromo reactivo al audio (visualizador del Lab): mismo contexto compartido, un cuadro por llamada,
+ * copiado a un canvas 2D (el mismo recurso que usan las portadas). No crea otro contexto WebGL.
+ * `w`/`h` redimensionan el canvas destino; sin ellos se usa su tamaño actual.
+ */
+export interface AudioFrame {
+  time: number;
+  audio: AudioUniforms;
+  w?: number;
+  h?: number;
+  ptr?: [number, number];
+  ptrAmt?: number;
+  seed?: [number, number];
+  scale?: number;
+  dim?: number;
+}
+export function drawChromeAudio(target: HTMLCanvasElement, f: AudioFrame): boolean {
+  const g = sharedGL();
+  const ctx = target.getContext('2d', { alpha: false });
+  if (!g || !ctx) return false;
+  const w = Math.max(2, Math.round(f.w ?? target.width));
+  const h = Math.max(2, Math.round(f.h ?? target.height));
+  try {
+    g.draw({ w, h, time: f.time, ptr: f.ptr, ptrAmt: f.ptrAmt ?? 0, seed: f.seed ?? [3.1, 1.7], scale: f.scale ?? 1.55, dim: f.dim ?? 0.12, audio: f.audio });
+  } catch {
+    return false;
+  }
+  if (target.width !== w || target.height !== h) {
+    target.width = w;
+    target.height = h;
   }
   ctx.drawImage(g.canvas, 0, 0);
   return true;

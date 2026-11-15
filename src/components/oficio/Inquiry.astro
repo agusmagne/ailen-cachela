@@ -1,0 +1,143 @@
+---
+import { site, t, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import { buildInquiry, inquiryStatus, type InquiryLine } from '../../lib/oficio/inquiry';
+import LazyModule from '../ui/LazyModule.astro';
+import DemoBadge from '../ui/DemoBadge.astro';
+/**
+ * Formulario de consulta por mail, sin backend. Sin JS, el botón es un `mailto:` con un mensaje base para completar en el
+ * correo. Con JS (módulo oficio-inquiry) los campos arman el mensaje en vivo, se valida, y se puede copiar el texto.
+ * Nada se envía a ningún servicio: la persona manda el mail desde su cliente.
+ */
+export interface FieldDef {
+  key: string;
+  label: string;
+  type: 'text' | 'email' | 'url' | 'select' | 'textarea';
+  required?: boolean;
+  hint?: string;
+  autocomplete?: string;
+  options?: { value: string; label: string }[];
+  /** Valor inicial (p. ej. el servicio elegido). */
+  value?: string;
+}
+interface Props {
+  lang: Lang;
+  /** Prefijo único para ids (varios formularios por página). */
+  id: string;
+  title: string;
+  lead?: string;
+  fields: FieldDef[];
+  subject: string;
+  greeting: string;
+  closing: string;
+  /** Clave del campo largo (va al final del mensaje). */
+  messageKey: string;
+  demo?: boolean;
+}
+const { lang, id, title, lead, fields, subject, greeting, closing, messageKey, demo = false } = Astro.props;
+
+const to = site.contact.email;
+const subjectPrefix = demoOn ? t('oficio_subject_demo', lang) : '';
+const labelOf = (f: FieldDef) => f.label.replace(/\s*\*$/, '');
+const lines: InquiryLine[] = fields.filter((f) => f.key !== messageKey).map((f) => ({ label: labelOf(f), value: '' }));
+const msgField = fields.find((f) => f.key === messageKey);
+const fallback = buildInquiry({
+  to,
+  subject,
+  subjectPrefix,
+  greeting,
+  closing,
+  lines,
+  message: msgField ? { label: labelOf(msgField), value: '' } : undefined,
+});
+// el módulo recibe solo lo necesario para armar el mismo mensaje
+const modProps = {
+  to,
+  subject,
+  subjectPrefix,
+  greeting,
+  closing,
+  messageKey,
+  fields: fields.map((f) => ({ key: f.key, label: labelOf(f), required: !!f.required, email: f.type === 'email' })),
+  msg: {
+    required: t('oficio_err_required', lang),
+    email: t('oficio_err_email', lang),
+    ready: t('oficio_status_ready', lang),
+    long: t('oficio_status_long', lang),
+    copied: t('oficio_status_copied', lang),
+    copyFail: t('oficio_status_copyfail', lang),
+    fix: t('oficio_status_fix', lang),
+  },
+};
+const mailHref = inquiryStatus(fallback).href;
+---
+
+<section class:list={['inq', { 'is-demo has-demo-badge': demo }]} aria-labelledby={`${id}-title`}>
+  {demo && <DemoBadge lang={lang} />}
+  <header class="inq__head">
+    <h3 class="inq__title display" id={`${id}-title`}>{title}</h3>
+    {lead && <p class="inq__lead">{lead}</p>}
+  </header>
+  <LazyModule name="oficio-inquiry" props={modProps} when="idle" class="inq__mod">
+    <form class="inq__form" novalidate data-inq data-inq-id={id}>
+      <div class="inq__grid">
+        {
+          fields.map((f) => {
+            const fid = `${id}-${f.key}`;
+            const describedBy = [f.hint ? `${fid}-hint` : '', `${fid}-err`].filter(Boolean).join(' ');
+            return (
+              <div class:list={['field', 'inq__field', { 'inq__field--wide': f.type === 'textarea' }]}>
+                <label for={fid}>
+                  {f.label}
+                  {f.required && <span class="inq__req" aria-hidden="true"> *</span>}
+                </label>
+                {f.type === 'select' ? (
+                  <select class="input" id={fid} name={f.key} data-inq-field={f.key} required={f.required} aria-describedby={describedBy}>
+                    {f.options?.map((o) => <option value={o.value} selected={o.value === f.value}>{o.label}</option>)}
+                  </select>
+                ) : f.type === 'textarea' ? (
+                  <textarea class="input" id={fid} name={f.key} rows="5" data-inq-field={f.key} required={f.required} aria-describedby={describedBy}></textarea>
+                ) : (
+                  <input class="input" id={fid} name={f.key} type={f.type} data-inq-field={f.key} required={f.required} autocomplete={f.autocomplete} value={f.value ?? ''} aria-describedby={describedBy} />
+                )}
+                {f.hint && <p class="inq__hint" id={`${fid}-hint`}>{f.hint}</p>}
+                <p class="inq__err" id={`${fid}-err`} hidden></p>
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="inq__actions">
+        <a class="btn btn--primary btn--xl" href={mailHref} data-inq-open>
+          {t('oficio_open_mail', lang)}
+        </a>
+        <button class="btn btn--xl" type="button" data-inq-copy hidden>{t('oficio_copy_text', lang)}</button>
+      </div>
+      <p class="inq__status label" role="status" aria-live="polite" data-inq-status></p>
+      <p class="inq__note">{t('oficio_form_note', lang)}</p>
+    </form>
+  </LazyModule>
+</section>
+
+<style>
+  .inq { position: relative; display: grid; gap: var(--space-m); padding: var(--space-l) var(--card-pad); border: var(--card-border); background: var(--card-bg); }
+  .inq.is-demo { background-image: var(--demo-stripes), var(--card-bg); }
+  .inq__head { display: grid; gap: var(--space-2xs); padding-top: var(--space-s); }
+  .inq__title { font-size: var(--step-2); line-height: var(--lh-title); color: var(--chrome-50); overflow-wrap: anywhere; }
+  .inq__lead { max-width: var(--measure); color: var(--muted); }
+  .inq__form { display: grid; gap: var(--space-m); }
+  .inq__grid { display: grid; gap: var(--space-s) var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  .inq__field--wide { grid-column: 1 / -1; }
+  .inq__req { color: var(--accent); }
+  .inq__hint { font-size: var(--step--1); color: var(--subtle); }
+  .inq__err { font-size: var(--step--1); color: var(--chrome-50); padding-left: var(--space-2xs); border-left: 2px solid var(--accent); }
+  .inq :global(.input[aria-invalid='true']) { border-color: var(--accent); }
+  .inq__actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .inq__status { min-height: 1.5em; color: var(--chrome-100); }
+  .inq__note { max-width: var(--measure); font-size: var(--step--1); color: var(--subtle); }
+  select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--chrome-300) 50%), linear-gradient(135deg, var(--chrome-300) 50%, transparent 50%); background-position: calc(100% - 1.2rem) 55%, calc(100% - 0.85rem) 55%; background-size: 0.4rem 0.4rem; background-repeat: no-repeat; padding-right: 2.5rem; }
+  @media (max-width: 52rem) {
+    .inq { padding-inline: var(--space-s); }
+    .inq__actions :global(.btn) { flex: 1 1 100%; }
+  }
+</style>

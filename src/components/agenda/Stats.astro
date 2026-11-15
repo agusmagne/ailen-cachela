@@ -1,0 +1,82 @@
+---
+import { t, type Lang } from '../../lib/content';
+import type { Stats } from '../../lib/agenda/entries';
+import DemoBadge from '../ui/DemoBadge.astro';
+/**
+ * Cifras de las fechas (fechas, ciudades, países, años) y barras por año. Se calculan SOLO con fechas visibles
+ * (reales y, si el interruptor está encendido, de ejemplo); si incluyen ejemplos se avisa en el mismo bloque.
+ * Las barras son listas con el número escrito: leen igual sin ver el dibujo.
+ */
+interface Props {
+  lang: Lang;
+  stats: Stats;
+  /** Años como enlaces al archivo (YearLinks): mapa año -> href. */
+  hrefs?: Record<number, string>;
+  /** Oculta la cifra de años (en la página de un año no aporta). */
+  noYears?: boolean;
+}
+const { lang, stats, hrefs = {}, noYears = false } = Astro.props;
+const max = Math.max(1, ...stats.byYear.map((y) => y.count));
+const cells: [string, number][] = [
+  ['agenda_stat_dates', stats.dates],
+  ['agenda_stat_cities', stats.cities],
+  ['agenda_stat_countries', stats.countries],
+  ...(noYears ? [] : ([['agenda_stat_years', stats.byYear.length]] as [string, number][])),
+];
+---
+
+<div class="stats">
+  <dl class="stats__grid">
+    {
+      cells.map(([k, n]) => (
+        <div class="stat">
+          <dt class="label">{t(k, lang)}</dt>
+          <dd class="stat__n display">{String(n).padStart(2, '0')}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  {
+    !noYears && stats.byYear.length > 0 && (
+      <div class="bars">
+        <h3 class="label bars__title">{t('agenda_stats_by_year', lang)}</h3>
+        <ol class="bars__list">
+          {stats.byYear.map((y) => (
+            <li class="bar">
+              {hrefs[y.year] ? <a class="bar__year label link" href={hrefs[y.year]}>{y.year}</a> : <span class="bar__year label">{y.year}</span>}
+              <span class="bar__track" aria-hidden="true"><span class="bar__fill" style={`--w:${Math.max(4, Math.round((y.count / max) * 100))}%`}></span></span>
+              <span class="bar__n label">{y.count}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )
+  }
+  <p class="stats__note label">
+    {t('agenda_stats_note', lang)}
+    {stats.hasDemo && <> <DemoBadge lang={lang} variant="inline" /> {t('agenda_stats_demo', lang)}</>}
+  </p>
+</div>
+
+<style>
+  .stats { display: grid; gap: var(--space-m); }
+  .stats__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: var(--space-s); }
+  .stat { display: grid; gap: var(--space-3xs); padding-top: var(--space-2xs); border-top: var(--stroke) solid var(--chrome-500); }
+  .stat__n { font-size: var(--step-4); line-height: var(--lh-display); font-stretch: var(--stretch-display); letter-spacing: var(--tracking-display); font-variant-numeric: tabular-nums; color: var(--chrome-50); }
+  .bars { display: grid; gap: var(--space-2xs); }
+  .bars__title { color: var(--accent); }
+  .bars__list { display: grid; gap: var(--space-3xs); max-width: 40rem; }
+  .bar { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 2.5rem; align-items: center; gap: var(--space-xs); min-height: var(--tap); }
+  .bar__year { color: var(--chrome-100); }
+  .bar__year.link { display: inline-flex; align-items: center; min-height: var(--tap); width: max-content; }
+  .bar__track { display: block; height: 0.6rem; background: var(--chrome-800); border: var(--stroke) solid var(--chrome-700); }
+  .bar__fill { display: block; height: 100%; width: var(--w); background: linear-gradient(90deg, var(--chrome-400), var(--chrome-100)); transform-origin: left; }
+  .bar__n { text-align: right; color: var(--chrome-50); font-variant-numeric: tabular-nums; }
+  .stats__note { color: var(--subtle); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs); }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .bar__fill { animation: bar-grow linear both; animation-timeline: view(); animation-range: entry 0% entry 80%; }
+      @keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    }
+  }
+</style>

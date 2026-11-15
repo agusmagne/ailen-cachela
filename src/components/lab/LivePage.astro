@@ -1,0 +1,27 @@
+---
+/**
+ * /lab/en-vivo/ y /en/lab/live/: visualizador a pantalla completa para proyectar (ruta `bare`: sin Nav ni pie).
+ * Usa Base directamente. El h1 es solo para lectores de pantalla; la interfaz visible vive en el escenario.
+ */
+import './lab.css';
+import Base from '../../layouts/Base.astro';
+import VizStage from './VizStage.astro';
+import { t, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const alternates = router.alternates('lab-live');
+---
+
+<Base lang={lang} title={`${t('lab_live_title', lang)} | ${t('lab_live_home', lang)}`} description={t('lab_live_desc', lang)} alternates={alternates}>
+  <main id="main" class="live-page" data-page="lab-live">
+    <h1 class="sr-only">{t('lab_live_title', lang)}</h1>
+    <VizStage lang={lang} mode="live" />
+  </main>
+</Base>
+
+<style is:global>
+  .live-page { display: grid; place-items: center; padding: var(--space-m); }
+  .viz-wrap--live { display: contents; }
+</style>

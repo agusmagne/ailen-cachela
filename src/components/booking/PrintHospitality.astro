@@ -1,0 +1,68 @@
+---
+import PrintLayout from '../../layouts/PrintLayout.astro';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/booking';
+import { t, site, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+
+/** Vista de impresión del rider de hospitalidad (A4). */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const principles = ['proportion', 'flexible', 'written', 'after'] as const;
+---
+
+<PrintLayout lang={lang} title={t('booking_hosp_title', lang)} doc={t('booking_print_doc_hosp', lang)} demo>
+  <section class="sheet__page">
+    <h1>{t('booking_hosp_title', lang)}</h1>
+    <p>{t('booking_print_hosp_intro', lang)}</p>
+    <h2>{t('booking_hosp_principles_title', lang)}</h2>
+    <ul class="bk-h-list">
+      {principles.map((p) => <li>{t(`booking_hosp_p_${p}`, lang)}</li>)}
+    </ul>
+    {
+      data.hospitality.slice(0, 3).map((g) => (
+        <>
+          <h2>{g.title[lang]}</h2>
+          <p class="bk-h-intro">{g.intro[lang]}</p>
+          <ul class="bk-h-lines">
+            {g.lines.map((l) => (
+              <li><span class="bk-h-tag">{t(`booking_hosp_${l.priority}`, lang)}</span> {l.text[lang]}</li>
+            ))}
+          </ul>
+        </>
+      ))
+    }
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>1 / 2</span></footer>
+  </section>
+
+  <section class="sheet__page">
+    {
+      data.hospitality.slice(3).map((g) => (
+        <>
+          <h2>{g.title[lang]}</h2>
+          <p class="bk-h-intro">{g.intro[lang]}</p>
+          <ul class="bk-h-lines">
+            {g.lines.map((l) => (
+              <li><span class="bk-h-tag">{t(`booking_hosp_${l.priority}`, lang)}</span> {l.text[lang]}</li>
+            ))}
+          </ul>
+        </>
+      ))
+    }
+    <p class="bk-h-closing">{t('booking_print_hosp_closing', lang)}</p>
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>2 / 2</span></footer>
+  </section>
+</PrintLayout>
+
+<style is:global>
+  .bk-h-list, .bk-h-lines { display: grid; gap: 1.2mm; list-style: none; }
+  .bk-h-list li { padding-left: 4mm; position: relative; }
+  .bk-h-list li::before { content: '–'; position: absolute; left: 0; }
+  .bk-h-intro { color: var(--paper-muted); font-size: 9pt; margin-bottom: 1.5mm; }
+  .bk-h-lines li { break-inside: avoid; }
+  .bk-h-closing { margin-top: 6mm; font-size: 9pt; color: var(--paper-muted); }
+  .bk-h-tag { display: inline-block; min-width: 24mm; font-family: var(--font-ui); font-size: 7pt; letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--paper-muted); }
+</style>

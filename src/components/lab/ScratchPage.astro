@@ -1,0 +1,93 @@
+---
+/**
+ * /lab/scratch/ y /en/lab/scratch/: el vinilo grande del sitio (Disc.astro + scripts/disc.ts) para rayar un loop sintetizado.
+ * `data-disc-emit` en la fachada hace que disc.ts avise la velocidad del plato (eventos disc:drag y disc:spin).
+ * La lógica está en src/scripts/modules/lab-scratch.ts. Los controles de abajo son la alternativa para teclado.
+ */
+import LabPage from './LabPage.astro';
+import SoundBar from './SoundBar.astro';
+import LabNoJs from './LabNoJs.astro';
+import Disc from '../Disc.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { t, pick, withBase, type Lang } from '../../lib/content';
+import { PRESETS } from '../../lib/lab/presets';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const labels = {
+  lang,
+  play: t('lab_scratch_play', lang),
+  stop: t('lab_scratch_stop', lang),
+  preparing: t('lab_scratch_preparing', lang),
+  ready: t('lab_scratch_ready', lang),
+  noAudio: t('lab_scratch_no_audio', lang),
+  renderFail: t('lab_scratch_render_fail', lang),
+  reducedNote: t('lab_scratch_reduced', lang),
+  sessionTitle: t('lab_session_scratch', lang),
+  sessionAlbum: t('lab_session_album', lang),
+  sessionArtist: t('lab_session_artist', lang),
+  icon: withBase('/apple-touch-icon.png'),
+};
+---
+
+<LabPage lang={lang} route="lab-scratch" title={t('lab_scratch_title', lang)} description={t('lab_scratch_desc', lang)} lead={t('lab_scratch_lead', lang)}>
+  <LazyModule name="lab-scratch" props={{ labels }} class="scratch-grid" when="idle">
+    <div class="scratch-disc" data-disc-scope>
+      <div class="scratch-stage" data-facade data-disc-emit role="img" aria-label={t('lab_scratch_stage', lang)}>
+        <Disc size="lg">
+          <span class="scratch-label" aria-hidden="true">LAB</span>
+        </Disc>
+      </div>
+    </div>
+
+    <div class="lab-tool">
+      <LabNoJs lang={lang}>{t('lab_scratch_how_text', lang)}</LabNoJs>
+
+      <div data-app hidden class="lab-tool">
+        <div class="lab-panel">
+          <div class="scratch-readout">
+            <span class="lab-sub">{t('lab_scratch_speed', lang)}</span>
+            <output data-rate-out aria-hidden="true">0,00×</output>
+          </div>
+          <canvas class="scratch-wave" data-wave role="img" aria-label={t('lab_scratch_wave', lang)}></canvas>
+          <div class="lab-row">
+            <button type="button" class="btn btn--primary" data-play><span data-play-label>{t('lab_scratch_play', lang)}</span></button>
+            <div class="lab-ctl">
+              <label for="scr-loop"><span>{t('lab_scratch_loop', lang)}</span></label>
+              <select id="scr-loop" class="lab-select" data-loop-select>
+                {PRESETS.map((p) => <option value={p.id}>{pick(p.name, lang)}</option>)}
+              </select>
+            </div>
+            <div class="lab-ctl">
+              <label for="scr-pitch"><span>{t('lab_scratch_pitch', lang)}</span><output data-pitch-out>+0,0%</output></label>
+              <input id="scr-pitch" class="lab-range" type="range" min="92" max="108" step="0.5" value="100" data-pitch />
+            </div>
+          </div>
+          <SoundBar lang={lang} />
+        </div>
+
+        <div class="lab-panel">
+          <p class="lab-sub">{t('lab_scratch_controls', lang)}</p>
+          <div class="lab-row">
+            <button type="button" class="lab-toggle scratch-hold" data-hold="brake" aria-pressed="false" disabled>{t('lab_scratch_brake', lang)}</button>
+            <button type="button" class="lab-toggle scratch-hold" data-hold="rewind" aria-pressed="false" disabled>{t('lab_scratch_rewind', lang)}</button>
+            <button type="button" class="lab-toggle" data-baby disabled>{t('lab_scratch_baby', lang)}</button>
+          </div>
+          <p class="lab-hint" data-reduced-note hidden></p>
+        </div>
+
+        <p class="lab-status" role="status" aria-live="polite" aria-atomic="true" data-status></p>
+      </div>
+    </div>
+  </LazyModule>
+</LabPage>
+
+<style is:global>
+  .scratch-disc { width: 100%; }
+  .scratch-label {
+    position: absolute; inset: 35%; z-index: 2; display: grid; place-items: center; border-radius: var(--radius-round);
+    font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); color: var(--bg);
+    background: conic-gradient(from 200deg, var(--chrome-200), var(--chrome-50) 20%, var(--chrome-300) 42%, var(--chrome-100) 64%, var(--chrome-400) 84%, var(--chrome-200));
+    box-shadow: 0 0 0 max(1px, 0.8cqw) var(--bg);
+  }
+</style>

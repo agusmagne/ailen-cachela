@@ -1,0 +1,11 @@
+/* Tokens del paquete press (prensa / EPK). Solo valores nuevos; los colores y las familias salen de tokens.css. */
+:root {
+  --press-tile-h: clamp(9rem, 22vw, 12.5rem);
+  --press-swatch-h: 6.5rem;
+  --press-photo-gap: var(--space-m);
+  --press-rail: var(--chrome-600);
+  --press-year-stroke: var(--chrome-500);
+  --press-quote-size: clamp(1.25rem, 1rem + 1.3vw, 2rem);
+  --press-tile-light: var(--paper);
+  --press-tile-light-ink: var(--paper-ink);
+}

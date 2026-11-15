@@ -1,0 +1,212 @@
+# Textos de interfaz del Lab (paquete lab). Prefijo obligatorio: lab_.
+# Todo el sonido del Lab se sintetiza en el navegador: no hay audio de la artista.
+
+# ---- Comunes ---------------------------------------------------------------------------------
+lab_synth_note: { es: "Sonido sintetizado en tu navegador, no es música de Ailén.", en: "Sound synthesized in your browser, not Ailén's music." }
+lab_needs_js: { es: "Esta herramienta necesita JavaScript para funcionar. Con JavaScript activado vas a poder usarla acá mismo.", en: "This tool needs JavaScript. With JavaScript on you can use it right here." }
+lab_unsupported_audio: { es: "Tu navegador no soporta Web Audio, así que esta herramienta no puede sonar. Probá con una versión reciente de Chrome, Firefox, Safari o Edge.", en: "Your browser does not support Web Audio, so this tool cannot make sound. Try a recent version of Chrome, Firefox, Safari or Edge." }
+lab_status: { es: "Estado", en: "Status" }
+lab_back: { es: "Volver al Lab", en: "Back to the Lab" }
+lab_sound_label: { es: "Sonido", en: "Sound" }
+lab_sound_volume: { es: "Volumen", en: "Volume" }
+lab_tags_label: { es: "Tecnología", en: "Technology" }
+lab_session_artist: { es: "Sonido sintetizado en tu navegador", en: "Sound synthesized in your browser" }
+lab_session_album: { es: "Ailén Cachela · Lab", en: "Ailén Cachela · Lab" }
+lab_session_seq: { es: "Lab · Secuenciador", en: "Lab · Sequencer" }
+lab_session_viz: { es: "Lab · Visualizador", en: "Lab · Visualizer" }
+lab_session_live: { es: "Lab · Visualizador en vivo", en: "Lab · Live visualizer" }
+lab_session_scratch: { es: "Lab · Scratch", en: "Lab · Scratch" }
+
+# ---- Hub -------------------------------------------------------------------------------------
+lab_title: { es: "Lab", en: "Lab" }
+lab_desc: { es: "Instrumentos y visuales que funcionan en tu navegador: secuenciador techno, visualizador del cromo líquido, scratch con el vinilo y generador de flyers. Todo el sonido se sintetiza ahí mismo.", en: "Instruments and visuals that run in your browser: a techno sequencer, a liquid chrome visualizer, vinyl scratch and a flyer generator. All the sound is synthesized right there." }
+lab_lead: { es: "Un taller de juguetes serios. El sonido se genera en tu navegador (ningún archivo de audio), nada suena sin que lo pidas y nada de lo que hagas sale de tu equipo.", en: "A workshop of serious toys. Sound is generated in your browser (no audio files), nothing plays unless you ask and nothing you make leaves your device." }
+lab_hub_open: { es: "Abrir", en: "Open" }
+lab_hub_tools: { es: "Herramientas", en: "Tools" }
+lab_hub_how: { es: "Cómo funciona", en: "How it works" }
+lab_hub_how_1_title: { es: "Sin archivos de audio", en: "No audio files" }
+lab_hub_how_1_text: { es: "Bombo, clap, hats, bajo, acid y pads se sintetizan con Web Audio en tu navegador. No es música de Ailén: son herramientas para jugar.", en: "Kick, clap, hats, bass, acid and pads are synthesized with Web Audio in your browser. It is not Ailén's music: these are tools to play with." }
+lab_hub_how_2_title: { es: "Nunca arranca solo", en: "Never starts on its own" }
+lab_hub_how_2_text: { es: "El sonido empieza solo cuando tocás un botón, hay un silencio siempre a mano y todo se detiene si ocultás la pestaña o te vas de la página.", en: "Sound only starts when you press a button, mute is always at hand and everything stops if you hide the tab or leave the page." }
+lab_hub_how_3_title: { es: "Privado por diseño", en: "Private by design" }
+lab_hub_how_3_text: { es: "No hay cuentas ni servidores: los patrones viajan en el enlace, los flyers se dibujan en tu equipo y el micrófono, si lo activás, no se graba.", en: "No accounts, no servers: patterns travel in the link, flyers are drawn on your device and the microphone, if you turn it on, is never recorded." }
+
+# ---- Franja de la home (LabTeaser) -----------------------------------------------------------------
+lab_teaser_kicker: { es: "Lab", en: "Lab" }
+lab_teaser_title: { es: "Tocá el cromo", en: "Play the chrome" }
+lab_teaser_text: { es: "Una caja de ritmos techno, un visualizador que baila con el sonido, el vinilo para rayar y un generador de flyers. Todo corre en tu navegador.", en: "A techno drum machine, a visualizer that dances to the sound, the vinyl to scratch and a flyer generator. It all runs in your browser." }
+lab_teaser_cta: { es: "Entrar al Lab", en: "Enter the Lab" }
+lab_teaser_bars: { es: "Barras decorativas que simulan un ecualizador", en: "Decorative bars that mimic an equalizer" }
+
+# ---- Secuenciador ----------------------------------------------------------------------------
+lab_seq_title: { es: "Secuenciador", en: "Sequencer" }
+lab_seq_desc: { es: "Caja de ritmos techno de 16 pasos con bombo, clap, hats, bajo y línea acid 303, sintetizados en tu navegador. Swing, tonalidad, patrón compartible por enlace y exportación a WAV.", en: "A 16-step techno drum machine with kick, clap, hats, bass and an acid 303 line, synthesized in your browser. Swing, key, a pattern you can share as a link and WAV export." }
+lab_seq_lead: { es: "Armá un groove en 16 pasos, ajustá el acid y mandalo por enlace: el patrón entero viaja en la dirección de la página.", en: "Build a 16-step groove, tweak the acid and send it as a link: the whole pattern travels in the page address." }
+lab_seq_play: { es: "Tocar", en: "Play" }
+lab_seq_stop: { es: "Parar", en: "Stop" }
+lab_seq_transport: { es: "Transporte y sonido", en: "Transport and sound" }
+lab_seq_tempo: { es: "Tempo", en: "Tempo" }
+lab_seq_tempo_unit: { es: "bpm", en: "bpm" }
+lab_seq_swing: { es: "Swing", en: "Swing" }
+lab_seq_key: { es: "Tonalidad", en: "Key" }
+lab_seq_presets: { es: "Patrones de fábrica", en: "Factory patterns" }
+lab_seq_clear: { es: "Vaciar", en: "Clear" }
+lab_seq_grid: { es: "Grilla de pasos", en: "Step grid" }
+lab_seq_grid_hint: { es: "Flechas para moverte, Espacio o Enter para activar un paso. Los pasos 1, 5, 9 y 13 son los tiempos del compás.", en: "Arrow keys to move, Space or Enter to toggle a step. Steps 1, 5, 9 and 13 are the beats of the bar." }
+lab_seq_step: { es: "paso {n}", en: "step {n}" }
+lab_seq_note_off: { es: "sin nota", en: "no note" }
+lab_seq_track_kick: { es: "Bombo", en: "Kick" }
+lab_seq_track_clap: { es: "Clap", en: "Clap" }
+lab_seq_track_hat: { es: "Hat", en: "Hat" }
+lab_seq_track_open: { es: "Hat abierto", en: "Open hat" }
+lab_seq_track_bass: { es: "Bajo", en: "Bass" }
+lab_seq_track_acid: { es: "Acid", en: "Acid" }
+lab_seq_mute_track: { es: "Silenciar {track}", en: "Mute {track}" }
+lab_seq_acid_title: { es: "Línea acid 303", en: "Acid 303 line" }
+lab_seq_acid_lead: { es: "Tocá un paso del acid para ponerle nota, y editá la nota acá abajo. El acento golpea más fuerte y el slide une una nota con la siguiente.", en: "Press an acid step to give it a note, then edit the note below. Accent hits harder and slide glides into the next note." }
+lab_seq_step_label: { es: "Paso {n}: {note}{flags}", en: "Step {n}: {note}{flags}" }
+lab_seq_step_rest: { es: "Paso {n}: silencio", en: "Step {n}: rest" }
+lab_seq_note_down: { es: "Nota abajo", en: "Note down" }
+lab_seq_note_up: { es: "Nota arriba", en: "Note up" }
+lab_seq_oct_down: { es: "Octava abajo", en: "Octave down" }
+lab_seq_oct_up: { es: "Octava arriba", en: "Octave up" }
+lab_seq_accent: { es: "Acento", en: "Accent" }
+lab_seq_slide: { es: "Slide", en: "Slide" }
+lab_seq_acid_keys: { es: "Con una celda del acid enfocada: + y − cambian la nota, A el acento y S el slide.", en: "With an acid cell focused: + and − change the note, A toggles accent and S toggles slide." }
+lab_seq_knobs: { es: "Perillas del acid", en: "Acid knobs" }
+lab_seq_knob_cutoff: { es: "Corte", en: "Cutoff" }
+lab_seq_knob_res: { es: "Resonancia", en: "Resonance" }
+lab_seq_knob_env: { es: "Env mod", en: "Env mod" }
+lab_seq_knob_decay: { es: "Decay", en: "Decay" }
+lab_seq_knob_drive: { es: "Drive", en: "Drive" }
+lab_seq_wave: { es: "Onda", en: "Wave" }
+lab_seq_wave_saw: { es: "Sierra", en: "Saw" }
+lab_seq_wave_square: { es: "Cuadrada", en: "Square" }
+lab_seq_pads_title: { es: "Pads", en: "Pads" }
+lab_seq_pads_lead: { es: "Tocalos a mano, con el dedo o con las teclas 1 a 8. Con REC y el secuenciador andando, los primeros cinco se graban en la grilla, ajustados al paso.", en: "Play them by hand, with your finger or the 1 to 8 keys. With REC on and the sequencer running, the first five are recorded into the grid, snapped to the step." }
+lab_seq_pad_kick: { es: "Bombo", en: "Kick" }
+lab_seq_pad_clap: { es: "Clap", en: "Clap" }
+lab_seq_pad_hat: { es: "Hat", en: "Hat" }
+lab_seq_pad_open: { es: "Hat abierto", en: "Open hat" }
+lab_seq_pad_bass: { es: "Bajo", en: "Bass" }
+lab_seq_pad_acid: { es: "Acid", en: "Acid" }
+lab_seq_pad_stab: { es: "Stab", en: "Stab" }
+lab_seq_pad_pad: { es: "Pad", en: "Pad" }
+lab_seq_rec: { es: "REC", en: "REC" }
+lab_seq_rec_on: { es: "Grabación activada: los pads se escriben en la grilla.", en: "Recording on: pads are written into the grid." }
+lab_seq_rec_off: { es: "Grabación desactivada.", en: "Recording off." }
+lab_seq_rec_needs_play: { es: "Grabación activada. Tocá el secuenciador para grabar los pads.", en: "Recording on. Start the sequencer to record the pads." }
+lab_seq_share_title: { es: "Compartir y exportar", en: "Share and export" }
+lab_seq_link_label: { es: "Enlace de este patrón", en: "Link to this pattern" }
+lab_seq_copy_link: { es: "Copiar enlace", en: "Copy link" }
+lab_seq_share: { es: "Compartir", en: "Share" }
+lab_seq_export: { es: "Exportar WAV (4 compases)", en: "Export WAV (4 bars)" }
+lab_seq_copied: { es: "Enlace copiado.", en: "Link copied." }
+lab_seq_copy_fail: { es: "No se pudo copiar. Seleccioná el enlace y copialo a mano.", en: "Could not copy. Select the link and copy it by hand." }
+lab_seq_invalid_link: { es: "El patrón del enlace no es válido o es de otra versión. Se cargó un patrón de fábrica.", en: "The pattern in the link is invalid or from another version. A factory pattern was loaded." }
+lab_seq_loaded: { es: "Patrón cargado: {name}.", en: "Pattern loaded: {name}." }
+lab_seq_cleared: { es: "Patrón vaciado.", en: "Pattern cleared." }
+lab_seq_exporting: { es: "Generando el WAV…", en: "Rendering the WAV…" }
+lab_seq_exported: { es: "WAV listo: revisá tus descargas.", en: "WAV ready: check your downloads." }
+lab_seq_export_fail: { es: "No se pudo generar el WAV en este navegador.", en: "Could not render the WAV in this browser." }
+lab_seq_no_audio: { es: "No se pudo iniciar el audio en este navegador.", en: "Audio could not be started in this browser." }
+lab_seq_keys: { es: "Teclas: Espacio toca o para, 1 a 8 tocan los pads.", en: "Keys: Space plays or stops, 1 to 8 play the pads." }
+
+# ---- Visualizador y en vivo ------------------------------------------------------------------
+lab_viz_title: { es: "Visualizador", en: "Visualizer" }
+lab_viz_desc: { es: "El cromo líquido del sitio reacciona a graves, medios y agudos del sonido. Con un loop techno sintetizado o con tu micrófono, y con pantalla completa para proyectar.", en: "The site's liquid chrome reacts to the bass, mids and highs of the sound. With a synthesized techno loop or your microphone, plus fullscreen for projecting." }
+lab_viz_lead: { es: "Dale play al loop (o prestale tu micrófono) y mirá cómo el metal se infla con el bombo, se agita con los medios y brilla con los agudos.", en: "Press play on the loop (or lend it your microphone) and watch the metal swell with the kick, churn with the mids and shine with the highs." }
+lab_viz_stage: { es: "Escenario del visualizador", en: "Visualizer stage" }
+lab_viz_start: { es: "Tocar", en: "Play" }
+lab_viz_stop: { es: "Parar", en: "Stop" }
+lab_viz_start_hint: { es: "Toca el loop sintetizado. No suena hasta que lo pidas.", en: "Plays the synthesized loop. It stays silent until you ask." }
+lab_viz_source: { es: "Fuente", en: "Source" }
+lab_viz_source_loop: { es: "Loop", en: "Loop" }
+lab_viz_source_mic: { es: "Micrófono", en: "Microphone" }
+lab_viz_mic_note: { es: "El micrófono se procesa en tu equipo: no se graba, no se envía y no se conecta a los parlantes. El navegador te va a pedir permiso.", en: "The microphone is processed on your device: it is not recorded, not sent and not connected to the speakers. Your browser will ask for permission." }
+lab_viz_mic_on: { es: "Micrófono activo.", en: "Microphone on." }
+lab_viz_mic_off: { es: "Micrófono apagado.", en: "Microphone off." }
+lab_viz_mic_denied: { es: "No hay permiso para usar el micrófono.", en: "Microphone permission was not granted." }
+lab_viz_mic_unsupported: { es: "Este navegador no permite usar el micrófono.", en: "This browser cannot use the microphone." }
+lab_viz_loop_on: { es: "Fuente: loop sintetizado.", en: "Source: synthesized loop." }
+lab_viz_fs_enter: { es: "Pantalla completa", en: "Fullscreen" }
+lab_viz_fs_exit: { es: "Salir", en: "Exit" }
+lab_viz_loop_label: { es: "Loop", en: "Loop" }
+lab_viz_sens: { es: "Sensibilidad", en: "Sensitivity" }
+lab_viz_motion: { es: "Permitir movimiento", en: "Allow motion" }
+lab_viz_motion_note: { es: "Tu sistema pide menos movimiento: el cromo queda en un cuadro fijo. Activá el interruptor si querés verlo moverse.", en: "Your system asks for less motion: the chrome stays on a still frame. Turn the switch on if you want to see it move." }
+lab_viz_keys: { es: "Teclas: F pantalla completa, M silencio, Espacio tocar o parar, Esc para salir.", en: "Keys: F fullscreen, M mute, Space play or stop, Esc to exit." }
+lab_viz_fallback: { es: "Sin WebGL el cromo no se puede dibujar, pero el sonido y los controles siguen funcionando.", en: "Without WebGL the chrome cannot be drawn, but the sound and controls keep working." }
+lab_viz_tip_title: { es: "Para proyectar en una fiesta", en: "To project at a party" }
+lab_viz_tip_text: { es: "Abrí el visualizador en vivo: ocupa toda la pantalla, deja la pantalla encendida y se puede usar con el micrófono de la computadora apuntando a los parlantes.", en: "Open the live visualizer: it fills the whole screen, keeps the display awake and can use the computer's microphone pointed at the speakers." }
+lab_viz_tip_cta: { es: "Abrir el visualizador en vivo", en: "Open the live visualizer" }
+lab_live_title: { es: "Visualizador en vivo", en: "Live visualizer" }
+lab_live_desc: { es: "Pantalla completa para proyectar en una fiesta: el cromo líquido reacciona al loop del Lab o a tu micrófono, que se procesa en tu equipo y nunca se graba.", en: "Fullscreen for projecting at a party: the liquid chrome reacts to the Lab loop or to your microphone, processed on your device and never recorded." }
+lab_live_hint: { es: "Tocá para empezar. F: pantalla completa. M: silencio.", en: "Tap to start. F: fullscreen. M: mute." }
+lab_live_home: { es: "Ailén Cachela", en: "Ailén Cachela" }
+lab_live_lang: { es: "English", en: "Español" }
+lab_live_lang_label: { es: "Cambiar a inglés", en: "Switch to Spanish" }
+
+# ---- Scratch ---------------------------------------------------------------------------------
+lab_scratch_title: { es: "Scratch", en: "Scratch" }
+lab_scratch_desc: { es: "Agarrá el vinilo de cromo y rayá un loop techno sintetizado: la velocidad y el sentido del plato cambian el sonido. Con controles de teclado para freno, retroceso y baby scratch.", en: "Grab the chrome vinyl and scratch a synthesized techno loop: the platter's speed and direction change the sound. Keyboard controls for brake, rewind and baby scratch." }
+lab_scratch_lead: { es: "Dale play y arrastrá el disco con el dedo o el mouse: hacia adelante acelera, hacia atrás retrocede y si lo frenás con la mano, se hace silencio.", en: "Press play and drag the record with your finger or mouse: forward speeds up, backward rewinds and if you stop it with your hand, it goes silent." }
+lab_scratch_play: { es: "Tocar", en: "Play" }
+lab_scratch_stop: { es: "Parar", en: "Stop" }
+lab_scratch_stage: { es: "Vinilo para rayar. Arrastralo con el puntero; abajo hay controles equivalentes para el teclado.", en: "Vinyl to scratch. Drag it with the pointer; equivalent keyboard controls are below." }
+lab_scratch_loop: { es: "Loop", en: "Loop" }
+lab_scratch_pitch: { es: "Pitch", en: "Pitch" }
+lab_scratch_speed: { es: "Velocidad", en: "Speed" }
+lab_scratch_brake: { es: "Freno (mantener)", en: "Brake (hold)" }
+lab_scratch_rewind: { es: "Retroceso (mantener)", en: "Rewind (hold)" }
+lab_scratch_baby: { es: "Baby scratch", en: "Baby scratch" }
+lab_scratch_controls: { es: "Controles alternativos", en: "Alternative controls" }
+lab_scratch_preparing: { es: "Preparando el loop…", en: "Preparing the loop…" }
+lab_scratch_ready: { es: "Loop listo. Arrastrá el disco.", en: "Loop ready. Drag the record." }
+lab_scratch_render_fail: { es: "No se pudo preparar el loop en este navegador.", en: "Could not prepare the loop in this browser." }
+lab_scratch_no_audio: { es: "No se pudo iniciar el audio en este navegador.", en: "Audio could not be started in this browser." }
+lab_scratch_reduced: { es: "Tu sistema pide menos movimiento, así que el arrastre del disco está desactivado. Usá el freno, el retroceso y el baby scratch.", en: "Your system asks for less motion, so dragging the record is turned off. Use the brake, rewind and baby scratch." }
+lab_scratch_wave: { es: "Onda del loop con la posición de lectura", en: "Loop waveform with the playhead" }
+lab_scratch_how_title: { es: "Cómo suena", en: "How it sounds" }
+lab_scratch_how_text: { es: "Un loop de dos compases se genera en tu navegador. El plato lo lee más rápido, más lento, al revés o lo frena, igual que un disco real.", en: "A two-bar loop is generated in your browser. The platter reads it faster, slower, backwards or stops it, just like a real record." }
+
+# ---- Generador de flyers -------------------------------------------------------------------------
+lab_gen_title: { es: "Generador de flyers", en: "Flyer generator" }
+lab_gen_desc: { es: "Creá flyers, pósters, historias y fondos de pantalla con el arte generativo del sitio y tu propio texto. Se dibujan en tu navegador y se descargan en PNG: nada se sube.", en: "Make flyers, posters, stories and wallpapers with the site's generative art and your own text. They are drawn in your browser and downloaded as PNG: nothing is uploaded." }
+lab_gen_lead: { es: "Escribí el texto, elegí el formato y probá semillas hasta que el cromo te guste. La fecha pone la marca de acento en el anillo de 31 días, igual que los flyers de las fechas.", en: "Write the text, pick the format and try seeds until you like the chrome. The date puts the accent mark on the 31-day ring, just like the show flyers." }
+lab_gen_form: { es: "Texto y semilla", en: "Text and seed" }
+lab_gen_title_label: { es: "Título", en: "Title" }
+lab_gen_lineup_label: { es: "Line-up o subtítulo", en: "Line-up or subtitle" }
+lab_gen_date_label: { es: "Fecha", en: "Date" }
+lab_gen_time_label: { es: "Hora", en: "Time" }
+lab_gen_time_ph: { es: "23:00", en: "11 PM" }
+lab_gen_place_label: { es: "Lugar", en: "Venue" }
+lab_gen_footer_label: { es: "Pie (por ejemplo, un enlace)", en: "Footer (for example, a link)" }
+lab_gen_seed_label: { es: "Semilla", en: "Seed" }
+lab_gen_dice: { es: "Otra semilla", en: "Another seed" }
+lab_gen_dice_done: { es: "Semilla nueva.", en: "New seed." }
+lab_gen_kind_label: { es: "Composición", en: "Composition" }
+lab_gen_kind_auto: { es: "Automática", en: "Automatic" }
+lab_gen_kind_rings: { es: "Anillos", en: "Rings" }
+lab_gen_kind_moire: { es: "Moiré", en: "Moire" }
+lab_gen_kind_arcs: { es: "Arcos", en: "Arcs" }
+lab_gen_kind_lines: { es: "Líneas", en: "Lines" }
+lab_gen_format: { es: "Formato", en: "Format" }
+lab_gen_fmt_story: { es: "Historia", en: "Story" }
+lab_gen_fmt_post: { es: "Post 4:5", en: "Post 4:5" }
+lab_gen_fmt_square: { es: "Cuadrado", en: "Square" }
+lab_gen_fmt_phone: { es: "Fondo de teléfono", en: "Phone wallpaper" }
+lab_gen_fmt_poster: { es: "Póster A3", en: "A3 poster" }
+lab_gen_fmt_phone_hint: { es: "El fondo de teléfono deja libre la parte alta para el reloj: solo lleva el título y el pie, abajo.", en: "The phone wallpaper keeps the top free for the clock: it only carries the title and footer, at the bottom." }
+lab_gen_fmt_poster_hint: { es: "El póster A3 sale a 200 dpi (2339 × 3307 px).", en: "The A3 poster comes out at 200 dpi (2339 × 3307 px)." }
+lab_gen_preview: { es: "Vista previa", en: "Preview" }
+lab_gen_preview_label: { es: "Vista previa del flyer", en: "Flyer preview" }
+lab_gen_dims: { es: "{w} × {h} px", en: "{w} × {h} px" }
+lab_gen_download: { es: "Descargar PNG", en: "Download PNG" }
+lab_gen_share: { es: "Compartir o guardar", en: "Share or save" }
+lab_gen_rendering: { es: "Generando la imagen…", en: "Rendering the image…" }
+lab_gen_done: { es: "Imagen lista: revisá tus descargas.", en: "Image ready: check your downloads." }
+lab_gen_fail: { es: "No se pudo generar la imagen en este navegador.", en: "Could not render the image in this browser." }
+lab_gen_shared: { es: "Compartido.", en: "Shared." }
+lab_gen_privacy: { es: "Nada se sube: la imagen se dibuja y se descarga en tu equipo. Las letras salen con las tipografías del sitio.", en: "Nothing is uploaded: the image is drawn and downloaded on your device. The type uses the site's fonts." }
+lab_gen_nowebgl: { es: "Sin WebGL, el fondo es una versión simple de plata sobre negro; el texto y la geometría salen igual.", en: "Without WebGL the background is a simple silver-on-black version; the text and geometry are the same." }

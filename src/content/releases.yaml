@@ -1,0 +1,190 @@
+# Dominio `releases`: catálogo de Música.
+# - ROOM.004 es REAL y se lee de site.yaml (releases): acá solo se lo referencia (`ref`), sin copiar sus datos.
+# - Todo lo demás es contenido de EJEMPLO (`demo: true`): títulos, sellos y artistas evidentemente ficticios, sin URLs de plataformas.
+# Una URL de plataforma solo se agrega cuando está verificada (hoy: el Bandcamp de ROOM, que sale de site.yaml).
+items:
+  - id: ellas-ep
+    ref: ellas-ep
+    kind: compilation
+
+  - id: horizonte-de-prueba-ep
+    demo: true
+    kind: ep
+    status: upcoming
+    title: "Horizonte de Prueba EP"
+    catalog: "EJ-004"
+    date: "2027-02-12"
+    label: "Sello Ejemplo"
+    format: { es: "Digital · 12\" (ejemplo)", en: "Digital · 12\" (sample)" }
+    description:
+      es: "EP de ejemplo para mostrar cómo se ve un próximo lanzamiento: cuenta regresiva, botones de pre-guardado deshabilitados y ficha técnica completa."
+      en: "Sample EP showing how an upcoming release looks: countdown, disabled pre-save buttons and a full spec sheet."
+    tracks:
+      - { n: 1, title: "Primer Plano Ficticio", duration: "07:12", bpm: 132, key: "8A", isrc: "ZZ-EJ1-27-00041" }
+      - { n: 2, title: "Línea de Fuga (Ejemplo)", duration: "06:48", bpm: 134, key: "9A", isrc: "ZZ-EJ1-27-00042" }
+      - { n: 3, title: "Cielo de Muestra", duration: "08:05", bpm: 130, key: "5A", isrc: "ZZ-EJ1-27-00043" }
+      - { n: 4, title: "Retorno Simulado", duration: "06:21", bpm: 136, key: "8A", isrc: "ZZ-EJ1-27-00044" }
+    credits:
+      - { role: { es: "Producción", en: "Production" }, name: "Ailén Cachela" }
+      - { role: { es: "Masterización", en: "Mastering" }, name: "Estudio Ejemplo" }
+      - { role: { es: "Arte", en: "Artwork" }, name: "Pieza generativa (semilla del sitio)" }
+    upc: "000000000041"
+    bpm: 133
+    key: "8A"
+    supported_by: ["DJ Ejemplo A", "Radio Ejemplo", "Club Ejemplo · Ciudad"]
+    wave_seed: horizonte
+
+  - id: maqueta-nocturna
+    demo: true
+    kind: single
+    title: "Maqueta Nocturna"
+    catalog: "EJ-003"
+    date: "2026-09-18"
+    label: "Sello Ejemplo"
+    format: { es: "Digital", en: "Digital" }
+    description:
+      es: "Single de ejemplo con versión original y versión dub, para ver cómo se muestran los singles en el catálogo."
+      en: "Sample single with an original and a dub version, to show how singles appear in the catalogue."
+    tracks:
+      - { n: 1, title: "Maqueta Nocturna (Original Mix)", duration: "07:34", bpm: 131, key: "6A", isrc: "ZZ-EJ1-26-00031" }
+      - { n: 2, title: "Maqueta Nocturna (Dub de Ejemplo)", duration: "06:58", bpm: 131, key: "6A", isrc: "ZZ-EJ1-26-00032" }
+    credits:
+      - { role: { es: "Producción", en: "Production" }, name: "Ailén Cachela" }
+      - { role: { es: "Masterización", en: "Mastering" }, name: "Estudio Ejemplo" }
+    upc: "000000000031"
+    bpm: 131
+    key: "6A"
+    supported_by: ["DJ Ejemplo B", "Club Ejemplo · Ciudad"]
+
+  - id: eco-de-prueba-ep
+    demo: true
+    kind: ep
+    title: "Eco de Prueba EP"
+    catalog: "EJ-002"
+    date: "2026-03-06"
+    label: "Sello Ejemplo"
+    format: { es: "Digital · casete (ejemplo)", en: "Digital · cassette (sample)" }
+    description:
+      es: "EP de ejemplo de cuatro pistas: sirve para revisar la ficha, la tracklist con ondas y los créditos."
+      en: "Sample four-track EP, used to review the spec sheet, the tracklist with waveforms and the credits."
+    tracks:
+      - { n: 1, title: "Eco sin Origen", duration: "06:40", bpm: 129, key: "7A", isrc: "ZZ-EJ1-26-00021" }
+      - { n: 2, title: "Tercer Piso (Ejemplo)", duration: "07:18", bpm: 130, key: "7A", isrc: "ZZ-EJ1-26-00022" }
+      - { n: 3, title: "Vapor Calibrado", duration: "05:52", bpm: 128, key: "4A", isrc: "ZZ-EJ1-26-00023" }
+      - { n: 4, title: "Salida de Prueba", duration: "07:03", bpm: 131, key: "8A", isrc: "ZZ-EJ1-26-00024" }
+    credits:
+      - { role: { es: "Producción", en: "Production" }, name: "Ailén Cachela" }
+      - { role: { es: "Masterización", en: "Mastering" }, name: "Estudio Ejemplo" }
+      - { role: { es: "Texto", en: "Liner notes" }, name: "Persona Ejemplo" }
+    upc: "000000000021"
+    bpm: 130
+    key: "7A"
+    supported_by: ["DJ Ejemplo A", "DJ Ejemplo C", "Radio Ejemplo"]
+
+  - id: borrador-de-cromo-remix
+    demo: true
+    kind: remix
+    title: "Pista de Muestra (Borrador de Cromo Remix)"
+    catalog: "ED-017"
+    date: "2025-11-21"
+    label: "Ejemplo Discos"
+    format: { es: "Digital", en: "Digital" }
+    description:
+      es: "Remix de ejemplo de una pista ficticia de otra artista inventada. Muestra cómo se presenta un remix como obra propia."
+      en: "Sample remix of a fictional track by an invented artist. Shows how a remix is presented as a work of its own."
+    tracks:
+      - { n: 1, title: "Pista de Muestra (Borrador de Cromo Remix)", duration: "08:10", bpm: 133, key: "10A", isrc: "ZZ-EJ2-25-00171" }
+    remix_of: { title: "Pista de Muestra", artist: "Artista Ejemplo A" }
+    credits:
+      - { role: { es: "Remix", en: "Remix" }, name: "Ailén Cachela" }
+      - { role: { es: "Original", en: "Original" }, name: "Artista Ejemplo A" }
+    upc: "000000000171"
+    bpm: 133
+    key: "10A"
+    supported_by: ["DJ Ejemplo D"]
+
+  - id: muestra-uno
+    demo: true
+    kind: album
+    title: "Muestra Uno"
+    catalog: "EJ-001"
+    date: "2025-05-09"
+    label: "Sello Ejemplo"
+    format: { es: "Digital · doble 12\" (ejemplo)", en: "Digital · double 12\" (sample)" }
+    description:
+      es: "Álbum de ejemplo de seis pistas, para ver cómo luce un lanzamiento largo con su tracklist completa."
+      en: "Sample six-track album, to see how a long release looks with its full tracklist."
+    tracks:
+      - { n: 1, title: "Apertura de Prueba", duration: "04:32", bpm: 124, key: "5A", isrc: "ZZ-EJ1-25-00011" }
+      - { n: 2, title: "Superficie Espejada", duration: "07:45", bpm: 130, key: "8A", isrc: "ZZ-EJ1-25-00012" }
+      - { n: 3, title: "Ruido Blanco Ficticio", duration: "06:29", bpm: 132, key: "8A", isrc: "ZZ-EJ1-25-00013" }
+      - { n: 4, title: "Interludio sin Nombre", duration: "03:10", bpm: 118, key: "3A", isrc: "ZZ-EJ1-25-00014" }
+      - { n: 5, title: "Gravedad Cero (Ejemplo)", duration: "08:21", bpm: 134, key: "9A", isrc: "ZZ-EJ1-25-00015" }
+      - { n: 6, title: "Cierre de Muestra", duration: "05:58", bpm: 126, key: "5A", isrc: "ZZ-EJ1-25-00016" }
+    credits:
+      - { role: { es: "Producción", en: "Production" }, name: "Ailén Cachela" }
+      - { role: { es: "Masterización", en: "Mastering" }, name: "Estudio Ejemplo" }
+      - { role: { es: "Arte", en: "Artwork" }, name: "Pieza generativa (semilla del sitio)" }
+    upc: "000000000011"
+    bpm: 129
+    key: "8A"
+    supported_by: ["DJ Ejemplo B", "DJ Ejemplo C", "Radio Ejemplo", "Festival Ejemplo"]
+
+  - id: sampler-ejemplo-vol-1
+    demo: true
+    kind: compilation
+    title: "Sampler Ejemplo Vol. 1"
+    catalog: "CE-V01"
+    date: "2024-10-11"
+    label: "Colectivo Ejemplo"
+    format: { es: "Digital · pagás lo que quieras (ejemplo)", en: "Digital · name your price (sample)" }
+    description:
+      es: "Compilación de ejemplo con artistas inventadas. Ailén aparece con una pista, como en una aparición en compilación ajena."
+      en: "Sample compilation with invented artists. Ailén appears with one track, as on someone else's compilation."
+    tracks:
+      - { n: 3, title: "Capa Tres (Ejemplo)", duration: "07:02", bpm: 130, key: "6A", isrc: "ZZ-EJ3-24-00103" }
+    compilation_artists: ["Artista Ejemplo B", "Artista Ejemplo C", "Artista Ejemplo D", "Ailén Cachela"]
+    credits:
+      - { role: { es: "Producción de la pista", en: "Track production" }, name: "Ailén Cachela" }
+      - { role: { es: "Curaduría", en: "Curated by" }, name: "Colectivo Ejemplo" }
+    upc: "000000000103"
+    bpm: 130
+    key: "6A"
+    supported_by: ["Radio Ejemplo"]
+
+  - id: senal-ficticia
+    demo: true
+    kind: single
+    title: "Señal Ficticia"
+    catalog: "ED-009"
+    date: "2024-04-26"
+    label: "Ejemplo Discos"
+    format: { es: "Digital", en: "Digital" }
+    description:
+      es: "Single de ejemplo más antiguo, para que los filtros por año y por sello tengan algo que filtrar."
+      en: "Older sample single, so the year and label filters have something to filter."
+    tracks:
+      - { n: 1, title: "Señal Ficticia", duration: "06:36", bpm: 128, key: "4A", isrc: "ZZ-EJ2-24-00091" }
+    credits:
+      - { role: { es: "Producción", en: "Production" }, name: "Ailén Cachela" }
+    upc: "000000000091"
+    bpm: 128
+    key: "4A"
+    supported_by: ["DJ Ejemplo A"]
+
+charts:
+  - id: tracks-del-mes-ejemplo
+    demo: true
+    title: { es: "Tracks del mes (ejemplo)", en: "Tracks of the month (sample)" }
+    month: "2026-10"
+    entries:
+      - { position: 1, title: "Capa de Prueba", artist: "Artista Ejemplo A", label: "Sello Ejemplo", bpm: 132, key: "8A" }
+      - { position: 2, title: "Humo Calibrado", artist: "Artista Ejemplo B", label: "Ejemplo Discos", bpm: 130, key: "7A" }
+      - { position: 3, title: "Maqueta Nocturna (Original Mix)", artist: "Ailén Cachela", label: "Sello Ejemplo", bpm: 131, key: "6A" }
+      - { position: 4, title: "Luz Ficticia", artist: "Artista Ejemplo C", label: "Colectivo Ejemplo", bpm: 134, key: "9A" }
+      - { position: 5, title: "Piso Doce", artist: "Artista Ejemplo D", label: "Sello Ejemplo", bpm: 128, key: "5A" }
+      - { position: 6, title: "Nodo Simulado", artist: "Artista Ejemplo E", label: "Ejemplo Discos", bpm: 135, key: "10A" }
+      - { position: 7, title: "Reflejo sin Fuente", artist: "Artista Ejemplo F", label: "Colectivo Ejemplo", bpm: 129, key: "4A" }
+      - { position: 8, title: "Órbita de Muestra", artist: "Artista Ejemplo G", label: "Sello Ejemplo", bpm: 133, key: "8A" }
+      - { position: 9, title: "Cable Pelado", artist: "Artista Ejemplo H", label: "Ejemplo Discos", bpm: 131, key: "11A" }
+      - { position: 10, title: "Fin de Ejemplo", artist: "Artista Ejemplo I", label: "Colectivo Ejemplo", bpm: 127, key: "3A" }

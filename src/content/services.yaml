@@ -1,0 +1,114 @@
+# Servicios (paquete oficio). TODO es una PROPUESTA de ejemplo: no hay servicio vigente ni precios.
+# No se ofrece producción fantasma (ghost production).
+items:
+  - id: mezcla
+    demo: true
+    seed: "svc-mezcla"
+    title: { es: "Mezcla", en: "Mixing" }
+    summary: { es: "Tu tema terminado, con balance, espacio y pegada pensados para pista y para auriculares.", en: "Your finished track, with balance, space and punch built for the floor and for headphones." }
+    scope:
+      - { es: "Balance de niveles, paneo y profundidad", en: "Level balance, panning and depth" }
+      - { es: "Ecualización y dinámica por pista y por grupo", en: "EQ and dynamics per track and per group" }
+      - { es: "Revisión en monitores, auriculares y mono", en: "Checks on monitors, headphones and mono" }
+      - { es: "Dos rondas de correcciones incluidas", en: "Two rounds of revisions included" }
+    deliverables:
+      - { es: "Mezcla estéreo en WAV de 24 bits", en: "Stereo mix as 24-bit WAV" }
+      - { es: "Versión sin master para pasar a masterización", en: "Un-mastered version to send to mastering" }
+      - { es: "Nota breve con decisiones y sugerencias", en: "Short note with decisions and suggestions" }
+    needs:
+      - { es: "Pistas separadas (stems o sesión limpia)", en: "Separate tracks (stems or a clean session)" }
+      - { es: "Una o dos referencias de sonido", en: "One or two sound references" }
+      - { es: "Tempo, tonalidad y notas sobre lo que te preocupa", en: "Tempo, key and notes on what concerns you" }
+    timing: { es: "Plazo a convenir según el tema", en: "Turnaround agreed per track" }
+  - id: mastering
+    demo: true
+    seed: "svc-mastering"
+    title: { es: "Mastering", en: "Mastering" }
+    summary: { es: "El último oído antes de publicar: sonoridad, balance tonal y formatos listos para distribuir.", en: "The final listen before release: loudness, tonal balance and formats ready to distribute." }
+    scope:
+      - { es: "Ajuste tonal y de estéreo", en: "Tonal and stereo adjustment" }
+      - { es: "Sonoridad objetivo según plataforma y uso en club", en: "Target loudness by platform and club use" }
+      - { es: "Coherencia entre los temas de un EP", en: "Consistency across the tracks of an EP" }
+    deliverables:
+      - { es: "Master en WAV y en formato para plataformas", en: "Master as WAV and in platform formats" }
+      - { es: "Reporte de sonoridad y picos", en: "Loudness and peak report" }
+    needs:
+      - { es: "Mezcla final con margen (sin limitador en el bus)", en: "Final mix with headroom (no limiter on the bus)" }
+      - { es: "Orden y espaciado de los temas, si es un EP", en: "Track order and spacing, if it is an EP" }
+    timing: { es: "Plazo a convenir", en: "Turnaround agreed" }
+  - id: remix
+    demo: true
+    seed: "svc-remix"
+    title: { es: "Remix por encargo", en: "Commissioned remix" }
+    summary: { es: "Una versión nueva de tu tema, pensada para la pista, con identidad propia y respetando el original.", en: "A new version of your track, made for the floor, with its own identity and respect for the original." }
+    scope:
+      - { es: "Reinterpretación rítmica y de bajo", en: "Rhythmic and bass reinterpretation" }
+      - { es: "Uso de elementos del original con permiso del titular", en: "Use of original elements with the rights holder's permission" }
+      - { es: "Versión de club y, si se pide, versión corta", en: "Club version and, on request, a short version" }
+    deliverables:
+      - { es: "Remix mezclado, listo para masterizar", en: "Mixed remix, ready for mastering" }
+      - { es: "Acuerdo escrito sobre créditos y derechos", en: "Written agreement on credits and rights" }
+    needs:
+      - { es: "Stems del original y permiso para remezclarlo", en: "Stems of the original and permission to remix it" }
+      - { es: "Fecha objetivo de lanzamiento", en: "Target release date" }
+    timing: { es: "A consultar: depende de la agenda", en: "On request: depends on the schedule" }
+  - id: diseno-sonoro
+    demo: true
+    seed: "svc-sonido"
+    title: { es: "Diseño sonoro", en: "Sound design" }
+    summary: { es: "Sonidos a medida: bajos, texturas, impactos y atmósferas para tu proyecto.", en: "Custom sounds: basses, textures, impacts and atmospheres for your project." }
+    scope:
+      - { es: "Síntesis y procesamiento desde cero", en: "Synthesis and processing from scratch" }
+      - { es: "Biblioteca de sonidos para una obra o un directo", en: "Sound library for a piece or a live set" }
+      - { es: "Pruebas en contexto con tu tema", en: "Tests in context with your track" }
+    deliverables:
+      - { es: "Archivos WAV organizados y nombrados", en: "Organized, named WAV files" }
+      - { es: "Documento con tempo, tonalidad y uso sugerido", en: "Document with tempo, key and suggested use" }
+    needs:
+      - { es: "Descripción de lo que buscás, con referencias", en: "Description of what you are after, with references" }
+      - { es: "Contexto de uso: pista, directo o instalación", en: "Usage context: track, live set or installation" }
+    timing: { es: "Plazo a convenir", en: "Turnaround agreed" }
+  - id: sonido-imagen
+    demo: true
+    seed: "svc-imagen"
+    title: { es: "Sonido para imagen", en: "Sound for picture" }
+    summary: { es: "Música y sonido para videos, instalaciones y piezas audiovisuales.", en: "Music and sound for videos, installations and audiovisual pieces." }
+    scope:
+      - { es: "Música original o diseño sonoro para una pieza", en: "Original music or sound design for a piece" }
+      - { es: "Ajuste a picture lock y a los tiempos del montaje", en: "Fit to picture lock and edit timing" }
+      - { es: "Entrega en stems para la mezcla final", en: "Stem delivery for the final mix" }
+    deliverables:
+      - { es: "Audio sincronizado y stems", en: "Synced audio and stems" }
+      - { es: "Hoja de licencia del uso acordado", en: "License sheet for the agreed use" }
+    needs:
+      - { es: "Video de referencia con el montaje", en: "Reference video with the edit" }
+      - { es: "Uso previsto: cine, web, exposición", en: "Intended use: film, web, exhibition" }
+    timing: { es: "A consultar", en: "On request" }
+  - id: devolucion-demos
+    demo: true
+    seed: "svc-demos"
+    title: { es: "Devolución de demos", en: "Demo feedback" }
+    summary: { es: "Escucha atenta y devolución honesta sobre tu tema antes de mandarlo a un sello.", en: "Attentive listening and honest feedback on your track before you send it to a label." }
+    scope:
+      - { es: "Sesión de escucha de 45 minutos por videollamada", en: "45-minute listening session by video call" }
+      - { es: "Comentarios sobre arreglo, mezcla y energía", en: "Comments on arrangement, mix and energy" }
+      - { es: "Lista de próximos pasos concretos", en: "List of concrete next steps" }
+    deliverables:
+      - { es: "Resumen escrito de la devolución", en: "Written summary of the feedback" }
+    needs:
+      - { es: "Link privado o archivo del tema", en: "Private link or file of the track" }
+      - { es: "Qué querés hacer con el tema", en: "What you want to do with the track" }
+    timing: { es: "Agenda a convenir", en: "Schedule agreed" }
+
+process:
+  - { id: consulta, demo: true, title: { es: "Consulta", en: "Inquiry" }, text: { es: "Contanos qué necesitás con el formulario. Se abre tu correo con el mensaje armado: nada se envía hasta que lo mandás vos.", en: "Tell us what you need with the form. Your email opens with the message ready: nothing is sent until you send it." } }
+  - { id: propuesta, demo: true, title: { es: "Propuesta", en: "Proposal" }, text: { es: "Respondemos con alcance, plazo y condiciones por escrito. Los valores se conversan caso por caso.", en: "We reply with scope, timing and terms in writing. Fees are discussed case by case." } }
+  - { id: trabajo, demo: true, title: { es: "Trabajo y rondas", en: "Work and rounds" }, text: { es: "Entrega de una primera versión, comentarios tuyos y las rondas de ajuste acordadas.", en: "A first version is delivered, you comment, and the agreed revision rounds follow." } }
+  - { id: entrega, demo: true, title: { es: "Entrega", en: "Delivery" }, text: { es: "Archivos finales, nota de proceso y archivo de la sesión por un tiempo acordado.", en: "Final files, a process note and the session archived for an agreed time." } }
+
+faq:
+  - { id: precios, demo: true, q: { es: "¿Cuánto cuesta?", en: "How much does it cost?" }, a: { es: "A consultar. Depende del servicio, de la cantidad de pistas y de los plazos. Esta página no publica precios.", en: "On request. It depends on the service, the number of tracks and the schedule. This page does not publish prices." } }
+  - { id: ghost, demo: true, q: { es: "¿Hacen producción fantasma?", en: "Do you do ghost production?" }, a: { es: "No. Los créditos reflejan quién hizo qué, siempre.", en: "No. Credits always reflect who did what." } }
+  - { id: formatos, demo: true, q: { es: "¿Qué formato de archivos aceptan?", en: "What file formats do you accept?" }, a: { es: "WAV o AIFF de 24 bits, sin limitador en el bus final y con margen de al menos 3 dB.", en: "24-bit WAV or AIFF, no limiter on the final bus and at least 3 dB of headroom." } }
+  - { id: confidencialidad, demo: true, q: { es: "¿Mi música es confidencial?", en: "Is my music confidential?" }, a: { es: "Sí. Nada se comparte ni se publica sin tu permiso por escrito.", en: "Yes. Nothing is shared or published without your written permission." } }
+  - { id: revisiones, demo: true, q: { es: "¿Cuántas rondas de correcciones hay?", en: "How many revision rounds are there?" }, a: { es: "Dos en mezcla y una en mastering, salvo que se acuerde otra cosa.", en: "Two for mixing and one for mastering, unless agreed otherwise." } }

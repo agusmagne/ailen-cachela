@@ -1,0 +1,137 @@
+---
+import PrintLayout from '../../layouts/PrintLayout.astro';
+import BoothDiagram from './BoothDiagram.astro';
+import { domain } from '../../lib/data';
+import { schema, type Rig } from '../../lib/schemas/booking';
+import { t, site, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import { gearInputs } from './ui';
+
+/** Vista de impresión del rider técnico (A4, 3 páginas). La convierte a PDF scripts/pdf/booking.mjs. */
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = domain('booking', schema);
+const tbc = t('booking_gear_tbc', lang);
+const gearLine = (rig: Rig) => rig.gear.map((g) => `${g.qty} × ${g.model[lang]}${g.confirm ? ` (${tbc})` : ''}`).join(', ');
+const primary = (mode: Rig['mode']) => data.rigs.find((r) => r.mode === mode && r.primary) ?? data.rigs.find((r) => r.mode === mode);
+const dj = primary('dj');
+const live = primary('live');
+const hybrid = primary('hybrid');
+const alts = data.rigs.filter((r) => r.mode === 'dj' && r !== dj);
+const total = 4;
+const desc = (rig: Rig) => t('booking_tech_diagram_desc', lang, { gear: gearLine(rig) });
+const title = (rig: Rig) => t('booking_tech_diagram_title', lang, { name: rig.name[lang] });
+---
+
+<PrintLayout lang={lang} title={t('booking_tech_title', lang)} doc={t('booking_print_doc_tech', lang)} demo>
+  <section class="sheet__page">
+    <h1>{t('booking_tech_title', lang)}</h1>
+    <p>{t('booking_print_tech_intro', lang)}</p>
+    <h2>{t('booking_print_contact', lang)}</h2>
+    <dl>
+      <dt>{t('booking_contact_email', lang)}</dt><dd>{site.contact.email}</dd>
+      <dt>{t('booking_contact_base', lang)}</dt><dd>{site.artist.city}, {site.artist.country}</dd>
+      <dt>{t('booking_print_notice', lang)}</dt><dd>{t('booking_print_notice_value', lang)}</dd>
+    </dl>
+    {
+      dj && (
+        <>
+          <h2>{t('booking_print_preferred', lang)} · {dj.name[lang]}</h2>
+          <p><strong>{gearLine(dj)}</strong></p>
+          <BoothDiagram lang={lang} gear={gearInputs(dj, lang)} title={title(dj)} desc={desc(dj)} uid="p-dj" />
+          <p>{dj.note[lang]}</p>
+        </>
+      )
+    }
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>1 / {total}</span></footer>
+  </section>
+
+  <section class="sheet__page">
+    <h2>{t('booking_tech_req_title', lang)}</h2>
+    <dl>
+      {data.requirements.map((r) => <><dt>{r.label[lang]}</dt><dd>{r.text[lang]}</dd></>)}
+    </dl>
+    {
+      alts.length > 0 && (
+        <>
+          <h2>{t('booking_print_alternatives', lang)}</h2>
+          <ul class="bk-p-list">
+            {alts.map((r) => <li><strong>{r.name[lang]}.</strong> {gearLine(r)}. {r.note[lang]}</li>)}
+          </ul>
+        </>
+      )
+    }
+    <div class="sheet__cols">
+      <div>
+        <h2>{t('booking_tech_brings', lang)}</h2>
+        <ul class="bk-p-list">{data.brings.map((b) => <li>{b.text[lang]}</li>)}</ul>
+      </div>
+      <div>
+        <h2>{t('booking_tech_mismatch', lang)}</h2>
+        <ul class="bk-p-list">{data.mismatch.map((b) => <li>{b.text[lang]}</li>)}</ul>
+      </div>
+    </div>
+    <p class="bk-p-small">{t('booking_tech_note', lang)}</p>
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>2 / {total}</span></footer>
+  </section>
+
+  <section class="sheet__page">
+    <h2>{t('booking_print_live', lang)}{live ? ` · ${live.name[lang]}` : ''}</h2>
+    {
+      live && (
+        <>
+          <p><strong>{gearLine(live)}</strong></p>
+          <BoothDiagram lang={lang} gear={gearInputs(live, lang)} title={title(live)} desc={desc(live)} uid="p-live" variant="stage" />
+        </>
+      )
+    }
+    {
+      data.inputs.length > 0 && (
+        <>
+          <h2>{t('booking_tech_inputs', lang)}</h2>
+          <table>
+            <thead><tr><th>{t('booking_col_ch', lang)}</th><th>{t('booking_col_source', lang)}</th><th>{t('booking_col_connection', lang)}</th><th>{t('booking_col_note', lang)}</th></tr></thead>
+            <tbody>{data.inputs.map((i) => <tr><td>{i.ch}</td><td>{i.source[lang]}</td><td>{i.connection}</td><td>{i.note[lang]}</td></tr>)}</tbody>
+          </table>
+        </>
+      )
+    }
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>3 / {total}</span></footer>
+  </section>
+
+  <section class="sheet__page">
+    {
+      data.cues.length > 0 && (
+        <>
+          <h2>{t('booking_tech_cues', lang)}</h2>
+          <table>
+            <thead><tr><th>{t('booking_col_at', lang)}</th><th>{t('booking_col_cue', lang)}</th><th>{t('booking_col_signal', lang)}</th><th>{t('booking_col_action', lang)}</th><th>{t('booking_col_fallback', lang)}</th></tr></thead>
+            <tbody>{data.cues.map((c) => <tr><td>{c.at}</td><td>{c.cue[lang]}</td><td>{c.signal[lang]}</td><td>{c.action[lang]}</td><td>{c.fallback[lang]}</td></tr>)}</tbody>
+          </table>
+        </>
+      )
+    }
+    {
+      hybrid && (
+        <>
+          <h2>{t('booking_mode_hybrid', lang)} · {hybrid.name[lang]}</h2>
+          <p><strong>{gearLine(hybrid)}</strong></p>
+          <BoothDiagram lang={lang} gear={gearInputs(hybrid, lang)} title={title(hybrid)} desc={desc(hybrid)} uid="p-hybrid" variant="stage" />
+          <p class="bk-p-small">{hybrid.note[lang]}</p>
+        </>
+      )
+    }
+    <footer class="sheet__foot"><span>{site.contact.email}</span>{demoOn && <span class="sheet__demo">{t('base_demo_badge', lang)}</span>}<span>4 / {total}</span></footer>
+  </section>
+</PrintLayout>
+
+<style is:global>
+  .bk-p-list { display: grid; gap: 1.2mm; padding-left: 4mm; list-style: disc; }
+  .bk-p-small { font-size: 8.5pt; color: var(--paper-muted); margin-top: 3mm; }
+  .sheet .bd__svg { border-color: var(--paper-line); }
+  .sheet .bd__list { font-size: 8pt; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sheet .bd { gap: 2mm; }
+  .sheet .bd svg { max-height: 82mm; }
+</style>

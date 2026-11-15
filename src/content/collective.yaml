@@ -1,0 +1,100 @@
+# Proyectos y colectivo (paquete oficio). Los tres ítems de `items` enriquecen por `id` los proyectos REALES de site.yaml
+# y no son de ejemplo (id, tipo y relación son datos verificados en _research/artista.md). Todo lo que aparece dentro de
+# manifesto / editions / residents / log / calls es INVENTADO y lleva `demo: true`. No se atribuye nada a terceros reales.
+items:
+  - id: senka
+    kind: project
+    seed: "proj-senka"
+    relation: { es: "Proyecto artístico de Ailén", en: "Ailén's artistic project" }
+    manifesto:
+      - id: viaje
+        demo: true
+        text: { es: "Texto de ejemplo: SENKA se imagina como un viaje sonoro, un recorrido que no se apura. Cada pieza es una escena con su propia luz y su propio silencio.", en: "Sample text: SENKA is imagined as a sound journey, a path that does not hurry. Each piece is a scene with its own light and its own silence." }
+      - id: espejo
+        demo: true
+        text: { es: "Texto de ejemplo: el espejo es la imagen del proyecto. Devuelve lo que ya estaba, pero distinto, con el cromo y la oscuridad como materiales.", en: "Sample text: the mirror is the image of the project. It returns what was already there, but different, with chrome and darkness as materials." }
+    log:
+      - id: boceto-uno
+        demo: true
+        date: "2026-10-18"
+        title: { es: "Boceto uno: la escena del agua", en: "Sketch one: the water scene" }
+        summary: { es: "Un lento barrido de ruido y un pulso que casi no se oye.", en: "A slow noise sweep and a pulse you can barely hear." }
+        body:
+          - { es: "Entrada de ejemplo de la bitácora de SENKA. Se parte de un pulso muy bajo y se deja entrar el ruido de a poco, sin ritmo hasta el minuto tres.", en: "Sample entry from the SENKA log. It starts from a very low pulse and lets noise in slowly, with no rhythm until minute three." }
+      - id: boceto-dos
+        demo: true
+        date: "2026-09-27"
+        title: { es: "Boceto dos: texturas de metal", en: "Sketch two: metal textures" }
+        summary: { es: "Resonancias largas que se apagan como un gong digital.", en: "Long resonances that fade like a digital gong." }
+        body:
+          - { es: "Entrada de ejemplo. La idea es construir toda la pieza a partir de un solo golpe procesado muchas veces.", en: "Sample entry. The idea is to build the whole piece from a single hit processed many times." }
+      - id: boceto-tres
+        demo: true
+        date: "2026-08-30"
+        title: { es: "Boceto tres: el espacio vacío", en: "Sketch three: empty space" }
+        summary: { es: "Casi nada suena, y eso es lo que se escucha.", en: "Almost nothing sounds, and that is what you hear." }
+        body:
+          - { es: "Entrada de ejemplo. Un ejercicio de silencio: tres elementos, mucho aire, y una pausa larga antes del final.", en: "Sample entry. An exercise in silence: three elements, a lot of air, and a long pause before the end." }
+  - id: fragmento
+    kind: collective
+    seed: "proj-fragmento"
+    relation: { es: "Co-fundadora", en: "Co-founder" }
+    manifesto:
+      - id: pista
+        demo: true
+        text: { es: "Texto de ejemplo: una fiesta es una conversación entre la pista, la cabina y el sonido. Cuidamos las tres.", en: "Sample text: a party is a conversation between the floor, the booth and the sound. We take care of all three." }
+      - id: cuidado
+        demo: true
+        text: { es: "Texto de ejemplo: queremos noches donde cada persona se sienta segura y escuchada. Las reglas son pocas y claras, y se conversan.", en: "Sample text: we want nights where everyone feels safe and heard. The rules are few and clear, and they are discussed." }
+      - id: archivo
+        demo: true
+        text: { es: "Texto de ejemplo: guardamos cada edición, con su flyer y su line-up, como parte de una memoria compartida.", en: "Sample text: we keep every edition, with its flyer and line-up, as part of a shared memory." }
+    editions:
+      - id: edicion-01
+        demo: true
+        title: { es: "Edición 01", en: "Edition 01" }
+        date: "2025-04-12"
+        venue: { es: "Sala de ejemplo · Ciudad", en: "Example room · City" }
+        lineup: ["Artista Ejemplo A", "Artista Ejemplo B", "Artista Ejemplo C"]
+        note: { es: "Primera noche del colectivo, ejemplo.", en: "First night of the collective, sample." }
+      - id: edicion-02
+        demo: true
+        title: { es: "Edición 02", en: "Edition 02" }
+        date: "2025-08-23"
+        venue: { es: "Club Ejemplo · Ciudad", en: "Example Club · City" }
+        lineup: ["Artista Ejemplo D", "Artista Ejemplo E", "Artista Ejemplo F", "Artista Ejemplo G"]
+        note: { es: "Dos pistas y una proyección, ejemplo.", en: "Two floors and a projection, sample." }
+      - id: edicion-03
+        demo: true
+        title: { es: "Edición 03", en: "Edition 03" }
+        date: "2025-11-29"
+        venue: { es: "Galpón de ejemplo · Ciudad", en: "Example warehouse · City" }
+        lineup: ["Artista Ejemplo H", "Artista Ejemplo I", "Artista Ejemplo J"]
+        note: { es: "Edición de verano, ejemplo.", en: "Summer edition, sample." }
+      - id: edicion-04
+        demo: true
+        title: { es: "Edición 04", en: "Edition 04" }
+        date: "2026-05-09"
+        venue: { es: "Club Ejemplo · Ciudad", en: "Example Club · City" }
+        lineup: ["Artista Ejemplo K", "Artista Ejemplo L", "Artista Ejemplo M", "Artista Ejemplo N", "Artista Ejemplo O"]
+        note: { es: "La más grande hasta ahora, ejemplo.", en: "The biggest so far, sample." }
+    residents:
+      - { id: residente-a, demo: true, alias: "Residente Ejemplo A", since: 2025, role: { es: "DJ residente", en: "Resident DJ" }, bio: { es: "Perfil de ejemplo: abre las noches con sets lentos e hipnóticos.", en: "Sample profile: opens the nights with slow, hypnotic sets." } }
+      - { id: residente-b, demo: true, alias: "Residente Ejemplo B", since: 2025, role: { es: "DJ residente", en: "Resident DJ" }, bio: { es: "Perfil de ejemplo: cierra con ritmos rápidos y secos.", en: "Sample profile: closes with fast, dry rhythms." } }
+      - { id: residente-c, demo: true, alias: "Residente Ejemplo C", since: 2026, role: { es: "Visuales", en: "Visuals" }, bio: { es: "Perfil de ejemplo: proyecta piezas generativas a lo largo de la noche.", en: "Sample profile: projects generative pieces throughout the night." } }
+      - { id: residente-d, demo: true, alias: "Residente Ejemplo D", since: 2026, role: { es: "Sonido y producción", en: "Sound and production" }, bio: { es: "Perfil de ejemplo: ajusta el sistema y cuida cómo suena la sala.", en: "Sample profile: tunes the system and looks after how the room sounds." } }
+    calls:
+      - id: convocatoria-demos
+        demo: true
+        title: { es: "Convocatoria de demos", en: "Demo call" }
+        intro: { es: "Convocatoria de ejemplo: si producís techno y querés que escuchemos un tema, escribinos con un link de descarga.", en: "Sample call: if you produce techno and want us to listen to a track, write to us with a download link." }
+        format: { es: "Un link privado de descarga (no adjuntes archivos al mail)", en: "One private download link (do not attach files to the email)" }
+        rules:
+          - { es: "Mandá uno a tres temas, en WAV o MP3 de calidad alta", en: "Send one to three tracks, as WAV or high-quality MP3" }
+          - { es: "Incluí tu nombre artístico y dónde vivís", en: "Include your artist name and where you live" }
+          - { es: "Los temas deben ser tuyos y estar libres de derechos de terceros", en: "The tracks must be yours and free of third-party rights" }
+          - { es: "Respondemos a todas las propuestas, aunque tarde", en: "We reply to every submission, even if late" }
+  - id: room
+    kind: label
+    seed: "proj-room"
+    relation: { es: "Lanzó “Ahogo” en ROOM.004 (2017)", en: "Released “Ahogo” on ROOM.004 (2017)" }

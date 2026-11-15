@@ -1,0 +1,178 @@
+---
+import { t, type Lang } from '../../lib/content';
+import { graticule, landDots, project, MAP_W, MAP_H } from '../../lib/agenda/land';
+import type { MapPoint } from '../../lib/agenda/entries';
+import { countryLabel } from '../../lib/show-map';
+import DemoBadge from '../ui/DemoBadge.astro';
+import { countText } from './format';
+/**
+ * Mapa de gigs en SVG propio: trama de puntos de tierra dibujada por código (src/lib/agenda/land.ts, sin librerías ni
+ * teselas de terceros), meridianos y paralelos cada 30 grados y un marcador por ciudad. Es decorativo (aria-hidden): la
+ * alternativa textual es la lista de ciudades de abajo, que también es lo que se lee sin JS. Con JS, pasar el puntero
+ * por una ciudad de la lista resalta su punto (módulo agenda-live).
+ */
+interface Props {
+  lang: Lang;
+  points: MapPoint[];
+  /** Fechas que no se pudieron ubicar (sin ciudad o ciudad desconocida). */
+  unplaced?: number;
+  id?: string;
+  /** Muestra la lista de ciudades (alternativa textual). */
+  places?: boolean;
+}
+const { lang, points, unplaced = 0, id = 'map', places = true } = Astro.props;
+const countries = new Set(points.map((p) => p.countryCode).filter(Boolean)).size;
+const radius = (n: number) => +(5 + Math.min(n, 8) * 0.7).toFixed(1);
+const pins = points.map((p, i) => {
+  const { x, y } = project(p.lat, p.lon);
+  const r = radius(p.count);
+  const right = x < MAP_W * 0.78;
+  return { ...p, i, x, y, r, key: `p${i}`, anchor: right ? 'start' : 'end', dx: right ? r + 8 : -(r + 8) };
+});
+// Orden de dibujo: los puntos grandes abajo y los de fechas por venir arriba (si dos ciudades quedan pegadas, no se tapan)
+const drawOrder = [...pins].sort((a, b) => Number(a.upcoming) - Number(b.upcoming) || b.count - a.count);
+const cname = (cc: string | null) => (cc ? countryLabel({ country: null, countryCode: cc }, lang) : null);
+const hasDemo = points.some((p) => p.demo);
+---
+
+<figure class="map" data-agenda-map aria-labelledby={`${id}-cap`}>
+  <div class="map__stage">
+    <svg class="map__svg" viewBox={`0 0 ${MAP_W} ${MAP_H}`} aria-hidden="true" focusable="false">
+      <path class="map__grid" d={graticule(30)} />
+      <path class="map__land" d={landDots(3)} />
+      {
+        drawOrder.map((p) => (
+          <g class:list={['pin', { 'pin--demo': p.demo, 'pin--next': p.upcoming }]} data-pin={p.key} transform={`translate(${p.x} ${p.y})`}>
+            <g class="pin__body">
+              {p.upcoming && <circle class="pin__pulse" r={p.r + 7} />}
+              <circle class="pin__ring" r={p.r + 4} />
+              <circle class="pin__dot" r={p.r} />
+              <circle class="pin__hit" r={p.r + 10} />
+              <text class="pin__label" x={p.dx} y="4.5" text-anchor={p.anchor}>{p.city}</text>
+            </g>
+          </g>
+        ))
+      }
+    </svg>
+    {points.length === 0 && <p class="map__empty label">{t('agenda_map_empty', lang)}</p>}
+  </div>
+
+  <figcaption class="map__cap" id={`${id}-cap`}>
+    <span>{t('agenda_map_caption', lang, { cities: points.length, countries })}</span>
+    <ul class="map__legend" aria-label={t('agenda_map_legend', lang)}>
+      <li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle class="lg lg--real" r="5" /></svg>{t('agenda_map_legend_real', lang)}</li>
+      {pins.some((p) => p.upcoming) && <li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle class="lg lg--next" r="5" /></svg>{t('agenda_map_legend_next', lang)}</li>}
+      {hasDemo && <li><svg viewBox="-10 -10 20 20" aria-hidden="true"><circle class="lg lg--demo" r="5" /></svg>{t('agenda_map_legend_demo', lang)}</li>}
+    </ul>
+  </figcaption>
+
+  {
+    places && points.length > 0 && (
+      <div class="map__places-wrap">
+        <h3 class="label map__places-title">{t('agenda_map_places', lang)}</h3>
+        <ul class="map__places">
+          {pins.map((p) => (
+            <li class="place" data-map-key={p.key}>
+              <span class="place__name">{p.city}</span>
+              <span class="place__country label">{cname(p.countryCode)}</span>
+              <span class="place__meta label">
+                {countText(p.count, lang, 'agenda_map_count')} · {p.years.length > 1 ? `${p.years[0]}–${p.years[p.years.length - 1]}` : p.years[0]}{p.upcoming && ` · ${t('agenda_map_legend_next', lang)}`}
+              </span>
+              {p.demo && <DemoBadge lang={lang} variant="item" />}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+  {unplaced > 0 && <p class="map__unplaced label">{t('agenda_map_unplaced', lang, { n: unplaced })}</p>}
+</figure>
+
+<style>
+  .map { display: grid; gap: var(--space-s); }
+  .map__stage {
+    position: relative;
+    border: var(--divider);
+    background: var(--agenda-map-bg);
+    overflow: hidden;
+  }
+  .map__stage::before { content: ''; position: absolute; inset: calc(var(--stroke) * -1) 0 auto 0; height: var(--stroke); background: var(--glint); }
+  .map__svg { display: block; width: 100%; height: auto; --pin-scale: 1; }
+  .map__grid { fill: none; stroke: var(--agenda-map-grid); stroke-opacity: var(--agenda-map-grid-opacity); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .map__land { fill: none; stroke: var(--agenda-map-land); stroke-opacity: var(--agenda-map-land-opacity); stroke-width: 3.4; stroke-linecap: round; }
+  .map__empty { position: absolute; inset: auto 0 var(--space-s) 0; text-align: center; color: var(--muted); }
+
+  .pin__body { transform: scale(var(--pin-scale)); }
+  .pin__dot { fill: var(--agenda-pin); stroke: var(--bg); stroke-width: 1.5; }
+  .pin__ring { fill: none; stroke: var(--agenda-pin); stroke-opacity: 0.55; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .pin__hit { fill: transparent; }
+  .pin__label {
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: var(--case-ui);
+    fill: var(--chrome-50);
+    paint-order: stroke;
+    stroke: var(--agenda-pin-label-bg);
+    stroke-width: 5px;
+    stroke-linejoin: round;
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* Ejemplo: punto hueco con anillo punteado (la forma cambia, no solo el color) */
+  .pin--demo .pin__dot { fill: var(--bg); stroke: var(--agenda-pin-demo); stroke-width: 2; }
+  .pin--demo .pin__ring { stroke: var(--agenda-pin-demo); stroke-dasharray: 3 3; }
+  /* Próxima: acento, anillo sólido y etiqueta siempre visible */
+  .pin--next .pin__dot { fill: var(--agenda-pin-next); }
+  .pin--next .pin__ring { stroke: var(--agenda-pin-next); stroke-opacity: 1; stroke-width: 1.5; }
+  .pin--next .pin__label { opacity: 1; }
+  .pin__pulse { fill: none; stroke: var(--agenda-pin-next); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pin__pulse { animation: pin-pulse 2.8s var(--ease-out) infinite; transform-box: fill-box; transform-origin: center; }
+    .pin__label { transition: opacity var(--dur-fast) var(--ease); }
+  }
+  @keyframes pin-pulse {
+    0% { opacity: 0.9; transform: scale(0.45); }
+    80%, 100% { opacity: 0; transform: scale(1.25); }
+  }
+  .pin:hover .pin__label,
+  .pin.is-active .pin__label { opacity: 1; }
+  .pin.is-active .pin__dot { fill: var(--agenda-pin-next); }
+  .pin.is-active .pin__ring { stroke: var(--agenda-pin-next); stroke-opacity: 1; }
+
+  .map__cap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-xs) var(--space-m); font-size: var(--step--1); color: var(--muted); }
+  .map__legend { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-s); font-family: var(--font-ui); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--chrome-200); }
+  .map__legend li { display: inline-flex; align-items: center; gap: 0.45em; }
+  .map__legend svg { width: 1.1em; height: 1.1em; }
+  .lg { stroke-width: 2; }
+  .lg--real { fill: var(--agenda-pin); stroke: var(--agenda-pin); }
+  .lg--next { fill: var(--agenda-pin-next); stroke: var(--agenda-pin-next); }
+  .lg--demo { fill: none; stroke: var(--agenda-pin-demo); stroke-dasharray: 2.5 2; }
+
+  .map__places-wrap { display: grid; gap: var(--space-2xs); margin-top: var(--space-xs); }
+  .map__places-title { color: var(--accent); }
+  .map__places { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); column-gap: var(--space-m); }
+  .place {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 var(--space-s);
+    padding: var(--space-xs) 0;
+    min-height: var(--tap);
+    border-bottom: var(--divider);
+  }
+  .place__name { font-weight: 600; font-stretch: var(--stretch-title); overflow-wrap: anywhere; }
+  .place__country { color: var(--muted); text-align: right; }
+  .place__meta { grid-column: 1 / -1; color: var(--subtle); }
+  .place :global(.demo-badge) { grid-column: 1 / -1; justify-self: start; margin-top: var(--space-3xs); }
+  @media (hover: hover) { .place { transition: background-color var(--dur-fast) var(--ease); } .place:hover { background: var(--press-bg); } }
+  .map__unplaced { color: var(--subtle); }
+
+  /* Teléfono: el mapa entra entero, así que puntos más grandes y sin etiquetas (la lista las lleva) */
+  @media (max-width: 52rem) {
+    .map__svg { --pin-scale: 1.9; }
+    .pin__label { display: none; }
+    .pin.is-active .pin__label { display: block; }
+  }
+</style>

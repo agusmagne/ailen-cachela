@@ -1,0 +1,182 @@
+---
+import Base from '../../layouts/Base.astro';
+import SiteExtras from './SiteExtras.astro';
+import QrCode from '../ui/QrCode.astro';
+import LazyModule from '../ui/LazyModule.astro';
+import { site, t, pick, absolute, homePath, type Lang } from '../../lib/content';
+import { router } from '../../lib/routes';
+import { domain } from '../../lib/data';
+import { schema } from '../../lib/schemas/links.ts';
+import { crumbsLd, webPageLd, graph } from '../../lib/jsonld-page';
+
+/**
+ * Link-in-bio propio, a pantalla completa (ruta `bare`: sin Nav ni pie del layout interior). Liviano: sin WebGL,
+ * sin imágenes, solo CSS y un monograma SVG. Los destinos reales salen de site.yaml y del registro de rutas.
+ */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const data = domain('links', schema);
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const alternates = router.alternates('links');
+const pageUrl = absolute(alternates[lang], origin);
+
+interface Entry { id: string; href: string; label: string; hint: string; external: boolean; primary: boolean; group: 'main' | 'site' | 'elsewhere' }
+const entries: Entry[] = [];
+for (const it of data.items) {
+  const label = pick(it.label, lang);
+  const hint = pick(it.hint, lang);
+  if (it.kind === 'link') {
+    const l = site.links.find((x) => x.id === it.ref);
+    if (!l || !l.url) continue;
+    entries.push({ id: it.id, href: l.url, label, hint: hint || l.handle, external: true, primary: it.primary, group: 'elsewhere' });
+  } else if (it.kind === 'route') {
+    if (!router.listed(it.ref)) continue;
+    entries.push({ id: it.id, href: router.path(it.ref, lang), label, hint, external: false, primary: it.primary, group: 'site' });
+  } else {
+    entries.push({ id: it.id, href: `mailto:${site.contact.email}`, label, hint: hint || site.contact.email, external: false, primary: it.primary, group: 'elsewhere' });
+  }
+}
+const primary = entries.filter((e) => e.primary);
+const rest = entries.filter((e) => !e.primary);
+const siteLinks = rest.filter((e) => e.group === 'site');
+const elsewhere = rest.filter((e) => e.group === 'elsewhere');
+const sameAs = site.links.filter((l) => l.same_as && l.url).map((l) => l.url);
+const ld = graph(
+  { ...webPageLd({ name: t('fans_links_ld_name', lang), description: t('fans_links_desc', lang), url: pageUrl, lang, type: 'ProfilePage' }), mainEntity: { '@type': 'Person', name: site.artist.name, jobTitle: pick(site.artist.role, lang), sameAs } },
+  crumbsLd([{ name: t('base_nav_home', lang), url: absolute(router.home(lang), origin) }, { name: t('fans_links_title', lang), url: pageUrl }]),
+);
+---
+
+<Base lang={lang} title={`${t('fans_links_title', lang)} | ${site.site.name}`} description={t('fans_links_desc', lang)} alternates={alternates} jsonLd={ld} ogImage="/icons/og-links.png" ogImageAlt={t('fans_links_ld_name', lang)}>
+  <a class="lk-skip" href="#links">{t('skip', lang)}</a>
+  <div class="lk" data-page="links">
+    <div class="lk__glow" aria-hidden="true"></div>
+    <div class="lk__rings" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <main id="main" class="lk__inner">
+      <header class="lk__head">
+        <svg class="lk__mark" data-egg-tap viewBox="0 0 64 64" role="img" aria-label={site.artist.name} focusable="false">
+          <defs>
+            <linearGradient id="lk-chrome" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style="stop-color:var(--chrome-50)"></stop>
+              <stop offset=".48" style="stop-color:var(--chrome-400)"></stop>
+              <stop offset=".56" style="stop-color:var(--chrome-200)"></stop>
+              <stop offset="1" style="stop-color:var(--chrome-50)"></stop>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="30" style="fill:var(--bg-raised);stroke:var(--chrome-600)" stroke-width="1"></circle>
+          <circle cx="32" cy="32" r="23" style="fill:none;stroke:var(--chrome-700)" stroke-width="1"></circle>
+          <path d="M15 49 32 13 49 49H41.5L32 28.5 22.5 49Z" fill="url(#lk-chrome)"></path>
+          <circle cx="32" cy="43" r="3" style="fill:var(--accent)"></circle>
+        </svg>
+        <h1 class="lk__name display">{site.artist.name}</h1>
+        <p class="label lk__role">{pick(site.artist.role, lang)} · {site.artist.city}</p>
+      </header>
+
+      <nav id="links" class="lk__nav" aria-label={t('fans_links_list', lang)}>
+        {
+          primary.length > 0 && (
+            <ul class="lk__list">
+              {
+                primary.map((e) => (
+                  <li>
+                    <a class="btn btn--primary btn--xl btn--mail lk__btn" href={e.href} {...(e.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                      <span class="btn__stack"><span>{e.label}</span>{e.hint && <span class="btn__sub">{e.hint}</span>}</span>
+                      <span class="arrow" aria-hidden="true">↗</span>
+                      {e.external && <span class="sr-only"> {t('new_tab', lang)}</span>}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          )
+        }
+        {
+          siteLinks.length > 0 && (
+            <>
+              <p class="label lk__group">{t('fans_links_site', lang)}</p>
+              <ul class="lk__list">
+                {
+                  siteLinks.map((e) => (
+                    <li>
+                      <a class="btn btn--xl btn--mail lk__btn" href={e.href}>
+                        <span class="btn__stack"><span>{e.label}</span>{e.hint && <span class="btn__sub">{e.hint}</span>}</span>
+                        <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </>
+          )
+        }
+        {
+          elsewhere.length > 0 && (
+            <>
+              <p class="label lk__group">{t('fans_links_elsewhere', lang)}</p>
+              <ul class="lk__list">
+                {
+                  elsewhere.map((e) => (
+                    <li>
+                      <a class="btn btn--xl btn--mail lk__btn" href={e.href} {...(e.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                        <span class="btn__stack"><span>{e.label}</span>{e.hint && <span class="btn__sub">{e.hint}</span>}</span>
+                        <span class="arrow" aria-hidden="true">↗</span>
+                        {e.external && <span class="sr-only"> {t('new_tab', lang)}</span>}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </>
+          )
+        }
+      </nav>
+
+      <footer class="lk__foot">
+        <LazyModule name="fans-links" when="idle" class="lk__share" props={{ title: t('fans_links_ld_name', lang), url: pageUrl }}>
+          <button type="button" class="btn lk__sharebtn" data-share hidden>{t('fans_links_share', lang)}</button>
+          <button type="button" class="btn" data-copy={pageUrl} data-done={t('fans_links_copied', lang)}><span data-copy-label>{t('fans_links_copy', lang)}</span></button>
+        </LazyModule>
+        <div class="lk__qr">
+          <QrCode text={pageUrl} label={t('fans_links_qr_label', lang)} size="7.5rem" />
+          <p class="label">{t('fans_links_qr_caption', lang)}</p>
+        </div>
+        <p class="lk__nav2">
+          <a class="link lk__small" href={homePath(lang)}>{t('fans_links_full_site', lang)}</a>
+          <a class="link lk__small" href={alternates[other]} hreflang={other} lang={other}>{t('lang_switch', lang)}</a>
+        </p>
+      </footer>
+    </main>
+  </div>
+  <SiteExtras lang={lang} />
+</Base>
+
+<style>
+  .lk-skip { position: fixed; z-index: calc(var(--z-overlay) + 1); left: var(--space-s); top: var(--space-s); padding: var(--space-2xs) var(--space-s); background: var(--chrome-50); color: var(--bg); font-family: var(--font-ui); font-size: var(--step-ui); text-transform: var(--case-ui); transform: translateY(-200%); }
+  .lk-skip:focus { transform: none; }
+  .lk { position: relative; isolation: isolate; min-height: 100dvh; overflow: hidden; display: grid; justify-items: center; }
+  .lk__glow { position: absolute; inset: 0; z-index: -2; background: var(--fans-links-glow); }
+  .lk__rings { position: absolute; z-index: -1; top: -8rem; left: 50%; width: 46rem; max-width: 160vw; aspect-ratio: 1; transform: translateX(-50%); pointer-events: none; }
+  .lk__rings span { position: absolute; inset: 0; border: var(--stroke) solid var(--chrome-700); border-radius: var(--radius-round); }
+  .lk__rings span:nth-child(2) { inset: 12%; border-color: var(--chrome-600); }
+  .lk__rings span:nth-child(3) { inset: 26%; border-color: var(--accent); opacity: 0.55; }
+  @media (prefers-reduced-motion: no-preference) { .lk__rings { animation: lk-turn 140s linear infinite; } .lk__rings span:nth-child(3) { animation: lk-pulse 5s var(--ease-in-out) infinite; } }
+  @keyframes lk-turn { to { transform: translateX(-50%) rotate(360deg); } }
+  @keyframes lk-pulse { 50% { opacity: 0.18; } }
+  .lk__inner { width: 100%; max-width: var(--fans-links-max); display: grid; gap: var(--space-l); align-content: start; padding: calc(var(--space-xl) + var(--safe-t)) var(--pad-r) calc(var(--space-xl) + var(--safe-b)) var(--pad-l); }
+  .lk__head { display: grid; justify-items: center; gap: var(--space-xs); text-align: center; }
+  .lk__mark { width: 5.5rem; height: 5.5rem; }
+  .lk__name { font-size: clamp(2rem, 1.2rem + 5vw, 3rem); line-height: 0.98; overflow-wrap: anywhere; }
+  .lk__role { color: var(--muted); }
+  .lk__nav { display: grid; gap: var(--space-xs); }
+  .lk__list { display: grid; gap: var(--space-xs); }
+  .lk__group { margin-top: var(--space-s); color: var(--subtle); }
+  .lk__btn { width: 100%; min-height: var(--fans-link-h); }
+  .lk__foot { display: grid; justify-items: center; gap: var(--space-m); padding-top: var(--space-m); border-top: var(--divider); text-align: center; }
+  .lk__share { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xs); }
+  .lk__share :global([hidden]) { display: none; }
+  .lk__qr { display: grid; justify-items: center; gap: var(--space-2xs); }
+  .lk__nav2 { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-m); }
+  .lk__small { display: inline-flex; align-items: center; min-height: var(--tap); font-family: var(--font-ui); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--chrome-200); }
+</style>

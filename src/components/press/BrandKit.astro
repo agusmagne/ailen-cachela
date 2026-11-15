@@ -1,0 +1,136 @@
+---
+import Button from '../ui/Button.astro';
+import { t, type Lang } from '../../lib/content';
+import { isotipoSvg } from '../../lib/press/logo';
+import { PALETTE_IDS, type Palette } from '../../lib/press/tokens';
+import { FILES, fileHref, publicSize } from '../../lib/press/context';
+/**
+ * Manual de marca mínimo: isotipo (color, negro, blanco), wordmark, paleta y tipografías (leídas de tokens.css; los
+ * colores se muestran con var(), nunca con valores propios), zona de respeto y usos a evitar.
+ */
+interface Props {
+  lang: Lang;
+  palette: Palette;
+}
+const { lang, palette } = Astro.props;
+const swatches = PALETTE_IDS.map((id) => ({
+  id,
+  hex: palette[id].toUpperCase(),
+  name: t(`press_sw_${id.replaceAll('-', '_')}`, lang),
+}));
+const hasWordmark = publicSize(FILES.wordmark('negro')) !== null && publicSize(FILES.wordmark('blanco')) !== null;
+const logoTitle = t('press_logo_title', lang);
+const tiles = [
+  { id: 'color', label: t('press_logo_color', lang), svg: isotipoSvg('color', palette, { title: logoTitle, idPrefix: 'bk' }), cls: 'is-dark' },
+  { id: 'negro', label: t('press_logo_black', lang), svg: isotipoSvg('negro', palette, { title: logoTitle, idPrefix: 'bk' }), cls: 'is-light' },
+  { id: 'blanco', label: t('press_logo_white', lang), svg: isotipoSvg('blanco', palette, { title: logoTitle, idPrefix: 'bk' }), cls: 'is-mid' },
+];
+const rules = ['space', 'size', 'colors', 'photos'] as const;
+---
+<div class="brand">
+  <h3 class="label brand__label">{t('press_brand_logo', lang)}</h3>
+  <ul class="tiles">
+    {
+      tiles.map((x) => (
+        <li class={`tile ${x.cls}`}>
+          <div class="tile__art" set:html={x.svg} />
+          <p class="label tile__cap">{x.label}</p>
+        </li>
+      ))
+    }
+    <li class="tile is-dark">
+      <p class="tile__word display">Ailén Cachela</p>
+      <p class="label tile__cap">{t('press_logo_wordmark', lang)}</p>
+    </li>
+  </ul>
+  <div class="brand__actions">
+    <Button href={fileHref(FILES.iso('negro'))} download lang={lang}>{t('press_dl_iso_black', lang)}</Button>
+    <Button href={fileHref(FILES.iso('blanco'))} download lang={lang}>{t('press_dl_iso_white', lang)}</Button>
+    {hasWordmark && <Button href={fileHref(FILES.wordmark('negro'))} download lang={lang}>{t('press_dl_wm_black', lang)}</Button>}
+    {hasWordmark && <Button href={fileHref(FILES.wordmark('blanco'))} download lang={lang}>{t('press_dl_wm_white', lang)}</Button>}
+  </div>
+
+  <h3 class="label brand__label">{t('press_brand_palette', lang)}</h3>
+  <ul class="swatches">
+    {
+      swatches.map((s) => (
+        <li class="sw">
+          <span class="sw__chip" style={`background:var(--${s.id})`}></span>
+          <span class="sw__name">{s.name}</span>
+          <span class="label sw__meta">{s.hex}</span>
+          <span class="label sw__meta">--{s.id}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h3 class="label brand__label">{t('press_brand_type', lang)}</h3>
+  <div class="types">
+    <div class="type">
+      <p class="type__sample type__sample--display display">Ailén Cachela</p>
+      <p class="label">Archivo · {t('press_type_display', lang)}</p>
+      <p class="type__note">{t('press_type_display_note', lang)}</p>
+    </div>
+    <div class="type">
+      <p class="type__sample type__sample--ui">128–140 BPM · ROOM.004</p>
+      <p class="label">Martian Mono · {t('press_type_ui', lang)}</p>
+      <p class="type__note">{t('press_type_ui_note', lang)}</p>
+    </div>
+  </div>
+
+  <h3 class="label brand__label">{t('press_brand_rules', lang)}</h3>
+  <p class="brand__draft">{t('press_brand_draft', lang)}</p>
+  <ul class="rules">
+    {
+      rules.map((r) => (
+        <li class="rule">
+          {r === 'space' && (
+            <div class="rule__fig" aria-hidden="true">
+              <div class="rule__box"><div class="rule__logo" set:html={isotipoSvg('blanco', palette)} /></div>
+            </div>
+          )}
+          <h4 class="rule__title">{t(`press_rule_${r}_title`, lang)}</h4>
+          <p class="rule__text">{t(`press_rule_${r}_text`, lang)}</p>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+<style>
+  .brand__label { color: var(--accent); margin: var(--space-xl) 0 var(--space-s); }
+  .brand__label:first-child { margin-top: 0; }
+  .tiles { display: grid; gap: var(--space-s); grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+  .tile { display: grid; grid-template-rows: var(--press-tile-h) auto; border: var(--card-border); }
+  .tile.is-dark { background: var(--bg); }
+  .tile.is-mid { background: var(--chrome-800); }
+  .tile.is-light { background: var(--press-tile-light); border-color: var(--press-tile-light); }
+  .tile__art { display: grid; place-items: center; padding: var(--space-m); min-height: 0; }
+  .tile__art :global(svg) { height: 100%; width: auto; max-width: 100%; aspect-ratio: 1; }
+  .tile__cap { padding: var(--space-2xs) var(--space-xs); border-top: var(--divider); color: var(--muted); }
+  .is-light .tile__cap { color: var(--press-tile-light-ink); border-top-color: var(--paper-line); }
+  .tile__word { place-self: center; padding: var(--space-m); font-size: clamp(1.25rem, 1rem + 1.4vw, 1.9rem); line-height: 1; text-align: center; overflow-wrap: anywhere; }
+  .brand__actions { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-top: var(--space-s); }
+
+  .swatches { display: grid; gap: var(--space-s); grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr)); }
+  .sw { display: grid; gap: 0.15rem; align-content: start; }
+  .sw__chip { display: block; height: var(--press-swatch-h); border: var(--card-border); margin-bottom: var(--space-2xs); }
+  .sw__name { font-weight: 600; color: var(--chrome-50); font-size: var(--step--1); }
+  .sw__meta { color: var(--muted); }
+
+  .types { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .type { display: grid; gap: var(--space-2xs); padding: var(--space-m); border: var(--card-border); background: var(--card-bg); align-content: start; }
+  .type__sample { overflow-wrap: anywhere; line-height: 1; margin-bottom: var(--space-xs); }
+  .type__sample--display { font-size: var(--step-4); }
+  .type__sample--ui { font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-2); letter-spacing: var(--tracking-ui); }
+  .type__note { color: var(--chrome-200); max-width: 46ch; font-size: var(--step--1); }
+
+  .brand__draft { color: var(--muted); max-width: var(--measure); margin-bottom: var(--space-m); font-size: var(--step--1); }
+  .rules { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  .rule { display: grid; gap: var(--space-2xs); align-content: start; padding-top: var(--space-s); border-top: var(--divider); }
+  .rule__title { font-weight: 600; color: var(--chrome-50); }
+  .rule__text { color: var(--chrome-200); font-size: var(--step--1); }
+  .rule__fig { display: grid; place-items: center; padding: var(--space-xs) 0 var(--space-s); }
+  .rule__box { padding: 1rem; border: var(--stroke) dashed var(--chrome-400); }
+  .rule__logo { width: 4.5rem; height: 4.5rem; outline: var(--stroke) solid var(--chrome-700); }
+  .rule__logo :global(svg) { width: 100%; height: 100%; display: block; }
+</style>
