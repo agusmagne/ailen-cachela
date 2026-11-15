@@ -1,5 +1,6 @@
 ---
 import { site, pick, t, formatDate, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import Section from './Section.astro';
 import Media from './Media.astro';
 import Glitch from './Glitch.astro';
@@ -76,10 +77,20 @@ const { lang } = Astro.props;
       ))
     }
   </div>
+  {
+    router.listed('music') && (
+      <p class="music__all" data-reveal>
+        <a class="btn" href={router.path('music', lang)}>
+          {t('home_music_all', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+        </a>
+      </p>
+    )
+  }
 </Section>
 
 <style>
   .releases { display: grid; gap: var(--space-2xl); }
+  .music__all { margin-top: var(--space-xl); }
   .release { display: grid; gap: var(--space-l); align-items: end; }
   @media (min-width: 52rem) {
     .release { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-2xl); }
@@ -100,6 +111,8 @@ const { lang } = Astro.props;
   /* ==== Móvil: la portada va a sangre y los datos pasan a filas ============ */
   @media (max-width: 52rem) {
     .releases { gap: var(--space-xl); }
+    .music__all { margin-top: var(--space-l); }
+    .music__all .btn { width: 100%; min-height: 3.25rem; }
     .release { gap: var(--space-m); }
     .release__cover {
       /* a sangre: sale del gutter hasta los bordes de la pantalla */

@@ -59,6 +59,7 @@ function handles(request) {
   if (request.method !== 'GET') return false;
   if (request.headers.has('range')) return false;
   const url = new URL(request.url);
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return false; // blob:, data:, chrome-extension:...
   if (url.origin !== self.location.origin) return false;
   if (!url.href.startsWith(SCOPE)) return false;
   if (SKIP.test(url.pathname)) return false;

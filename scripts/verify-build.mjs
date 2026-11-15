@@ -80,7 +80,10 @@ for (const file of htmlFiles) {
     if (!exists(decodeURIComponent(h).replace(/^\//, ''))) bad(file, `enlace interno roto: ${m[1]}`);
   }
 
-  if (demoOff && /data-demo-badge|data-demo-notice|class="[^"]*\bis-demo\b|sheet__demo-banner/.test(html)) bad(file, 'quedan marcas de contenido de ejemplo con el interruptor apagado');
+  // Marcas reales: atributos y clases en elementos. El texto suelto dentro de <style> o <script> (p. ej. el selector
+  // .sheet__demo-banner en el CSS inline de las vistas de impresión) no cuenta.
+  const markup = html.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi, '');
+  if (demoOff && /<[a-z][^>]*(?:\sdata-demo-badge|\sdata-demo-notice|\sclass="[^"]*\b(?:is-demo|sheet__demo-banner)\b)/i.test(markup)) bad(file, 'quedan marcas de contenido de ejemplo con el interruptor apagado');
 }
 
 if (!htmlFiles.length) problems.push('no se encontró ninguna página .html' + (only ? ` bajo "${only}"` : ''));

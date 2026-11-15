@@ -79,7 +79,7 @@ test('buildVCard: campos, escapado y pliegue a 75 octetos', () => {
   assert.match(v, /^BEGIN:VCARD\r\nVERSION:3\.0\r\n/);
   assert.match(v, /FN:Ailén Cachela\r\n/);
   assert.match(v, /N:Cachela;Ailén;;;\r\n/);
-  assert.match(v, /ORG:Ailén\; Cachela\r\n/);
+  assert.match(v, /ORG:Ailén\\; Cachela\r\n/);
   assert.match(v, /TITLE:DJ\\, productora\r\n/);
   assert.match(v, /NOTE:línea 1\\nlínea 2/);
   assert.match(v, /END:VCARD\r\n$/);
@@ -100,7 +100,7 @@ test('buildIcs: evento con hora (UTC), todo el día (DTEND exclusivo), escapado 
   assert.match(ics, /^BEGIN:VCALENDAR\r\nVERSION:2\.0\r\n/);
   assert.match(ics, /DTSTART:20261129T020000Z/);
   assert.match(ics, /DTEND:20261129T060000Z/);
-  assert.match(ics, /SUMMARY:Club\\, Ciudad\; Noche/);
+  assert.match(ics, /SUMMARY:Club\\, Ciudad\\; Noche/);
   assert.match(ics, /DTSTART;VALUE=DATE:20261205\r\nDTEND;VALUE=DATE:20261207/);
   assert.match(ics, /DTSTART:20261211T010000Z\r\nDTEND:20261211T040000Z/, 'sin fin: 3 horas');
   assert.match(ics, /DESCRIPTION:Línea 1\\nLínea 2/);

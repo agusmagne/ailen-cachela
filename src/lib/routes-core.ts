@@ -67,8 +67,8 @@ export const ROUTES: RouteDef[] = [
   { id: 'shows-year', pkg: 'agenda', path: { es: 'fechas/archivo/:year', en: 'shows/archive/:year' }, group: 'live', parent: 'shows-archive' },
 
   // ---- Trabajo: prensa, booking, estudio -------------------------------------
-  { id: 'press', pkg: 'press', path: { es: 'prensa', en: 'press' }, group: 'work', main: true },
-  { id: 'booking', pkg: 'booking', path: { es: 'booking', en: 'booking' }, group: 'work', main: true },
+  { id: 'press', pkg: 'press', path: { es: 'prensa', en: 'press' }, group: 'work', main: true, homeNav: true },
+  { id: 'booking', pkg: 'booking', path: { es: 'booking', en: 'booking' }, group: 'work', main: true, homeNav: true },
   { id: 'booking-tech', pkg: 'booking', path: { es: 'booking/rider-tecnico', en: 'booking/technical-rider' }, group: 'work', parent: 'booking' },
   { id: 'booking-hospitality', pkg: 'booking', path: { es: 'booking/rider-hospitalidad', en: 'booking/hospitality-rider' }, group: 'work', parent: 'booking' },
   { id: 'booking-terms', pkg: 'booking', path: { es: 'booking/condiciones', en: 'booking/terms' }, group: 'work', parent: 'booking' },
@@ -79,7 +79,7 @@ export const ROUTES: RouteDef[] = [
   { id: 'project', pkg: 'oficio', path: { es: 'proyectos/:slug', en: 'projects/:slug' }, group: 'work', parent: 'projects' },
 
   // ---- Lab (grupo sound; va al final del menú principal) ----------------------
-  { id: 'lab', pkg: 'lab', path: { es: 'lab', en: 'lab' }, group: 'sound', main: true, requires: { domain: 'lab', keys: ['items'] } },
+  { id: 'lab', pkg: 'lab', path: { es: 'lab', en: 'lab' }, group: 'sound', main: true, homeNav: true, requires: { domain: 'lab', keys: ['items'] } },
   { id: 'lab-sequencer', pkg: 'lab', path: { es: 'lab/secuenciador', en: 'lab/sequencer' }, group: 'sound', parent: 'lab' },
   { id: 'lab-visualizer', pkg: 'lab', path: { es: 'lab/visualizador', en: 'lab/visualizer' }, group: 'sound', parent: 'lab' },
   { id: 'lab-scratch', pkg: 'lab', path: { es: 'lab/scratch', en: 'lab/scratch' }, group: 'sound', parent: 'lab' },

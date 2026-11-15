@@ -30,6 +30,7 @@ const unlabeled = new Set(['monitor', 'mic']);
 ---
 
 <figure class:list={['bd', cls]}>
+  <div class="bd__scroll" tabindex="0" role="group" aria-label={title}>
   <svg class="bd__svg" viewBox={`0 0 ${view.w} ${view.h}`} role="img" aria-labelledby={`${uid}-t ${uid}-d`} focusable="false">
     <title id={`${uid}-t`}>{title}</title>
     <desc id={`${uid}-d`}>{desc}</desc>
@@ -113,6 +114,7 @@ const unlabeled = new Set(['monitor', 'mic']);
     </g>
     <text class="bd__note" x={L.dj.x + 22} y={L.dj.y + 2}>{t('booking_d_artist', lang)}</text>
   </svg>
+  </div>
 
   <figcaption class="bd__legend">
     <p class="label bd__legend-title">{t('booking_d_legend', lang)}</p>
@@ -134,21 +136,29 @@ const unlabeled = new Set(['monitor', 'mic']);
 
 <style>
   .bd { margin: 0; display: grid; gap: var(--space-s); }
+  /* Teléfono: el dibujo mantiene un tamaño en el que el texto se lee (>= 12 px) y se desplaza dentro de su marco;
+     la leyenda de abajo repite todo en texto. En pantallas anchas y en papel no hay scroll. */
+  .bd__scroll { max-width: 100%; }
+  @media screen and (max-width: 52rem) {
+    .bd__scroll { overflow-x: auto; overscroll-behavior-x: contain; border: var(--stroke) solid var(--bd-line); }
+    .bd__scroll:focus-visible { outline-offset: 2px; }
+    .bd__svg { min-width: 54rem; border: 0; }
+  }
   .bd__svg { width: 100%; height: auto; display: block; background: var(--bd-bg); border: var(--stroke) solid var(--bd-line); }
   .bd__table { fill: var(--bd-table); stroke: var(--bd-line); stroke-width: 1; }
   .bd__body { fill: var(--bd-fill); stroke: var(--bd-ink); stroke-width: 1.2; }
   .bd__detail { fill: none; stroke: var(--bd-ink); stroke-width: 1; opacity: 0.7; }
   .is-tbc .bd__body { stroke-dasharray: 4 3; }
-  .bd__label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.04em; fill: var(--bd-ink); }
-  .bd__note { font-family: var(--font-ui); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--bd-muted); }
+  .bd__label { font-family: var(--font-ui); font-size: 10.5px; letter-spacing: 0.04em; fill: var(--bd-ink); }
+  .bd__note { font-family: var(--font-ui); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--bd-muted); }
   .bd__note--cable { fill: var(--bd-accent); }
   .bd__cable { fill: none; stroke: var(--bd-ink); stroke-width: 1.4; }
   .bd__cable--link { stroke: var(--bd-accent); stroke-dasharray: 5 4; }
   .bd__arrow { fill: var(--bd-ink); }
   .bd__badge { fill: var(--bd-ink); }
-  .bd__badge-n { font-family: var(--font-ui); font-size: 9.5px; font-weight: 700; fill: var(--bd-bg); }
+  .bd__badge-n { font-family: var(--font-ui); font-size: 10px; font-weight: 700; fill: var(--bd-bg); }
   .bd__dj circle { fill: none; stroke: var(--bd-ink); stroke-width: 1.4; }
-  .bd__dj text { font-family: var(--font-ui); font-size: 9px; font-weight: 700; fill: var(--bd-ink); }
+  .bd__dj text { font-family: var(--font-ui); font-size: 9.5px; font-weight: 700; fill: var(--bd-ink); }
   .bd__legend-title { margin-bottom: var(--space-2xs); }
   .bd__list { display: grid; gap: var(--space-3xs) var(--space-m); grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); font-size: var(--step--1); color: var(--bd-text); }
   .bd__list li { display: flex; gap: var(--space-2xs); align-items: baseline; }

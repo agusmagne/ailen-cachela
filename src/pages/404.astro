@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import SiteExtras from '../components/fans/SiteExtras.astro';
 import Chip from '../components/ui/Chip.astro';
 import LazyModule from '../components/ui/LazyModule.astro';
 import { site, t, homePath } from '../lib/content';
@@ -54,7 +53,6 @@ const title = `${t('fans_404_title', 'es')} · ${t('fans_404_title', 'en')}`;
       {langs.map((l) => <p class="label nf__hint" data-l={l} lang={l}>{t('fans_404_hint', l)}</p>)}
     </main>
   </LazyModule>
-  <SiteExtras lang="es" />
 </Base>
 
 <style>

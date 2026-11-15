@@ -1,0 +1,16 @@
+# Textos de la home que enlazan a las páginas nuevas (integración). Prefijo obligatorio: home_.
+home_music_all: { es: "Discografía completa", en: "Full discography" }
+home_mixes_all: { es: "Todos los mixes", en: "All mixes" }
+home_project_open: { es: "Ver proyecto", en: "View project" }
+home_project_open_named: { es: "Ver el proyecto {name}", en: "View the {name} project" }
+home_projects_all: { es: "Todos los proyectos", en: "All projects" }
+home_shows_all: { es: "Agenda, archivo y calendario", en: "Schedule, archive and calendar" }
+home_about_press: { es: "Press kit y bios", en: "Press kit and bios" }
+home_contact_booking: { es: "Booking, riders y condiciones", en: "Booking, riders and terms" }
+home_more_title: { es: "Más del sitio", en: "More from the site" }
+home_more_shop_text: { es: "Merch, pósters y formatos físicos.", en: "Merch, posters and physical formats." }
+home_more_newsletter_text: { es: "Novedades en tu correo, sin ruido.", en: "News in your inbox, no noise." }
+home_more_community_text: { es: "Un lugar para quienes siguen el proyecto.", en: "A place for people following the project." }
+home_more_links_text: { es: "Todos los enlaces en una sola pantalla.", en: "Every link on a single screen." }
+home_more_studio_text: { es: "Equipo, notas de proceso y cómo se hace.", en: "Gear, process notes and how it is made." }
+home_more_videos_text: { es: "Sets filmados, aftermovies y visuales.", en: "Filmed sets, aftermovies and visuals." }

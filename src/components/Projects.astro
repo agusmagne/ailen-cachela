@@ -1,11 +1,14 @@
 ---
 import { site, pick, t, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import Section from './Section.astro';
 import Glitch from './Glitch.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const projects = site.projects.filter((p) => p.visible);
+const pageOf = (id: string) => (router.listed('project') || router.exists('project') ? router.path('project', lang, { slug: id }) : null);
+const allPage = router.exists('projects') ? router.path('projects', lang) : null;
 ---
 
 <Section id="proyectos" title={t('projects_title', lang)}>
@@ -28,6 +31,11 @@ const projects = site.projects.filter((p) => p.visible);
             </h3>
             {pick(p.status, lang) && <p class="card__status label">{pick(p.status, lang)}</p>}
             <p class="card__text">{pick(p.text, lang)}</p>
+            {pageOf(p.id) && (
+              <a class="card__more link" href={pageOf(p.id)!} aria-label={t('home_project_open_named', lang, { name: p.name })}>
+                {t('home_project_open', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+              </a>
+            )}
             {p.url ? (
               <a class="card__link link" href={p.url} target="_blank" rel="noopener noreferrer">
                 {t('projects_open', lang, { platform: p.platform })} {p.handle}
@@ -62,6 +70,15 @@ const projects = site.projects.filter((p) => p.visible);
       )
     }
   </div>
+  {
+    allPage && (
+      <p class="projects__all" data-reveal>
+        <a class="btn" href={allPage}>
+          {t('home_projects_all', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+        </a>
+      </p>
+    )
+  }
 </Section>
 
 <style>
@@ -112,6 +129,10 @@ const projects = site.projects.filter((p) => p.visible);
   .card__text { color: var(--muted); flex: 1; max-width: 32ch; }
   .card__link { align-self: flex-start; margin-top: var(--space-s); min-height: var(--tap); display: inline-flex; align-items: center; gap: 0.4em; overflow-wrap: anywhere; color: var(--chrome-100); }
   .card__link--plain { color: var(--muted); }
+  .card__more { align-self: flex-start; margin-top: var(--space-s); min-height: var(--tap); display: inline-flex; align-items: center; gap: 0.4em; color: var(--chrome-50); }
+  .card__more + .card__link { margin-top: 0; }
+  .projects__all { margin-top: var(--space-l); }
+  @media (max-width: 52rem) { .projects__all { padding-inline: 0; } .projects__all .btn { width: 100%; min-height: 3.25rem; } }
   .card__nolink { color: var(--subtle); }
   .carousel__ui { display: none; }
 

@@ -1,5 +1,6 @@
 ---
 import { site, t, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import Section from './Section.astro';
 import Marquee from './Marquee.astro';
 import SoundCloudFacade from './SoundCloudFacade.astro';
@@ -57,11 +58,16 @@ const kindLabel = (k: string) => (k === 'track' ? t('listen_kind_track', lang) :
     }
   </div>
   {
-    profile_url && (
+    (profile_url || router.listed('mixes')) && (
       <p class="listen__all" data-reveal>
-        <a class="btn" href={profile_url} target="_blank" rel="noopener noreferrer">
+        {router.listed('mixes') && (
+          <a class="btn btn--primary" href={router.path('mixes', lang)}>
+            {t('home_mixes_all', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+          </a>
+        )}
+        {profile_url && <a class="btn" href={profile_url} target="_blank" rel="noopener noreferrer">
           {t('listen_view_all', lang)} <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> {t('new_tab', lang)}</span>
-        </a>
+        </a>}
       </p>
     )
   }
@@ -106,7 +112,7 @@ const kindLabel = (k: string) => (k === 'track' ? t('listen_kind_track', lang) :
     .track__link:hover .track__n { color: var(--accent); }
     .track__link:hover .track__arrow { color: var(--chrome-50); transform: translate(2px, -2px); }
   }
-  .listen__all { margin-top: var(--space-l); }
+  .listen__all { margin-top: var(--space-l); display: flex; flex-wrap: wrap; gap: var(--space-xs); }
 
   /* ==== Móvil ============================================================== */
   @media (max-width: 52rem) {
@@ -123,6 +129,7 @@ const kindLabel = (k: string) => (k === 'track' ? t('listen_kind_track', lang) :
     }
     .track__arrow { color: var(--chrome-300); }
     .listen__all { margin-top: var(--space-m); }
+    .listen__all { display: grid; gap: var(--space-2xs); }
     .listen__all .btn { width: 100%; min-height: 3.25rem; }
   }
   @media (hover: none) {

@@ -18,7 +18,7 @@ export const sections: SectionDef[] = [
     visible: site.listen.tracks.length > 0 || site.listen.profile_url !== '',
   },
   { id: 'musica', navKey: 'nav_music', inNav: true, visible: site.releases.length > 0 },
-  { id: 'proyectos', navKey: 'nav_projects', inNav: true, visible: site.projects.some((p) => p.visible) },
+  { id: 'proyectos', navKey: 'nav_projects', inNav: false, visible: site.projects.some((p) => p.visible) },
   { id: 'fechas', navKey: 'nav_shows', inNav: true, visible: true },
   { id: 'sobre', navKey: 'nav_about', inNav: false, visible: site.about.bio.es !== '' },
   { id: 'contacto', navKey: 'nav_contact', inNav: true, visible: site.contact.email !== '' },

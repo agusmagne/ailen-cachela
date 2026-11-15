@@ -24,7 +24,7 @@ const all: Crumb[] = [{ label: t('base_nav_home', lang), href: homePath(lang) },
   .crumbs__item + .crumbs__item::before { content: '/'; margin-right: var(--space-2xs); color: var(--chrome-600); }
   .crumbs__item { display: inline-flex; align-items: center; min-height: var(--tap); }
   .crumbs__item [aria-current] { color: var(--chrome-200); overflow-wrap: anywhere; }
-  .crumbs__link { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--muted); }
+  .crumbs__link { display: inline-flex; align-items: center; min-height: var(--tap); min-width: var(--tap); color: var(--muted); }
   .crumbs__link:focus-visible { color: var(--chrome-50); }
   @media (hover: hover) { .crumbs__link:hover { color: var(--chrome-50); } }
   .crumbs__link:active { color: var(--chrome-50); }

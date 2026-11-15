@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import SiteExtras from './SiteExtras.astro';
 import SectionHead from '../ui/SectionHead.astro';
 import Card from '../ui/Card.astro';
 import Chip from '../ui/Chip.astro';
@@ -103,7 +102,6 @@ const bookingHref = router.listed('booking') ? router.path('booking', lang) : ''
       <Button href={`mailto:${site.contact.email}`} size="xl">{t('fans_co_cta_mail', lang)}</Button>
     </div>
   </section>
-  <SiteExtras lang={lang} />
 </PageLayout>
 
 <style>

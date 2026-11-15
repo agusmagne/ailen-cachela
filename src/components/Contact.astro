@@ -1,5 +1,6 @@
 ---
 import { site, t, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import Section from './Section.astro';
 import Glitch from './Glitch.astro';
 
@@ -34,6 +35,15 @@ const rings = Array.from({ length: 14 }, (_, i) => 8 + i * 6);
           <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
         </div>
       </div>
+      {
+        router.listed('booking') && (
+          <p class="contact__booking">
+            <a class="btn btn--primary" href={router.path('booking', lang)}>
+              {t('home_contact_booking', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+            </a>
+          </p>
+        )
+      }
     </div>
     {
       networks.length > 0 && (
@@ -88,6 +98,7 @@ const rings = Array.from({ length: 14 }, (_, i) => 8 + i * 6);
     color: var(--chrome-50);
   }
   .contact__actions { margin-top: var(--space-m); }
+  .contact__booking { margin-top: var(--space-m); }
   .contact__write, .copy__icon { display: none; }
   /* El botón de copiar solo existe con JS */
   .contact__copy { display: none; }
@@ -122,6 +133,7 @@ const rings = Array.from({ length: 14 }, (_, i) => 8 + i * 6);
   @media (max-width: 52rem) {
     .contact { gap: var(--space-l); }
     .contact__lead { margin-bottom: var(--space-s); max-width: 28ch; }
+    .contact__booking .btn { width: 100%; min-height: 3.5rem; }
     .contact__cta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2xs); }
     :global(.js) .contact__cta { grid-template-columns: minmax(0, 1fr) 4rem; }
     .contact__actions { display: contents; }

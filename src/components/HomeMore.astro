@@ -1,0 +1,71 @@
+---
+import { t, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
+import { routeLabel } from '../lib/nav';
+
+/**
+ * Bloque sobrio de accesos del final de la home: Tienda, Newsletter, Comunidad, Links (y Estudio / Videos cuando hay
+ * lugar). Solo muestra las páginas que existen y tienen contenido (con el contenido de ejemplo apagado, la tienda sale
+ * sola). No es una sección numerada: no suma una pantalla, es una tira de enlaces entre Contacto y el pie.
+ */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ids = ['shop', 'newsletter', 'community', 'links'].filter((id) => router.listed(id));
+const items = ids.map((id) => ({ id, href: router.path(id, lang), label: routeLabel(id, lang), text: t(`home_more_${id}_text`, lang) }));
+---
+
+{
+  items.length > 0 && (
+    <nav class="more" aria-labelledby="more-title">
+      <div class="wrap">
+        <h2 id="more-title" class="label more__title">{t('home_more_title', lang)}</h2>
+        <ul class="more__list">
+          {items.map((i) => (
+            <li>
+              <a class="more__link" href={i.href}>
+                <span class="more__name display">{i.label}</span>
+                <span class="more__text">{i.text}</span>
+                <span class="arrow more__arrow" data-dir="right" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .more { padding-block: var(--space-xl); border-top: var(--divider); }
+  .more__title { margin-bottom: var(--space-s); color: var(--subtle); }
+  .more__list { display: grid; gap: var(--space-xs); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+  .more__link {
+    position: relative;
+    display: grid;
+    gap: var(--space-3xs);
+    align-content: start;
+    height: 100%;
+    min-height: var(--tap);
+    padding: var(--space-s) var(--space-m) var(--space-s) var(--space-s);
+    border: var(--stroke) solid var(--chrome-700);
+    background: color-mix(in srgb, var(--bg-raised) 60%, transparent);
+    transition: border-color var(--dur-base) var(--ease), background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+  }
+  .more__name { font-size: var(--step-1); line-height: 1.1; color: var(--chrome-50); }
+  .more__text { font-size: var(--step-ui); color: var(--muted); max-width: 30ch; }
+  .more__arrow { position: absolute; top: var(--space-s); right: var(--space-s); color: var(--chrome-400); transition: transform var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease); }
+  .more__link:focus-visible { border-color: var(--chrome-300); }
+  @media (hover: hover) {
+    .more__link:hover { border-color: var(--chrome-300); }
+    .more__link:hover .more__arrow { transform: translateX(3px); color: var(--chrome-50); }
+  }
+  @media (hover: none) {
+    .more__link:active { background: var(--press-bg); border-color: var(--chrome-300); transform: scale(var(--press-scale)); transition-duration: var(--dur-press); }
+  }
+  @media (max-width: 52rem) {
+    .more { padding-block: var(--space-l); }
+    .more__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xs); }
+    .more__link { padding: var(--space-xs) var(--space-s) var(--space-xs) var(--space-xs); }
+    .more__text { font-size: var(--step--1); }
+  }
+</style>

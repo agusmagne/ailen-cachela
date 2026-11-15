@@ -81,6 +81,7 @@ const openLabel = t(isYt ? 'base_embed_open_yt' : 'base_embed_open_sc', lang);
       var(--bg-raised);
     transition: border-color var(--dur-base) var(--ease);
   }
+  .embed__note .link { display: inline-flex; align-items: center; min-height: var(--tap); }
   .embed--youtube .embed__facade { aspect-ratio: 16 / 9; min-height: 0; }
   .embed__facade--inert { cursor: default; opacity: 0.85; }
   .embed__facade:focus-visible { border-color: var(--chrome-300); }

@@ -307,6 +307,3 @@ ui:
   footer_rights: { es: "© {year} {name}", en: "© {year} {name}" }
   footer_top: { es: "Volver arriba", en: "Back to top" }
   footer_backup: { es: "Todos los links", en: "All links" }
-  notfound_title: { es: "Página no encontrada", en: "Page not found" }
-  notfound_text: { es: "Esta dirección no existe.", en: "This address does not exist." }
-  notfound_back: { es: "Volver al inicio", en: "Back to home" }

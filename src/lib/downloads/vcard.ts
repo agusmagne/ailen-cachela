@@ -13,7 +13,7 @@ export interface VCardData {
   country?: string;
 }
 
-const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/;/g, '\;').replace(/,/g, '\\,');
+const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
 
 /** Pliega a 75 octetos por línea (continuación: CRLF + espacio), sin partir caracteres UTF-8. */
 export function fold(line: string): string {

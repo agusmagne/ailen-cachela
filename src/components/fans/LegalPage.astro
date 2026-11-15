@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import SiteExtras from './SiteExtras.astro';
 import SectionHead from '../ui/SectionHead.astro';
 import Chip from '../ui/Chip.astro';
 import DataList from '../ui/DataList.astro';
@@ -148,7 +147,6 @@ const missing = t('fans_holder_missing', lang);
 
     <p class="legal__disclaimer label">{t('fans_legal_disclaimer', lang)}</p>
   </div>
-  <SiteExtras lang={lang} />
 </PageLayout>
 
 <style>

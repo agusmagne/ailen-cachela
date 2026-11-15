@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SiteExtras from './SiteExtras.astro';
 import QrCode from '../ui/QrCode.astro';
 import LazyModule from '../ui/LazyModule.astro';
 import { site, t, pick, absolute, homePath, type Lang } from '../../lib/content';
@@ -149,7 +148,6 @@ const ld = graph(
       </footer>
     </main>
   </div>
-  <SiteExtras lang={lang} />
 </Base>
 
 <style>

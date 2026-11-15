@@ -9,6 +9,9 @@ import Projects from './Projects.astro';
 import Shows from './Shows.astro';
 import About from './About.astro';
 import Contact from './Contact.astro';
+import HomeMore from './HomeMore.astro';
+import LabTeaser from './lab/LabTeaser.astro';
+import { router } from '../lib/routes';
 import Footer from './Footer.astro';
 import Dock from './Dock.astro';
 
@@ -20,11 +23,17 @@ const { lang } = Astro.props;
 <main id="main">
   <Hero lang={lang} />
   {isVisible('escuchar') && <Listen lang={lang} />}
+  {router.listed('lab') && <div class="wrap home-lab"><LabTeaser lang={lang} /></div>}
   {isVisible('musica') && <Music lang={lang} />}
   {isVisible('proyectos') && <Projects lang={lang} />}
   {isVisible('fechas') && <Shows lang={lang} />}
   {isVisible('sobre') && <About lang={lang} />}
   {isVisible('contacto') && <Contact lang={lang} />}
+  <HomeMore lang={lang} />
 </main>
 <Footer lang={lang} />
 <Dock lang={lang} />
+
+<style>
+  .home-lab { padding-block: var(--space-l) 0; }
+</style>

@@ -34,12 +34,16 @@ export const fileHref = (name: string) => withBase(`/${PRESS_DIR}/${name}`);
 
 export const palette = (): Palette => paletteFrom(readFileSync(join(process.cwd(), 'src/styles/tokens.css'), 'utf8'));
 
+// Los PDF versionados se generan con el contenido de ejemplo encendido y llevan el sello: con el interruptor apagado
+// se tratan como inexistentes (no se enlazan ni entran al ZIP). Regenerarlos: `npm run downloads`.
+const stamped = (name: string) => name.endsWith('.pdf') && !demoOn;
 const readPublic = (name: string): Uint8Array | null => {
+  if (stamped(name)) return null;
   const p = join(process.cwd(), 'public', PRESS_DIR, name);
   return existsSync(p) ? new Uint8Array(readFileSync(p)) : null;
 };
 /** Peso en bytes de un archivo versionado en public/downloads/press (null si todavía no existe). */
-export const publicSize = (name: string) => publicFileSize(`${PRESS_DIR}/${name}`);
+export const publicSize = (name: string) => (stamped(name) ? null : publicFileSize(`${PRESS_DIR}/${name}`));
 
 /** Origen público del sitio (SITE_URL al construir). */
 export const siteOrigin = () => new URL(import.meta.env.SITE ?? 'https://ailencachela.com');

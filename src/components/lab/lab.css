@@ -161,7 +161,7 @@ html.lab-fs-lock { overflow: hidden; }
 .live-page { position: fixed; inset: 0; background: var(--void); }
 .live-page .viz-stage { position: fixed; inset: 0; aspect-ratio: auto; min-height: 0; border: 0; }
 .viz-top { position: absolute; inset-inline: 0; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); padding: max(var(--space-xs), env(safe-area-inset-top, 0px)) max(var(--space-s), env(safe-area-inset-right, 0px)) var(--space-xs) max(var(--space-s), env(safe-area-inset-left, 0px)); background: linear-gradient(180deg, color-mix(in srgb, var(--void) 80%, transparent), transparent); transition: opacity var(--dur-slow) var(--ease-out); }
-.viz-top a { display: inline-flex; align-items: center; min-height: var(--tap); font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--chrome-100); }
+.viz-top a { display: inline-flex; align-items: center; min-height: var(--tap); min-width: var(--tap); font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--chrome-100); }
 .viz-top a:focus-visible { outline-offset: 2px; }
 @media (hover: hover) { .viz-top a:hover { color: var(--chrome-50); text-decoration: underline; text-underline-offset: 0.25em; } }
 .viz-top__right { display: flex; align-items: center; gap: var(--space-s); }

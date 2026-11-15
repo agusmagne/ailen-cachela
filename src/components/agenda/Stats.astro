@@ -68,7 +68,7 @@ const cells: [string, number][] = [
   .bars__list { display: grid; gap: var(--space-3xs); max-width: 40rem; }
   .bar { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 2.5rem; align-items: center; gap: var(--space-xs); min-height: var(--tap); }
   .bar__year { color: var(--chrome-100); }
-  .bar__year.link { display: inline-flex; align-items: center; min-height: var(--tap); width: max-content; }
+  .bar__year.link { display: inline-flex; align-items: center; min-height: var(--tap); min-width: var(--tap); width: max-content; }
   .bar__track { display: block; height: 0.6rem; background: var(--chrome-800); border: var(--stroke) solid var(--chrome-700); }
   .bar__fill { display: block; height: 100%; width: var(--w); background: linear-gradient(90deg, var(--chrome-400), var(--chrome-100)); transform-origin: left; }
   .bar__n { text-align: right; color: var(--chrome-50); font-variant-numeric: tabular-nums; }

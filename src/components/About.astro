@@ -1,5 +1,6 @@
 ---
 import { site, pick, t, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import Section from './Section.astro';
 import Media from './Media.astro';
 
@@ -20,6 +21,15 @@ const long = pick(site.about.bio_long, lang);
             <summary class="label">{t('about_more', lang)}</summary>
             <p>{long}</p>
           </details>
+        )
+      }
+      {
+        router.listed('press') && (
+          <p class="about__press">
+            <a class="btn" href={router.path('press', lang)}>
+              {t('home_about_press', lang)} <span class="arrow" data-dir="right" aria-hidden="true">→</span>
+            </a>
+          </p>
         )
       }
     </div>
@@ -53,6 +63,7 @@ const long = pick(site.about.bio_long, lang);
     color: var(--chrome-50);
   }
   .about__more { margin-top: var(--space-m); max-width: var(--measure); }
+  .about__press { margin-top: var(--space-m); }
   .about__more summary { min-height: var(--tap); display: flex; align-items: center; color: var(--chrome-200); transition: color var(--dur-fast) var(--ease); }
   .about__more p { margin-top: var(--space-xs); color: var(--muted); }
   @media (hover: hover) { .about__more summary:hover { color: var(--chrome-50); } }
@@ -64,6 +75,7 @@ const long = pick(site.about.bio_long, lang);
     .about__photo { max-width: none; justify-self: stretch; }
     .about__photo :global(.media) { --media-ratio: 6 / 5; }
     .about__more summary:active { color: var(--chrome-50); }
+    .about__press .btn { width: 100%; min-height: 3.25rem; }
   }
   @media (pointer: coarse) and (max-height: 32rem) {
     .about__photo { max-width: min(28rem, 56vh); }
