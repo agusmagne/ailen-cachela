@@ -94,7 +94,7 @@ const pageDemo = ctx.hasDemo;
 
   <!-- BIO ------------------------------------------------------------------------------------------------ -->
   <section class="page-block" aria-labelledby="bio">
-    <SectionHead id="bio" lang={lang} title={t('press_s_bio', lang)} lead={t('press_bio_lead', lang)} demo={ctx.bios.some((b) => b.demo)} />
+    <SectionHead id="bio" lang={lang} title={t('press_s_bio', lang)} lead={t(demoOn ? 'press_bio_lead' : 'press_bio_lead_real', lang)} demo={ctx.bios.some((b) => b.demo)} />
     <Tabs lang={lang} label={t('press_bio_tabs', lang)} tabs={ctx.bios.map((b) => ({ id: b.id, label: t(`press_bio_${b.id}`, lang) }))} initial="short">
       {
         ctx.bios.map((b) => (
@@ -113,7 +113,7 @@ const pageDemo = ctx.hasDemo;
 
   <!-- FICHA TÉCNICA --------------------------------------------------------------------------------------- -->
   <section class="page-block" aria-labelledby="ficha">
-    <SectionHead id="ficha" lang={lang} title={t('press_s_facts', lang)} lead={t('press_facts_lead', lang)} demo={ctx.facts.some((f) => f.demo)} />
+    <SectionHead id="ficha" lang={lang} title={t('press_s_facts', lang)} lead={t(demoOn ? 'press_facts_lead' : 'press_facts_lead_real', lang)} demo={ctx.facts.some((f) => f.demo)} />
     <div class="facts-wrap">
       <dl class="facts facts--rows">
         {
@@ -205,7 +205,7 @@ const pageDemo = ctx.hasDemo;
 
   <!-- FOTOS ---------------------------------------------------------------------------------------------- -->
   <section class="page-block" aria-labelledby="fotos">
-    <SectionHead id="fotos" lang={lang} title={t('press_s_photos', lang)} lead={t('press_photos_lead', lang)} demo={press.photos.length > 0} />
+    <SectionHead id="fotos" lang={lang} title={t('press_s_photos', lang)} lead={t(press.photos.length > 0 ? 'press_photos_lead' : 'press_photos_lead_real', lang)} demo={press.photos.length > 0} />
     {
       press.photos.length > 0 ? (
         <PhotoGrid lang={lang} palette={pal} photos={press.photos.map((p) => ({ id: p.id, seed: p.seed, shape: p.shape as PieceShape, caption: p.caption }))} />
@@ -229,7 +229,7 @@ const pageDemo = ctx.hasDemo;
   {
     ctx.timeline.length > 0 && (
       <section class="page-block" aria-labelledby="trayectoria">
-        <SectionHead id="trayectoria" lang={lang} title={t('press_s_timeline', lang)} lead={t('press_timeline_lead', lang)} demo={ctx.timeline.some((e) => e.demo)} />
+        <SectionHead id="trayectoria" lang={lang} title={t('press_s_timeline', lang)} lead={t(demoOn ? 'press_timeline_lead' : 'press_timeline_lead_real', lang)} demo={ctx.timeline.some((e) => e.demo)} />
         <Timeline lang={lang} entries={ctx.timeline} />
       </section>
     )
@@ -270,7 +270,7 @@ const pageDemo = ctx.hasDemo;
 
   <!-- DESCARGAS --------------------------------------------------------------------------------------------- -->
   <section class="page-block" aria-labelledby="descargas">
-    <SectionHead id="descargas" lang={lang} title={t('press_s_downloads', lang)} lead={t('press_downloads_lead', lang)} demo={pageDemo} />
+    <SectionHead id="descargas" lang={lang} title={t('press_s_downloads', lang)} lead={t(demoOn ? 'press_downloads_lead' : 'press_downloads_lead_real', lang)} demo={pageDemo} />
     <div class="downloads">
       <Download lang={lang} href={fileHref(FILES.kit(lang))} label={t('press_dl_kit', lang)} kind="ZIP" size={kitSize} description={t('press_dl_kit_desc', lang)} demo={demoOn} />
       {epk.size !== null && <Download lang={lang} href={fileHref(epk.name)} label={t('press_dl_epk', lang)} kind="PDF" size={epk.size} description={t('press_dl_epk_desc', lang)} demo={demoOn} />}

@@ -2,7 +2,7 @@
 
 # ---- Estudio ----
 oficio_studio_title: { es: "Estudio", en: "Studio" }
-oficio_studio_desc: { es: "El estudio de Ailén Cachela: recorrido, equipo, flujo de trabajo y notas de proceso (contenido de ejemplo).", en: "Ailén Cachela's studio: tour, equipment, workflow and process notes (sample content)." }
+oficio_studio_desc: { es: "El estudio de Ailén Cachela: recorrido, equipo, flujo de trabajo y notas de proceso.", en: "Ailén Cachela's studio: tour, equipment, workflow and process notes." }
 oficio_studio_lead: { es: "Un lugar para escuchar con atención: cómo es la sala, con qué se trabaja y cómo se llega de una idea a un tema terminado.", en: "A place to listen closely: what the room is like, what we work with and how an idea becomes a finished track." }
 oficio_kicker_tour: { es: "Recorrido", en: "Tour" }
 oficio_tour_title: { es: "Recorrido por el estudio", en: "Studio tour" }
@@ -30,7 +30,7 @@ oficio_studio_next_text: { es: "Mirá los servicios, las clases o escribí para 
 
 # ---- Servicios ----
 oficio_services_title: { es: "Servicios", en: "Services" }
-oficio_services_desc: { es: "Propuesta de servicios de producción: mezcla, mastering, remixes, diseño sonoro y más (contenido de ejemplo).", en: "Proposed production services: mixing, mastering, remixes, sound design and more (sample content)." }
+oficio_services_desc: { es: "Propuesta de servicios de producción: mezcla, mastering, remixes, diseño sonoro y más.", en: "Proposed production services: mixing, mastering, remixes, sound design and more." }
 oficio_services_lead: { es: "Servicios de producción para artistas y sellos. Cada consulta se responde con un alcance y un plazo por escrito. Los valores son a consultar.", en: "Production services for artists and labels. Every inquiry is answered with a written scope and timeline. Fees are on request." }
 oficio_kicker_services: { es: "Qué se ofrece", en: "What is offered" }
 oficio_services_list: { es: "Servicios", en: "Services" }
@@ -53,7 +53,7 @@ oficio_svc_closing: { es: "Gracias, quedo atenta a tu respuesta.", en: "Thank yo
 
 # ---- Clases ----
 oficio_lessons_title: { es: "Clases y mentorías", en: "Lessons and mentorships" }
-oficio_lessons_desc: { es: "Propuesta de clases individuales, mentorías y workshops de producción y DJ, con fecha y cupo (contenido de ejemplo).", en: "Proposed one-to-one classes, mentorships and production and DJ workshops, with dates and spots (sample content)." }
+oficio_lessons_desc: { es: "Propuesta de clases individuales, mentorías y workshops de producción y DJ, con fecha y cupo.", en: "Proposed one-to-one classes, mentorships and production and DJ workshops, with dates and spots." }
 oficio_lessons_lead: { es: "Aprender techno con calma y con criterio: clases individuales, mentorías de varias semanas y workshops para grupos chicos.", en: "Learn techno with patience and judgement: one-to-one classes, multi-week mentorships and workshops for small groups." }
 oficio_kicker_levels: { es: "Niveles", en: "Levels" }
 oficio_levels_title: { es: "Para quién es", en: "Who it is for" }
@@ -89,7 +89,7 @@ oficio_les_closing: { es: "Gracias, quedo atenta a tu respuesta.", en: "Thank yo
 
 # ---- Videos ----
 oficio_videos_title: { es: "Videos", en: "Videos" }
-oficio_videos_desc: { es: "Sets filmados, aftermovies y visuales (piezas de ejemplo, sin reproducción).", en: "Filmed sets, aftermovies and visuals (sample pieces, no playback)." }
+oficio_videos_desc: { es: "Sets filmados, aftermovies y visuales.", en: "Filmed sets, aftermovies and visuals." }
 oficio_videos_lead: { es: "Sets filmados, aftermovies y piezas visuales. Cuando un video sea real, el reproductor se carga recién al hacer clic.", en: "Filmed sets, aftermovies and visual pieces. When a video is real, the player only loads when you click." }
 oficio_kicker_featured: { es: "Destacado", en: "Featured" }
 oficio_featured_title: { es: "Video destacado", en: "Featured video" }

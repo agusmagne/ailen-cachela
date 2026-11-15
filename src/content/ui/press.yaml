@@ -32,6 +32,7 @@ press_s_contact: { es: "Contacto", en: "Contact" }
 press_bio_lead:
   es: "Tres largos para copiar y pegar. La corta es la bio oficial del sitio; la media y la larga son texto de ejemplo hasta que la artista las escriba."
   en: "Three lengths to copy and paste. The short one is the site's official bio; the medium and long ones are sample text until the artist writes them."
+press_bio_lead_real: { es: "La bio oficial del sitio, lista para copiar y pegar.", en: "The site's official bio, ready to copy and paste." }
 press_bio_tabs: { es: "Largo de la bio", en: "Bio length" }
 press_bio_tagline: { es: "Frase", en: "Tagline" }
 press_bio_short: { es: "Corta", en: "Short" }
@@ -44,6 +45,7 @@ press_bio_verified: { es: "texto oficial", en: "official text" }
 press_facts_lead:
   es: "Lo verificado va primero. BPM, formatos y territorios son de ejemplo hasta que la artista los confirme."
   en: "Verified facts come first. BPM, formats and territories are sample content until the artist confirms them."
+press_facts_lead_real: { es: "Solo datos verificados.", en: "Verified facts only." }
 press_fact_role: { es: "Rol", en: "Role" }
 press_fact_city: { es: "Base", en: "Based in" }
 press_fact_label: { es: "Sello", en: "Label" }
@@ -68,6 +70,7 @@ press_shows_empty:
 press_shows_all: { es: "Agenda, archivo y calendario", en: "Schedule, archive and calendar" }
 
 # Fotos
+press_photos_lead_real: { es: "Las fotos oficiales se publican con crédito y permiso de la artista.", en: "Official photos are published with credit and permission from the artist." }
 press_photos_lead:
   es: "Todavía no hay fotos de la artista en el sitio: estas piezas son arte generativo de ejemplo que ocupa su lugar. Las fotos reales se publican con crédito y permiso."
   en: "There are no photos of the artist on the site yet: these pieces are sample generative art holding their place. Real photos are published with credit and permission."
@@ -94,6 +97,7 @@ press_testimonials_title: { es: "Lo que dicen los promotores", en: "What promote
 press_timeline_lead:
   es: "El hito de 2017 es real; los demás son de ejemplo hasta que la artista complete su trayectoria."
   en: "The 2017 milestone is real; the rest are sample content until the artist completes her timeline."
+press_timeline_lead_real: { es: "Un hito verificado de la trayectoria.", en: "A verified milestone from the career." }
 press_real_milestone: { es: "Publica “{track}” en {release}", en: "Releases “{track}” on {release}" }
 press_real_milestone_place: { es: "{label} · {city}", en: "{label} · {city}" }
 
@@ -167,6 +171,7 @@ press_rule_photos_text:
 press_downloads_lead:
   es: "Todo lo de esta página, listo para llevar. Los archivos con contenido de ejemplo lo dicen en su interior."
   en: "Everything on this page, ready to take away. Files with sample content say so inside."
+press_downloads_lead_real: { es: "Todo lo de esta página, listo para llevar.", en: "Everything on this page, ready to take away." }
 press_dl_kit: { es: "Press kit completo", en: "Full press kit" }
 press_dl_kit_desc:
   es: "Bios en texto, ficha técnica, isotipo SVG, wordmark PNG, piezas de ejemplo, vCard, QR y los PDF."

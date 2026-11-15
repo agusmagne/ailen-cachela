@@ -55,10 +55,10 @@ docs:
         title: { es: "Formularios y mails", en: "Forms and emails" }
         paras:
           es:
-            - "Los formularios del sitio (consultas, newsletter, tienda de ejemplo) no envían nada: arman un mensaje y abren tu programa de correo con el texto ya escrito. Lo que escribas llega recién cuando lo enviás desde tu cuenta, y pasa por tu proveedor de correo."
+            - "Los formularios del sitio (consultas, newsletter, tienda) no envían nada: arman un mensaje y abren tu programa de correo con el texto ya escrito. Lo que escribas llega recién cuando lo enviás desde tu cuenta, y pasa por tu proveedor de correo."
             - "Si escribís, tu dirección y el contenido del mensaje se usan solo para responderte. No se agregan a ninguna lista sin que lo pidas."
           en:
-            - "The site's forms (enquiries, newsletter, sample shop) send nothing: they build a message and open your email app with the text already written. What you write arrives only when you send it from your account, and it goes through your email provider."
+            - "The site's forms (enquiries, newsletter, shop) send nothing: they build a message and open your email app with the text already written. What you write arrives only when you send it from your account, and it goes through your email provider."
             - "If you write, your address and the message are used only to reply. You are not added to any list unless you ask."
       - id: dispositivo
         title: { es: "Lo que se guarda en tu dispositivo", en: "What is stored on your device" }
@@ -115,7 +115,7 @@ docs:
           - { id: foco, status: done, area: { es: "Foco y teclado", en: "Focus and keyboard" }, text: { es: "Hay un anillo de foco visible en todos los controles. Acordeones y pestañas usan elementos nativos o patrones estándar.", en: "A visible focus ring appears on every control. Accordions and tabs use native elements or standard patterns." } }
           - { id: movimiento, status: done, area: { es: "Movimiento", en: "Motion" }, text: { es: "Con “reducir movimiento” activado en el sistema, las animaciones, el grano y el glitch se desactivan y el fondo de cromo queda en un cuadro fijo.", en: "With “reduce motion” enabled in the system, animations, grain and glitch are turned off and the chrome background stays on a still frame." } }
           - { id: sinjs, status: done, area: { es: "Sin JavaScript", en: "Without JavaScript" }, text: { es: "El contenido se ve sin JavaScript; los scripts solo suman mejoras (menú, filtros, cuentas regresivas).", en: "Content shows without JavaScript; scripts only add enhancements (menu, filters, countdowns)." } }
-          - { id: contenido, status: done, area: { es: "Contenido de ejemplo", en: "Sample content" }, text: { es: "El contenido inventado se rotula como ejemplo con texto visible, no solo con color.", en: "Invented content is labelled as sample with visible text, not just colour." } }
+          - { id: contenido, demo: true, status: done, area: { es: "Contenido de ejemplo", en: "Sample content" }, text: { es: "El contenido inventado se rotula como ejemplo con texto visible, no solo con color.", en: "Invented content is labelled as sample with visible text, not just colour." } }
       - id: parcial
         title: { es: "Hecho por diseño, sin medir", en: "Done by design, not measured" }
         checks:
@@ -179,6 +179,7 @@ docs:
             - "Names of platforms and services shown on the site belong to their owners. Mentioning them implies no agreement or sponsorship."
         link: { route: credits, label: { es: "Ver créditos", en: "See credits" } }
       - id: ejemplo
+        demo: true
         title: { es: "Contenido de ejemplo", en: "Sample content" }
         paras:
           es:

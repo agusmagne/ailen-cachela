@@ -9,11 +9,13 @@ export const CHECK_STATUS = ['done', 'partial', 'unverified', 'limit'] as const;
 const section = z
   .object({
     id: slug,
+    /** Sección que solo tiene sentido mientras haya contenido de ejemplo: desaparece con el interruptor apagado. */
+    demo: z.boolean().optional(),
     title: localizedReq,
     paras: lines.default({ es: [], en: [] }),
     bullets: lines.default({ es: [], en: [] }),
     checks: z
-      .array(z.object({ id: slug, area: localizedReq, status: z.enum(CHECK_STATUS), text: localizedReq }).strict())
+      .array(z.object({ id: slug, area: localizedReq, status: z.enum(CHECK_STATUS), text: localizedReq, demo: z.boolean().optional() }).strict())
       .default([]),
     note: localized.optional(),
     /** Enlace interno a una ruta del registro (se muestra solo si la página existe). */

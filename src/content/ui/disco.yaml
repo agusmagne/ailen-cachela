@@ -89,6 +89,7 @@ disco_series_lead: { es: "Del más nuevo al más viejo. Cada mix tiene su págin
 disco_series_tag: { es: "Serie", en: "Series" }
 disco_mix_code: { es: "Mix {code}", en: "Mix {code}" }
 disco_rss: { es: "Suscribirse por RSS", en: "Subscribe via RSS" }
+disco_rss_note_real: { es: "El feed incluye los mixes publicados.", en: "The feed includes the published mixes." }
 disco_rss_note: { es: "El feed solo incluye mixes reales (no los de ejemplo).", en: "The feed only includes real mixes (not the sample ones)." }
 disco_soundcloud_title: { es: "En SoundCloud", en: "On SoundCloud" }
 disco_soundcloud_lead: { es: "Lo que está publicado en el perfil de Ailén. Todavía no se indicó cuáles son tracks y cuáles sets, por eso no se clasifican.", en: "What is published on Ailén's profile. It has not been specified which are tracks and which are sets, so they are not classified." }

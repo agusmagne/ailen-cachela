@@ -42,7 +42,7 @@ const empty = series.length + soundcloudMixes.length === 0;
     )
   }
 
-  {hasFeed && <p class="page-block mx__rss label">{t('disco_rss_note', lang)}</p>}
+  {hasFeed && <p class="page-block mx__rss label">{t(series.length > 0 ? 'disco_rss_note' : 'disco_rss_note_real', lang)}</p>}
 </PageLayout>
 
 <style>
