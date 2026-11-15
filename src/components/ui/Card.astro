@@ -1,0 +1,83 @@
+---
+import type { Lang } from '../../lib/content';
+import DemoBadge from './DemoBadge.astro';
+/**
+ * Tarjeta del sistema "cromo negro": borde fino, degradé y semitono al pasar/enfocar (igual que Proyectos).
+ * Con `href` toda la tarjeta es clickeable (el título es el link y estira su área). Slots:
+ *   media (arriba), default (cuerpo), footer (acciones; quedan por encima del link estirado).
+ * `demo` agrega la marca de contenido de ejemplo.
+ */
+interface Props {
+  title: string;
+  lang: Lang;
+  href?: string;
+  external?: boolean;
+  kicker?: string;
+  as?: 'article' | 'div' | 'li';
+  demo?: boolean;
+  level?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+const { title, lang, href, external = false, kicker, as: Tag = 'article', demo = false, level: H = 'h3', class: cls } = Astro.props;
+---
+
+<Tag class:list={['card', { 'has-demo-badge': demo, 'card--link': !!href }, cls]}>
+  {demo && <DemoBadge lang={lang} />}
+  {Astro.slots.has('media') && <div class="card__media"><slot name="media" /></div>}
+  <div class="card__body">
+    {kicker && <p class="label card__kicker">{kicker}</p>}
+    <H class="card__title display">
+      {href ? <a class="card__link" href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{title}</a> : title}
+    </H>
+    <div class="card__text"><slot /></div>
+  </div>
+  {Astro.slots.has('footer') && <div class="card__footer"><slot name="footer" /></div>}
+</Tag>
+
+<style>
+  .card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+    padding: var(--card-pad);
+    border: var(--card-border);
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--halftone);
+    background-size: var(--halftone-size) var(--halftone-size);
+    opacity: 0;
+    -webkit-mask-image: radial-gradient(90% 90% at 100% 0%, #000, transparent 70%);
+    mask-image: radial-gradient(90% 90% at 100% 0%, #000, transparent 70%);
+    transition: opacity var(--dur-slow) var(--ease-out);
+  }
+  .card:focus-within { border-color: var(--chrome-300); }
+  .card:focus-within::before { opacity: 0.28; }
+  @media (hover: hover) {
+    .card--link:hover { border-color: var(--chrome-300); }
+    .card--link:hover::before { opacity: 0.28; }
+  }
+  @media (hover: none) {
+    .card--link:active { border-color: var(--chrome-300); transform: scale(0.985); transition-duration: var(--dur-press); }
+  }
+  .card__media { margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) 0; }
+  .card__body { display: grid; gap: var(--space-2xs); align-content: start; flex: 1; }
+  .card__kicker { color: var(--accent); }
+  .card__title { font-size: clamp(1.2rem, 1rem + 0.8vw, 1.7rem); line-height: var(--lh-title); overflow-wrap: anywhere; color: var(--chrome-50); }
+  /* El link del título cubre toda la tarjeta */
+  .card__link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+  .card__link:focus-visible { outline: none; }
+  .card:has(.card__link:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .card__text { color: var(--muted); }
+  .card__text > :global(* + *) { margin-top: var(--space-2xs); }
+  .card__footer { position: relative; z-index: 2; display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+</style>

@@ -1,0 +1,32 @@
+---
+import { t, type Lang } from '../../lib/content';
+import DemoBadge from './DemoBadge.astro';
+/**
+ * Bloque "próximamente": funcionalidad armada pero sin conectar a ningún servicio (tienda, newsletter,
+ * membresía). `demo` agrega la marca de contenido de ejemplo.
+ */
+interface Props {
+  lang: Lang;
+  title?: string;
+  text?: string;
+  demo?: boolean;
+}
+const { lang, title = t('base_soon', lang), text = t('base_soon_text', lang), demo = false } = Astro.props;
+---
+
+<aside class:list={['soon', { 'is-demo has-demo-badge': demo }]} aria-label={title}>
+  {demo && <DemoBadge lang={lang} />}
+  <p class="label soon__kicker"><span class="soon__dot" aria-hidden="true"></span>{title}</p>
+  <p class="soon__text">{text}</p>
+  <div class="soon__extra"><slot /></div>
+</aside>
+
+<style>
+  .soon { display: grid; gap: var(--space-xs); justify-items: start; padding: var(--card-pad); border: var(--card-border); background: var(--card-bg); }
+  .soon__kicker { display: flex; align-items: center; gap: 0.6em; color: var(--accent); }
+  .soon__dot { width: 0.5em; height: 0.5em; border-radius: var(--radius-round); background: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) { .soon__dot { animation: soon-pulse 2.4s var(--ease-in-out) infinite; } }
+  @keyframes soon-pulse { 50% { opacity: 0.25; } }
+  .soon__text { max-width: var(--measure); color: var(--muted); }
+  .soon__extra:empty { display: none; }
+</style>

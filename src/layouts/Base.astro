@@ -2,9 +2,14 @@
 import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/base.css';
-import { site, pick, absolute, homePath, withBase, type Lang } from '../lib/content';
+import '../styles/ui.css';
+import { site, pick, t, absolute, homePath, withBase, type Lang } from '../lib/content';
+import { router } from '../lib/routes';
 import archivoUrl from '../assets/fonts/archivo-cachela.woff2?url';
 import martianUrl from '../assets/fonts/martian-mono-cachela.woff2?url';
+
+// Tokens de cada paquete: src/styles/tokens/<paquete>.css se importa solo (la base no se edita para sumar uno).
+import.meta.glob('../styles/tokens/*.css', { eager: true });
 
 interface Props {
   lang: Lang;
@@ -13,14 +18,28 @@ interface Props {
   /** Páginas con hreflang/canonical de idioma (home). */
   localized?: boolean;
   noindex?: boolean;
-  jsonLd?: object;
+  /** Un nodo JSON-LD, un @graph o una lista de ellos. Nunca con datos de ejemplo. */
+  jsonLd?: object | object[];
+  /** Rutas (con BASE_PATH) de la misma página en cada idioma: genera hreflang. Ver PageLayout. */
+  alternates?: Record<Lang, string>;
+  /** Imagen de vista previa: ruta del sitio SIN BASE_PATH (/og.png) o URL absoluta. */
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article' | 'music.song' | 'music.album' | 'profile';
 }
-const { lang, localized = false, noindex = false, jsonLd } = Astro.props;
+const { lang, localized = false, noindex = false, jsonLd, alternates, ogImageAlt, ogType = 'website' } = Astro.props;
 const title = Astro.props.title ?? pick(site.site.title, lang);
 const description = Astro.props.description ?? pick(site.site.description, lang);
 const origin = Astro.site ?? new URL('https://ailencachela.com');
-const canonical = localized ? absolute(homePath(lang), origin) : absolute(Astro.url.pathname, origin);
-const ogImage = absolute(withBase('/og.png'), origin);
+const canonical = localized ? absolute(homePath(lang), origin) : absolute(alternates ? alternates[lang] : Astro.url.pathname, origin);
+const ogRaw = Astro.props.ogImage ?? '/og.png';
+const ogImage = /^https?:/.test(ogRaw) ? ogRaw : absolute(withBase(ogRaw), origin);
+const hreflangs = alternates ?? (localized ? { es: homePath('es'), en: homePath('en') } : null);
+// Endpoints que anuncia el <head> solo si existen (manifest, RSS de mixes, calendario de fechas)
+const headLinks = router.endpoints
+  .filter((e) => router.endpointExists(e.id, lang))
+  .map((e) => ({ rel: e.rel, href: absolute(router.endpointHref(e.id, lang), origin), type: e.type, title: e.titleKey ? t(e.titleKey, lang) : undefined }));
+const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const ogLocale = lang === 'es' ? 'es_AR' : 'en_US';
 const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_AR';
 ---
@@ -37,21 +56,22 @@ const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_AR';
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     {
-      localized && (
+      hreflangs && (
         <>
-          <link rel="alternate" hreflang="es" href={absolute(homePath('es'), origin)} />
-          <link rel="alternate" hreflang="en" href={absolute(homePath('en'), origin)} />
-          <link rel="alternate" hreflang="x-default" href={absolute(homePath('es'), origin)} />
+          <link rel="alternate" hreflang="es" href={absolute(hreflangs.es, origin)} />
+          <link rel="alternate" hreflang="en" href={absolute(hreflangs.en, origin)} />
+          <link rel="alternate" hreflang="x-default" href={absolute(hreflangs.es, origin)} />
         </>
       )
     }
+    {headLinks.map((l) => <link rel={l.rel} href={l.href} type={l.type} title={l.title} />)}
     <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={martianUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -62,13 +82,14 @@ const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_AR';
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={site.site.name} />
+    <meta property="og:image:alt" content={ogImageAlt ?? site.site.name} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+    {jsonLdList.map((node) => <script type="application/ld+json" set:html={JSON.stringify(node).replace(/</g, '\\u003c')} />)}
+    <slot name="head" />
 
     <script is:inline>
       (function () {

@@ -1,0 +1,38 @@
+---
+import { t, type Lang } from '../../lib/content';
+/**
+ * Botón o link con el aspecto de .btn (base.css). Con `href` es <a>; sin él, <button>.
+ *   variant: "primary" (cromo lleno) | "default" (contorno)    size: "xl" (pulgar, 56 px)
+ * `external` abre en otra pestaña y agrega el aviso para lectores de pantalla (lang es obligatorio entonces).
+ * `arrow`: flecha de link externo. `download` marca descarga (con nombre sugerido si es string).
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'default';
+  size?: 'xl';
+  external?: boolean;
+  arrow?: boolean;
+  download?: boolean | string;
+  lang?: Lang;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  [attr: string]: unknown;
+}
+const { href, variant = 'default', size, external = false, arrow = false, download, lang, type = 'button', class: cls, ...rest } = Astro.props;
+const classes = ['btn', { 'btn--primary': variant === 'primary', 'btn--xl': size === 'xl' }, cls];
+const ext = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  href !== undefined ? (
+    <a class:list={classes} href={href} {...ext} {...(download ? { download: download === true ? '' : download } : {})} {...rest}>
+      <slot />
+      {(arrow || external) && <span class="arrow" aria-hidden="true">↗</span>}
+      {external && lang && <span class="sr-only"> {t('new_tab', lang)}</span>}
+    </a>
+  ) : (
+    <button class:list={classes} type={type} {...rest}>
+      <slot />
+    </button>
+  )
+}

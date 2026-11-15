@@ -1,0 +1,89 @@
+# Textos de interfaz de la base (componentes compartidos, navegación, contenido de ejemplo, rutas).
+# Prefijo obligatorio: base_. Los paquetes tienen su propio archivo (src/content/ui/<paquete>.yaml).
+
+# ---- Contenido de ejemplo -------------------------------------------------------
+base_demo_badge: { es: "Contenido de ejemplo", en: "Sample content" }
+base_demo_badge_short: { es: "Ejemplo", en: "Sample" }
+base_demo_section_note: { es: "Los datos de esta sección son de ejemplo. No son reales ni oficiales.", en: "The data in this section is sample content. It is neither real nor official." }
+base_demo_page_note: { es: "Esta página usa contenido de ejemplo, marcado como tal, hasta que haya datos reales.", en: "This page uses sample content, labelled as such, until real data is available." }
+base_demo_notice: { es: "Versión de prueba: el contenido marcado como ejemplo es inventado y no representa datos reales.", en: "Preview version: content marked as sample is made up and does not represent real data." }
+base_demo_notice_short: { es: "Versión de prueba", en: "Preview version" }
+
+# ---- Navegación y páginas ------------------------------------------------------------
+base_nav_home: { es: "Inicio", en: "Home" }
+base_nav_all: { es: "Todo el sitio", en: "Whole site" }
+base_nav_main: { es: "Principal", en: "Main" }
+base_breadcrumbs: { es: "Ruta de navegación", en: "Breadcrumbs" }
+base_back_to: { es: "Volver a {page}", en: "Back to {page}" }
+base_page_of: { es: "{n} de {total}", en: "{n} of {total}" }
+base_footer_index: { es: "Mapa del sitio", en: "Site map" }
+base_footer_legal: { es: "Legales", en: "Legal" }
+base_dock_listen: { es: "Escuchar", en: "Listen" }
+
+# ---- Grupos del índice -----------------------------------------------------------------
+base_group_sound: { es: "Música y sonido", en: "Music & sound" }
+base_group_live: { es: "En vivo", en: "Live" }
+base_group_work: { es: "Trabajo", en: "Work" }
+base_group_fans: { es: "Comunidad", en: "Community" }
+base_group_legal: { es: "Legales", en: "Legal" }
+
+# ---- Nombres de las rutas (menú, índice, migas). Una clave por id del registro. ------------------
+base_route_music: { es: "Música", en: "Music" }
+base_route_release: { es: "Lanzamiento", en: "Release" }
+base_route_mixes: { es: "Mixes", en: "Mixes" }
+base_route_mix: { es: "Mix", en: "Mix" }
+base_route_videos: { es: "Videos", en: "Videos" }
+base_route_lab: { es: "Lab", en: "Lab" }
+base_route_lab_sequencer: { es: "Secuenciador", en: "Sequencer" }
+base_route_lab_visualizer: { es: "Visualizador", en: "Visualizer" }
+base_route_lab_scratch: { es: "Scratch", en: "Scratch" }
+base_route_lab_generator: { es: "Generador de flyers", en: "Flyer generator" }
+base_route_lab_live: { es: "Visualizador en vivo", en: "Live visualizer" }
+base_route_shows: { es: "Fechas", en: "Shows" }
+base_route_shows_archive: { es: "Archivo", en: "Archive" }
+base_route_shows_year: { es: "Año", en: "Year" }
+base_route_press: { es: "Prensa", en: "Press" }
+base_route_booking: { es: "Booking", en: "Booking" }
+base_route_booking_tech: { es: "Rider técnico", en: "Technical rider" }
+base_route_booking_hospitality: { es: "Rider de hospitalidad", en: "Hospitality rider" }
+base_route_booking_terms: { es: "Condiciones", en: "Terms" }
+base_route_studio: { es: "Estudio", en: "Studio" }
+base_route_services: { es: "Servicios", en: "Services" }
+base_route_lessons: { es: "Clases", en: "Lessons" }
+base_route_projects: { es: "Proyectos", en: "Projects" }
+base_route_project: { es: "Proyecto", en: "Project" }
+base_route_shop: { es: "Tienda", en: "Shop" }
+base_route_newsletter: { es: "Newsletter", en: "Newsletter" }
+base_route_community: { es: "Comunidad", en: "Community" }
+base_route_links: { es: "Links", en: "Links" }
+base_route_privacy: { es: "Privacidad", en: "Privacy" }
+base_route_accessibility: { es: "Accesibilidad", en: "Accessibility" }
+base_route_credits: { es: "Créditos", en: "Credits" }
+base_route_legal_notice: { es: "Aviso legal", en: "Legal notice" }
+
+# ---- Anuncios del <head> (feeds y calendario) ------------------------------------------------
+base_feed_mixes: { es: "Mixes de Ailén Cachela (RSS)", en: "Ailén Cachela mixes (RSS)" }
+base_feed_calendar: { es: "Fechas de Ailén Cachela (calendario)", en: "Ailén Cachela shows (calendar)" }
+
+# ---- Componentes compartidos -----------------------------------------------------------------
+base_empty_title: { es: "Todavía no hay nada acá", en: "Nothing here yet" }
+base_empty_text: { es: "Este contenido se va a sumar pronto.", en: "This content will be added soon." }
+base_soon: { es: "Próximamente", en: "Coming soon" }
+base_soon_text: { es: "Estamos terminando esta parte. Todavía no está conectada a ningún servicio.", en: "We are finishing this part. It is not connected to any service yet." }
+base_download: { es: "Descargar", en: "Download" }
+base_download_size: { es: "{kind} · {size}", en: "{kind} · {size}" }
+base_copy: { es: "Copiar", en: "Copy" }
+base_copied: { es: "Copiado", en: "Copied" }
+base_embed_play: { es: "Reproducir", en: "Play" }
+base_embed_play_video: { es: "Ver video", en: "Watch video" }
+base_embed_privacy_sc: { es: "Al reproducir se carga el reproductor de SoundCloud.", en: "Playing loads the SoundCloud player." }
+base_embed_privacy_yt: { es: "Al reproducir se carga YouTube (modo sin cookies).", en: "Playing loads YouTube (no-cookie mode)." }
+base_embed_open_sc: { es: "Abrir en SoundCloud", en: "Open on SoundCloud" }
+base_embed_open_yt: { es: "Abrir en YouTube", en: "Open on YouTube" }
+base_table_scroll: { es: "Tabla: se desplaza horizontalmente", en: "Table: scrolls horizontally" }
+base_tabs_label: { es: "Pestañas", en: "Tabs" }
+base_sound_on: { es: "Sonido activado", en: "Sound on" }
+base_sound_off: { es: "Sonido apagado", en: "Sound off" }
+base_sound_mute: { es: "Silenciar", en: "Mute" }
+base_sound_unmute: { es: "Activar sonido", en: "Unmute" }
+base_sound_start: { es: "Tocar el sonido genera audio en tu navegador. No arranca solo.", en: "Playing sound generates audio in your browser. It never starts on its own." }

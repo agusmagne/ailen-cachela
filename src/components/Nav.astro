@@ -1,17 +1,33 @@
 ---
 import { site, t, homePath, type Lang } from '../lib/content';
 import { sections } from '../lib/sections';
+import { router } from '../lib/routes';
+import { linkFor } from '../lib/nav';
+import SiteIndex from './ui/SiteIndex.astro';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props {
+  lang: Lang;
+  /** Id de ruta del registro de la página actual (src/lib/routes-core.ts). Sin `route` = la home. */
+  route?: string;
+  /** Ruta de esta misma página en el otro idioma (PageLayout la calcula). Por defecto, la home del otro idioma. */
+  switchTo?: string;
+}
+const { lang, route, switchTo } = Astro.props;
 const other: Lang = lang === 'es' ? 'en' : 'es';
-// La hoja móvil lista todas las secciones visibles (incluida Sobre); el nav de escritorio, solo las inNav.
-const all = sections.filter((s) => s.visible);
+const onHome = !route;
+// Home: la hoja móvil lista todas las secciones visibles (incluida Sobre) y el nav de escritorio solo las inNav
+// (anclas, como siempre) más las páginas con `homeNav`. Páginas interiores: el menú principal del registro.
+const all = onHome ? sections.filter((s) => s.visible) : [];
+const pages = (onHome ? router.homeNav() : router.main()).map((r) => linkFor(r.id, lang));
+// Página actual dentro del menú: la ruta o su madre (una página de release resalta "Música")
+const rootId = route ? router.trail(route)[0].id : '';
 const social = site.links.filter((l) => l.nav && l.url);
+const langHref = switchTo ?? homePath(other);
+const hasIndex = router.index().length > 0;
 ---
 
 <a class="skip" href="#main">{t('skip', lang)}</a>
-<header class="header" data-header>
+<header class:list={['header', { 'header--page': !onHome }]} data-header>
   <div class="header__bar wrap">
     <a class="brand" href={homePath(lang)} aria-label={site.site.name} data-brand>{site.site.name}</a>
 
@@ -31,6 +47,16 @@ const social = site.links.filter((l) => l.nav && l.url);
       <div class="menu" id="menu" data-menu>
         <ul class="menu__list">
           {
+            !onHome && (
+              <li class="menu__item menu__item--sheet" style="--i:0">
+                <a class="menu__link" href={homePath(lang)}>
+                  <span class="menu__num" aria-hidden="true">00</span>
+                  <span class="menu__label">{t('base_nav_home', lang)}</span>
+                </a>
+              </li>
+            )
+          }
+          {
             all.map((s, i) => (
               <li class:list={['menu__item', { 'menu__item--sheet': !s.inNav }]} style={`--i:${i}`}>
                 <a class="menu__link" href={`#${s.id}`} data-nav-link>
@@ -40,7 +66,19 @@ const social = site.links.filter((l) => l.nav && l.url);
               </li>
             ))
           }
+          {
+            pages.map((p, j) => (
+              <li class="menu__item" style={`--i:${all.length + j + (onHome ? 0 : 1)}`}>
+                <a class="menu__link" href={p.href} {...(p.id === rootId ? { 'aria-current': 'page' } : {})}>
+                  <span class="menu__num" aria-hidden="true">{String(all.length + j + 1).padStart(2, '0')}</span>
+                  <span class="menu__label">{p.label}</span>
+                </a>
+              </li>
+            ))
+          }
         </ul>
+        {/* Solo en la hoja móvil: el índice completo del sitio (las páginas que existen) */}
+        {hasIndex && <div class="menu__index"><SiteIndex lang={lang} variant="sheet" current={route} /></div>}
         <ul class="menu__social">
           {
             social.map((l) => (
@@ -54,7 +92,7 @@ const social = site.links.filter((l) => l.nav && l.url);
           }
         </ul>
         <!-- Solo en la hoja móvil: el cierre con el pulgar (email, idioma, redes) -->
-        <div class="menu__foot" style={`--i:${all.length}`}>
+        <div class="menu__foot" style={`--i:${all.length + pages.length + (onHome ? 0 : 1)}`}>
           {
             site.contact.email && (
               <a class="btn btn--primary btn--xl btn--mail" href={`mailto:${site.contact.email}`}>
@@ -67,7 +105,7 @@ const social = site.links.filter((l) => l.nav && l.url);
             )
           }
           <div class="menu__row">
-            <a class="chip" href={homePath(other)} hreflang={other} lang={other} data-lang-link={homePath(other)}>{t('lang_switch', lang)}</a>
+            <a class="chip" href={langHref} hreflang={other} lang={other} data-lang-link={langHref}>{t('lang_switch', lang)}</a>
             {
               social.map((l) => (
                 <a class="chip" href={l.url} target="_blank" rel="noopener noreferrer">
@@ -81,7 +119,7 @@ const social = site.links.filter((l) => l.nav && l.url);
       </div>
     </nav>
 
-    <a class="lang label" href={homePath(other)} hreflang={other} lang={other} aria-label={t('lang_switch', lang)} data-lang-link={homePath(other)}>
+    <a class="lang label" href={langHref} hreflang={other} lang={other} aria-label={t('lang_switch', lang)} data-lang-link={langHref}>
       {t('lang_short', lang)}
     </a>
   </div>
@@ -115,7 +153,7 @@ const social = site.links.filter((l) => l.nav && l.url);
       backdrop-filter var(--dur-base) var(--ease);
   }
   /* Con JS: transparente sobre el hero, sólida al scrollear (motion.ts alterna .is-solid) */
-  :global(.js) .header:not(.is-solid):not(.is-open) {
+  :global(.js) .header:not(.header--page):not(.is-solid):not(.is-open) {
     background: transparent;
     border-bottom-color: transparent;
     backdrop-filter: none;
@@ -211,7 +249,7 @@ const social = site.links.filter((l) => l.nav && l.url);
 
   .nav__btn { display: none; }
   /* Piezas que solo existen en la hoja móvil */
-  .menu__num, .menu__foot, .menu__item--sheet { display: none; }
+  .menu__num, .menu__foot, .menu__item--sheet, .menu__index { display: none; }
 
   @media (max-width: 24rem) {
     .brand { font-size: 0.8rem; }
@@ -230,7 +268,7 @@ const social = site.links.filter((l) => l.nav && l.url);
      scroll (html.is-menu-open) vive en base.css dentro de esta misma consulta. */
   @media (max-width: 52rem), ((pointer: coarse) and (max-height: 32rem)) {
     :global(.js) .header { backdrop-filter: none; -webkit-backdrop-filter: none; background: color-mix(in srgb, var(--bg) 94%, transparent); }
-    :global(.js) .header:not(.is-solid):not(.is-open) { background: transparent; }
+    :global(.js) .header:not(.header--page):not(.is-solid):not(.is-open) { background: transparent; }
     :global(.js) .header__bar { column-gap: var(--space-xs); }
     :global(.js) .nav__btn [data-menu-text] { min-width: 6ch; text-align: right; }
     :global(.js) .nav__btn {
@@ -266,7 +304,8 @@ const social = site.links.filter((l) => l.nav && l.url);
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      justify-content: flex-end;
+      /* Alineado abajo cuando entra y scrolleable desde arriba cuando no: con flex-end el exceso quedaba inalcanzable */
+      justify-content: flex-start;
       gap: var(--space-m);
       padding: calc(var(--header-h) + var(--space-m)) var(--pad-r) max(var(--space-m), var(--safe-b)) var(--pad-l);
       overflow-y: auto;
@@ -279,6 +318,7 @@ const social = site.links.filter((l) => l.nav && l.url);
       clip-path: inset(100% 0 0 0);
       transition: clip-path var(--sheet-dur) var(--ease-out), visibility 0s linear var(--sheet-dur);
     }
+    :global(.js) .menu > :global(:first-child) { margin-top: auto; }
     :global(.js) .menu.is-open {
       visibility: visible;
       clip-path: inset(0 0 0 0);
@@ -293,6 +333,7 @@ const social = site.links.filter((l) => l.nav && l.url);
       transition-delay: calc(90ms + var(--i, 0) * 45ms);
     }
     :global(.js) .menu__item--sheet { display: block; }
+    :global(.js) .menu__index { display: block; padding-top: var(--space-s); }
     :global(.js) .menu__item { border-bottom: var(--divider); }
     :global(.js) .menu__item:first-child { border-top: var(--divider); }
     :global(.js) .menu__list .menu__link {

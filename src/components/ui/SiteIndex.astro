@@ -1,0 +1,64 @@
+---
+import { t, type Lang } from '../../lib/content';
+import { indexGroups } from '../../lib/nav';
+/**
+ * Índice completo del sitio, agrupado: lo leen la hoja del menú móvil y el pie. Sale del registro de rutas
+ * (src/lib/routes-core.ts): solo páginas que existen y tienen contenido. Sin páginas, no renderiza nada.
+ *   variant "sheet": dentro de la hoja móvil (sin legales: van en el pie)   "footer": con legales.
+ * `current` (id de ruta) marca la página actual con aria-current.
+ */
+interface Props {
+  lang: Lang;
+  variant: 'sheet' | 'footer';
+  current?: string;
+}
+const { lang, variant, current } = Astro.props;
+const groups = indexGroups(lang, { legal: variant === 'footer' });
+---
+
+{
+  groups.length > 0 && (
+    <nav class:list={['sidx', `sidx--${variant}`]} aria-label={t(variant === 'footer' ? 'base_footer_index' : 'base_nav_all', lang)}>
+      <p class="label sidx__title">{t(variant === 'footer' ? 'base_footer_index' : 'base_nav_all', lang)}</p>
+      <div class="sidx__groups">
+        {groups.map((g) => (
+          <div class="sidx__group">
+            <p class="label sidx__label">{g.label}</p>
+            <ul class="sidx__list">
+              {g.links.map((l) => (
+                <li>
+                  <a class="sidx__link" href={l.href} {...(l.id === current ? { 'aria-current': 'page' } : {})}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .sidx { display: grid; gap: var(--space-s); }
+  .sidx__title { color: var(--subtle); }
+  .sidx__groups { display: grid; gap: var(--space-m) var(--space-l); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .sidx__label { color: var(--accent); margin-bottom: var(--space-3xs); }
+  .sidx__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    color: var(--chrome-200);
+  }
+  .sidx__link[aria-current] { color: var(--chrome-50); }
+  .sidx__link:focus-visible { color: var(--chrome-50); }
+  @media (hover: hover) { .sidx__link:hover { color: var(--chrome-50); } }
+  .sidx__link:active { color: var(--chrome-50); }
+  /* Hoja móvil: dos columnas compactas */
+  .sidx--sheet .sidx__groups { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-s); }
+  .sidx--sheet .sidx__link { min-height: var(--tap); }
+</style>

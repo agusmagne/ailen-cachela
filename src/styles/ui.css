@@ -1,0 +1,47 @@
+/* Utilidades globales de la base para páginas interiores. Solo tokens. Se importa desde Base.astro.
+   Los componentes de src/components/ui/ traen sus propios estilos con alcance; acá va lo que se comparte. */
+
+/* Contenido de ejemplo: cualquier bloque con .is-demo queda enmarcado con trazo punteado y rayado tenue */
+.is-demo {
+  position: relative;
+  outline: var(--stroke) dashed var(--demo-line);
+  outline-offset: -1px;
+  background-image: var(--demo-stripes);
+}
+
+/* Texto corrido de páginas (bios, condiciones, notas): medida cómoda y ritmo vertical */
+.prose { max-width: var(--measure); color: var(--chrome-200); }
+.prose > * + * { margin-top: var(--space-s); }
+.prose h2, .prose h3 { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); line-height: var(--lh-title); color: var(--chrome-50); margin-top: var(--space-l); }
+.prose h2 { font-size: var(--step-2); }
+.prose h3 { font-size: var(--step-1); }
+.prose ul, .prose ol { padding-left: 1.25em; list-style: revert; }
+.prose li + li { margin-top: var(--space-3xs); }
+.prose a { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: var(--stroke); color: var(--chrome-50); }
+.prose strong { color: var(--chrome-50); font-weight: 600; }
+
+/* Rejilla automática de tarjetas */
+.grid-cards { display: grid; gap: var(--space-m); grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); }
+
+/* Bloques de una página: separación vertical coherente */
+.page-block { margin-top: var(--space-2xl); }
+.page-block:first-child { margin-top: 0; }
+@media (max-width: 52rem) { .page-block { margin-top: var(--space-xl); } }
+
+/* Etiqueta de campo de formulario y controles base (booking, newsletter, lab) */
+.field { display: grid; gap: var(--space-3xs); }
+.field > label, .field > legend { font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--muted); }
+.input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.65rem var(--space-xs);
+  font: inherit;
+  font-size: max(1rem, var(--step-0)); /* 16 px: iOS no hace zoom al enfocar */
+  color: var(--fg);
+  background: var(--bg-raised);
+  border: var(--stroke) solid var(--chrome-500);
+  border-radius: var(--radius-ui);
+}
+.input::placeholder { color: var(--chrome-400); }
+.input:focus-visible { outline-offset: 0; border-color: var(--chrome-50); }
+textarea.input { min-height: 8rem; resize: vertical; }

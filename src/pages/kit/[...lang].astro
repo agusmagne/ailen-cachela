@@ -1,0 +1,105 @@
+---
+/**
+ * Kit de componentes: muestrario de src/components/ui/ para trabajar y revisar. SOLO desarrollo: en el build de
+ * producción no genera nada (getStaticPaths vacío) salvo que se construya con KIT=1.
+ *   npm run dev  ->  http://localhost:4321/kit/   (es)   y   /kit/en/
+ */
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Card from '../../components/ui/Card.astro';
+import DataList from '../../components/ui/DataList.astro';
+import DataTable from '../../components/ui/DataTable.astro';
+import Button from '../../components/ui/Button.astro';
+import Chip from '../../components/ui/Chip.astro';
+import Tabs from '../../components/ui/Tabs.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import Download from '../../components/ui/Download.astro';
+import Embed from '../../components/ui/Embed.astro';
+import EmptyState from '../../components/ui/EmptyState.astro';
+import ComingSoon from '../../components/ui/ComingSoon.astro';
+import DemoBadge from '../../components/ui/DemoBadge.astro';
+import QrCode from '../../components/ui/QrCode.astro';
+import LazyModule from '../../components/ui/LazyModule.astro';
+import type { Lang } from '../../lib/content';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV || process.env.KIT === '1' ? [{ params: { lang: undefined } }, { params: { lang: 'en' } }] : [];
+}
+const lang: Lang = Astro.params.lang === 'en' ? 'en' : 'es';
+---
+
+<Base lang={lang} title="Kit de componentes" noindex>
+  <Nav lang={lang} />
+  <main id="main">
+    <PageHead lang={lang} title="Kit de componentes" crumbs={[{ label: 'Kit' }]} kicker="src/components/ui" numeral="01" total="01" demo>
+      <p slot="lead">Muestrario de la base. Solo desarrollo.</p>
+      <Fragment slot="meta"><Button href="#botones" variant="primary">Botones</Button><Chip>Chip</Chip><Chip tone="accent">Acento</Chip></Fragment>
+    </PageHead>
+    <div class="wrap" style="padding-bottom: var(--section-gap)">
+      <section class="page-block" id="botones">
+        <SectionHead lang={lang} title="Botones y chips" kicker="Button · Chip" lead="Aspecto de .btn, con flecha y aviso de pestaña nueva." />
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-xs)">
+          <Button href="#botones" variant="primary">Primario</Button>
+          <Button href="https://example.com" external lang={lang}>Externo</Button>
+          <Button href="#botones" download="x.txt">Descarga</Button>
+          <Button type="button" size="xl">Botón xl</Button>
+          <Chip href="#botones" selected>Seleccionado</Chip><Chip href="#botones">Link</Chip>
+        </div>
+      </section>
+
+      <section class="page-block">
+        <SectionHead lang={lang} title="Contenido de ejemplo" kicker="DemoBadge" demo />
+        <p style="display:flex;gap:var(--space-xs);flex-wrap:wrap;align-items:center"><DemoBadge lang={lang} /><DemoBadge lang={lang} variant="inline" /></p>
+        <div class="grid-cards" style="margin-top:var(--space-m)">
+          <Card lang={lang} title="Tarjeta real" kicker="Real" href="#botones">Cuerpo de una tarjeta clickeable.<Button slot="footer" href="#botones">Acción</Button></Card>
+          <Card lang={lang} title="Tarjeta de ejemplo" kicker="Demo" demo>Marcada con la insignia y el marco punteado.</Card>
+        </div>
+      </section>
+
+      <section class="page-block">
+        <SectionHead lang={lang} title="Datos" kicker="DataList · DataTable" />
+        <DataList items={[{ label: 'BPM', value: '128–134' }, { label: 'Sello', value: 'ROOM', href: 'https://roomarg.bandcamp.com/', external: true }, { label: 'Formato', value: 'CDJ · USB', wide: true }]} />
+        <div style="height:var(--space-l)"></div>
+        <DataTable lang={lang} caption="Fechas de ejemplo" columns={[{ key: 'd', label: 'Fecha', nowrap: true }, { key: 'v', label: 'Lugar' }, { key: 'c', label: 'Capacidad', numeric: true }]} rows={[{ d: '2026-12-05', v: 'Club Ejemplo · Ciudad', c: 800 }, { d: '2026-12-19', v: { text: 'Festival Ejemplo', href: '#botones' }, c: 4500 }]} />
+      </section>
+
+      <section class="page-block">
+        <SectionHead lang={lang} title="Pestañas y acordeón" kicker="Tabs · Accordion" />
+        <Tabs lang={lang} label="Bio" tabs={[{ id: 'short', label: 'Corta' }, { id: 'long', label: 'Larga' }]}>
+          <p slot="short">Bio corta de ejemplo.</p>
+          <p slot="long">Bio larga de ejemplo con más texto para ver el panel.</p>
+        </Tabs>
+        <div style="height:var(--space-l)"></div>
+        <Accordion exclusive items={[{ id: 'a', title: 'Cancelaciones', open: true }, { id: 'b', title: 'Depósito' }]}>
+          <p slot="a">Texto de ejemplo.</p>
+          <p slot="b">Otro texto de ejemplo.</p>
+        </Accordion>
+      </section>
+
+      <section class="page-block">
+        <SectionHead lang={lang} title="Descargas, QR y embeds" kicker="Download · QrCode · Embed" />
+        <div class="grid-cards">
+          <Download lang={lang} href="#botones" label="Press kit (ejemplo)" kind="ZIP" size={2457600} demo />
+          <Download lang={lang} href="#botones" label="Rider técnico" kind="PDF" size="180 KB" description="Una página, con diagrama de cabina." />
+        </div>
+        <div style="margin-block:var(--space-l)"><QrCode text="https://ailencachela.com/prensa/" label="QR de ejemplo" /></div>
+        <div class="grid-cards">
+          <Embed lang={lang} provider="soundcloud" url="https://soundcloud.com/ailen-cachela/dubbin-rain" title="Dubbin' rain" />
+          <Embed lang={lang} provider="youtube" title="Video de ejemplo (inerte)" demo inert />
+        </div>
+      </section>
+
+      <section class="page-block">
+        <SectionHead lang={lang} title="Estados" kicker="EmptyState · ComingSoon · LazyModule" />
+        <EmptyState lang={lang} />
+        <div style="height:var(--space-m)"></div>
+        <ComingSoon lang={lang} demo />
+        <LazyModule name="kit-hello" props={{ name: 'kit' }} class="prose" ><p data-hello-out>Esperando entrar en pantalla…</p></LazyModule>
+      </section>
+    </div>
+  </main>
+  <Footer lang={lang} />
+</Base>

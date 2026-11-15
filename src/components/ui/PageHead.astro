@@ -1,0 +1,79 @@
+---
+import Glitch from '../Glitch.astro';
+import SplitText from '../SplitText.astro';
+import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+import DemoBadge from './DemoBadge.astro';
+import type { Lang } from '../../lib/content';
+/**
+ * Cabecera de página interior: migas, numeral gigante en contorno (decorativo), título display con glitch
+ * y bajada. Slots: `lead` (texto de entrada), `meta` (chips, botones de acción). `demo` rotula la página.
+ * La usa PageLayout; solo se usa suelta si una página arma su propio layout.
+ */
+interface Props {
+  lang: Lang;
+  title: string;
+  crumbs: Crumb[];
+  kicker?: string;
+  /** Numeral decorativo ("01"); null/omitido = sin numeral. */
+  numeral?: string | null;
+  total?: string | null;
+  demo?: boolean;
+}
+const { lang, title, crumbs, kicker, numeral = null, total = null, demo = false } = Astro.props;
+---
+
+<header class="ph" id="top" data-glitch-host>
+  <div class="wrap ph__inner">
+    <Breadcrumbs lang={lang} items={crumbs} />
+    {numeral && <span class="ph__numeral" aria-hidden="true">{numeral}</span>}
+    {
+      (kicker || numeral) && (
+        <p class="label ph__kicker">
+          {numeral && total && <span class="ph__n" aria-hidden="true">{numeral}</span>}
+          {numeral && total && <span aria-hidden="true"> / {total}</span>}
+          {kicker && <span class="ph__kick">{kicker}</span>}
+        </p>
+      )
+    }
+    <h1 class="ph__title display">
+      <Glitch text={title} block><SplitText text={title} /></Glitch>
+    </h1>
+    {Astro.slots.has('lead') && <div class="ph__lead"><slot name="lead" /></div>}
+    {Astro.slots.has('meta') && <div class="ph__meta"><slot name="meta" /></div>}
+    {demo && <DemoBadge lang={lang} variant="section" class="ph__demo" />}
+  </div>
+</header>
+
+<style>
+  .ph { position: relative; isolation: isolate; padding-top: var(--page-head-pad); padding-bottom: var(--space-xl); overflow: hidden; }
+  .ph__inner { position: relative; display: grid; gap: var(--space-s); justify-items: start; }
+  .ph__kicker { display: flex; align-items: center; gap: var(--space-2xs); color: var(--subtle); }
+  .ph__kicker::before { content: ''; width: 2.5rem; height: var(--stroke); background: var(--chrome-500); }
+  .ph__n { color: var(--accent); }
+  .ph__kick { margin-left: var(--space-xs); color: var(--muted); }
+  .ph__title { font-size: clamp(2.4rem, 1.2rem + 7.5vw, 8rem); line-height: 0.95; letter-spacing: var(--tracking-display); overflow-wrap: anywhere; max-width: 100%; }
+  .ph__numeral {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: var(--pad-r);
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-stretch: var(--stretch-display);
+    font-size: clamp(8rem, 28vw, 22rem);
+    line-height: 0.8;
+    letter-spacing: var(--tracking-display);
+    color: transparent;
+    -webkit-text-stroke: var(--stroke) var(--chrome-700);
+    pointer-events: none;
+    user-select: none;
+  }
+  .ph__lead { max-width: var(--measure); font-size: var(--step-1); line-height: 1.4; color: var(--chrome-200); }
+  .ph__lead > :global(* + *) { margin-top: var(--space-xs); }
+  .ph__meta { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-top: var(--space-2xs); }
+  :global(.ph__demo) { margin-top: var(--space-xs); }
+  @media (max-width: 52rem) {
+    .ph { padding-bottom: var(--space-l); }
+    .ph__title { text-wrap: balance; }
+  }
+</style>

@@ -117,6 +117,8 @@ export const siteSchema = z
       .strict(),
     contact: z.object({ email: z.email(), email_in_jsonld: z.boolean() }).strict(),
     ui: z.record(z.string(), localized),
+    // Interruptor global del contenido de ejemplo (ver src/lib/demo-core.ts). Se puede pisar con DEMO_CONTENT=0|1.
+    demo_content: z.boolean().default(true),
   })
   .strict()
   .superRefine((d, ctx) => {

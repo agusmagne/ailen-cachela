@@ -1,0 +1,44 @@
+---
+/**
+ * Chip: etiqueta mono en mayúsculas (género, formato, estado). Con `href` es link (área táctil >= 44 px);
+ * `tone="accent"` pinta el contorno con el acento (usar con moderación); `selected` marca filtros activos.
+ */
+interface Props {
+  href?: string;
+  tone?: 'default' | 'accent';
+  selected?: boolean;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { href, tone = 'default', selected = false, class: cls, ...rest } = Astro.props;
+const Tag = href !== undefined ? 'a' : 'span';
+---
+
+<Tag class:list={['ui-chip', `ui-chip--${tone}`, { 'is-selected': selected, 'is-link': href !== undefined }, cls]} {...(href !== undefined ? { href } : {})} {...(selected ? { 'aria-current': 'true' } : {})} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .ui-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.2rem 0.6rem;
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    line-height: 1.4;
+    color: var(--chrome-200);
+    border: var(--stroke) solid var(--chrome-600);
+    border-radius: var(--radius-ui);
+    transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .ui-chip--accent { border-color: var(--accent); color: var(--accent); }
+  .ui-chip.is-link { min-height: var(--tap); padding-inline: var(--space-s); }
+  .ui-chip.is-selected { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
+  .ui-chip.is-link:focus-visible { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); }
+  @media (hover: hover) { .ui-chip.is-link:hover { background: var(--chrome-50); color: var(--bg); border-color: var(--chrome-50); } }
+  .ui-chip.is-link:active { background: var(--chrome-50); color: var(--bg); }
+</style>

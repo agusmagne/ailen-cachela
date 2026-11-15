@@ -1,0 +1,31 @@
+---
+import { t, homePath, type Lang } from '../../lib/content';
+/** Migas de pan semánticas (nav > ol). La última (página actual) no es link y lleva aria-current. */
+export interface Crumb { label: string; href?: string }
+interface Props { lang: Lang; items: Crumb[] }
+const { lang, items } = Astro.props;
+const all: Crumb[] = [{ label: t('base_nav_home', lang), href: homePath(lang) }, ...items];
+---
+
+<nav class="crumbs" aria-label={t('base_breadcrumbs', lang)}>
+  <ol class="crumbs__list">
+    {
+      all.map((c, i) => (
+        <li class="crumbs__item">
+          {c.href && i < all.length - 1 ? <a class="crumbs__link" href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .crumbs__list { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-2xs); font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--subtle); }
+  .crumbs__item + .crumbs__item::before { content: '/'; margin-right: var(--space-2xs); color: var(--chrome-600); }
+  .crumbs__item { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .crumbs__item [aria-current] { color: var(--chrome-200); overflow-wrap: anywhere; }
+  .crumbs__link { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--muted); }
+  .crumbs__link:focus-visible { color: var(--chrome-50); }
+  @media (hover: hover) { .crumbs__link:hover { color: var(--chrome-50); } }
+  .crumbs__link:active { color: var(--chrome-50); }
+</style>

@@ -1,0 +1,69 @@
+---
+/**
+ * Lista de definición (<dl>) para fichas técnicas: BPM, sello, formato, duración, capacidad...
+ * Datos por `items`, o a mano en el slot (<div><dt/><dd/></div>). `wide: true` ocupa toda la fila.
+ * En teléfono pasa a filas "etiqueta | valor" (igual que las fichas de Música).
+ */
+export interface DataItem {
+  label: string;
+  value: string | number;
+  href?: string;
+  external?: boolean;
+  wide?: boolean;
+}
+interface Props {
+  items?: DataItem[];
+  /** "grid" (columnas auto) o "rows" (siempre una columna de filas). */
+  layout?: 'grid' | 'rows';
+  class?: string;
+}
+const { items = [], layout = 'grid', class: cls } = Astro.props;
+---
+
+<dl class:list={['facts', `facts--${layout}`, cls]}>
+  {
+    items.map((it) => (
+      <div class:list={{ facts__wide: it.wide }}>
+        <dt class="label">{it.label}</dt>
+        <dd>
+          {it.href ? <a class="link" href={it.href} {...(it.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{it.value}</a> : it.value}
+        </dd>
+      </div>
+    ))
+  }
+  <slot />
+</dl>
+
+<style>
+  /* Los hijos se estilan con :global para alcanzar también lo que llega por el slot */
+  .facts { display: grid; gap: var(--space-s) var(--space-m); width: 100%; padding-top: var(--space-m); border-top: var(--divider); }
+  .facts--grid { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .facts--rows { grid-template-columns: 1fr; gap: 0; padding-top: 0; border-top: 0; }
+  .facts :global(dd) { margin: 0; color: var(--chrome-100); overflow-wrap: anywhere; }
+  .facts :global(dt) { margin-bottom: var(--space-3xs); }
+  .facts :global(.facts__wide) { grid-column: 1 / -1; }
+  .facts--rows > :global(div) {
+    display: grid;
+    grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--space-xs);
+    padding-block: var(--space-xs);
+    border-bottom: var(--divider);
+  }
+  .facts--rows > :global(div:first-child) { border-top: var(--divider); }
+  .facts--rows :global(dt) { margin: 0; }
+  @media (max-width: 52rem) {
+    .facts--grid { grid-template-columns: 1fr; gap: 0; padding-top: 0; border-top: 0; }
+    .facts--grid > :global(div) {
+      display: grid;
+      grid-template-columns: minmax(6.5rem, 8rem) minmax(0, 1fr);
+      align-items: baseline;
+      gap: var(--space-xs);
+      padding-block: var(--space-xs);
+      border-bottom: var(--divider);
+    }
+    .facts--grid > :global(div:first-child) { border-top: var(--divider); }
+    .facts--grid :global(dt) { margin: 0; }
+  }
+  @media (pointer: coarse) { .facts :global(dd .link) { display: inline-block; padding-block: 0.7rem; margin-block: -0.7rem; background-origin: content-box; } }
+</style>

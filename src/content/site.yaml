@@ -9,6 +9,12 @@
 # - Los textos con es/en van en los dos idiomas.
 # =============================================================================
 
+# Interruptor global del CONTENIDO DE EJEMPLO. true = se muestran los ítems inventados (`demo: true` en los
+# archivos de src/content/*.yaml), siempre rotulados como "contenido de ejemplo". false = desaparecen, y las
+# páginas que quedan sin nada se ocultan del menú. Al construir se puede pisar con DEMO_CONTENT=0 o 1.
+# ANTES DE PUBLICAR EN main: decidir con la artista y poner false.
+demo_content: true
+
 site:
   name: Ailén Cachela
   # Color de la barra del navegador en móvil: igual a --bg de src/styles/tokens.css

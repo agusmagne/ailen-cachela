@@ -1,0 +1,66 @@
+---
+import { t, type Lang } from '../../lib/content';
+/**
+ * Pestañas accesibles (patrón WAI-ARIA: flechas, Home/End). Mejora progresiva: sin JS todos los paneles
+ * se ven apilados, cada uno con su título; con JS (scripts/ui.ts) aparece la fila de pestañas.
+ * Cada panel llega por un slot con el MISMO nombre que su `id`:
+ *   <Tabs lang label="Bio" tabs={[{ id:'short', label:'Corta' }, { id:'long', label:'Larga' }]}>
+ *     <p slot="short">...</p>  <p slot="long">...</p>
+ *   </Tabs>
+ * `label` nombra el grupo de pestañas para lectores de pantalla.
+ */
+interface Props {
+  lang: Lang;
+  label?: string;
+  tabs: { id: string; label: string }[];
+  /** id de la pestaña abierta al cargar (por defecto la primera). */
+  initial?: string;
+  class?: string;
+}
+const { lang, label = t('base_tabs_label', lang), tabs, initial = tabs[0]?.id, class: cls } = Astro.props;
+const uid = `tabs-${Math.abs([...tabs.map((x) => x.id).join('|') + label].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7))}`;
+const panels = await Promise.all(tabs.map(async (tab) => ({ ...tab, html: await Astro.slots.render(tab.id) })));
+---
+
+<div class:list={['tabs', cls]} data-tabs data-initial={initial}>
+  <div class="tabs__list" role="tablist" aria-label={label} data-tabs-list hidden>
+    {tabs.map((tab) => <button type="button" role="tab" class="tabs__tab" id={`${uid}-t-${tab.id}`} aria-controls={`${uid}-p-${tab.id}`} aria-selected="false" tabindex="-1" data-tab={tab.id}>{tab.label}</button>)}
+  </div>
+  {
+    panels.map((p) => (
+      <section class="tabs__panel" id={`${uid}-p-${p.id}`} role="tabpanel" aria-labelledby={`${uid}-t-${p.id}`} data-panel={p.id}>
+        <h3 class="tabs__title label">{p.label}</h3>
+        <Fragment set:html={p.html} />
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .tabs__list { display: flex; flex-wrap: wrap; gap: var(--space-3xs); border-bottom: var(--divider); margin-bottom: var(--space-m); }
+  .tabs__tab {
+    min-height: var(--tap);
+    padding: 0 var(--space-s);
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .tabs__tab[aria-selected='true'] { color: var(--chrome-50); border-bottom-color: var(--accent); }
+  .tabs__tab:focus-visible { color: var(--chrome-50); outline-offset: -2px; }
+  @media (hover: hover) { .tabs__tab:hover { color: var(--chrome-50); } }
+  .tabs__tab:active { background: var(--press-bg); }
+  .tabs__panel + .tabs__panel { margin-top: var(--space-l); }
+  .tabs__title { margin-bottom: var(--space-xs); color: var(--accent); }
+  /* Con JS: solo el panel activo, sin títulos repetidos */
+  .tabs.is-enhanced .tabs__title { display: none; }
+  .tabs.is-enhanced .tabs__panel + .tabs__panel { margin-top: 0; }
+  .tabs__panel:focus-visible { outline-offset: 6px; }
+</style>

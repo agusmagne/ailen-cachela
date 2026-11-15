@@ -1,0 +1,114 @@
+---
+import { t, type Lang } from '../../lib/content';
+import DemoBadge from './DemoBadge.astro';
+/**
+ * Contenedor de embed con fachada. NO existe ningún iframe ni se pide nada a un tercero hasta que la persona
+ * hace clic (scripts/ui.ts lo inserta). Sin JS, el link abre el servicio en otra pestaña.
+ *   provider "soundcloud": url = URL del track/set.     provider "youtube": id = id del video (youtube-nocookie).
+ * No usa miniaturas de YouTube (serían un pedido a un tercero al cargar): la fachada es una pieza de código.
+ * `inert`: para contenido de ejemplo sin video/audio real. La fachada se ve igual pero no es un link y nunca carga
+ * nada (así un id inventado jamás llega a YouTube ni a SoundCloud).
+ */
+interface Props {
+  lang: Lang;
+  provider: 'soundcloud' | 'youtube';
+  title: string;
+  /** SoundCloud: URL pública del track. */
+  url?: string;
+  /** YouTube: id del video. */
+  id?: string;
+  demo?: boolean;
+  inert?: boolean;
+  class?: string;
+}
+const { lang, provider, title, url, id, demo = false, inert = false, class: cls } = Astro.props;
+const isYt = provider === 'youtube';
+if (!inert && isYt && !id) throw new Error('Embed youtube: falta `id`.');
+if (!inert && !isYt && !url) throw new Error('Embed soundcloud: falta `url`.');
+const open = inert ? '' : isYt ? `https://www.youtube.com/watch?v=${id}` : (url as string);
+const src = inert ? '' : isYt
+  ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`
+  : `https://w.soundcloud.com/player/?url=${encodeURIComponent(url as string)}&auto_play=true&hide_related=true&show_comments=false&show_user=true&visual=false`;
+const privacy = t(isYt ? 'base_embed_privacy_yt' : 'base_embed_privacy_sc', lang);
+const openLabel = t(isYt ? 'base_embed_open_yt' : 'base_embed_open_sc', lang);
+---
+
+<figure class:list={['embed', `embed--${provider}`, cls]}>
+  <div class:list={['embed__stage', { 'has-demo-badge is-demo': demo }]} data-embed-stage>
+    {demo && <DemoBadge lang={lang} />}
+    {
+      inert ? (
+        <div class="embed__facade embed__facade--inert">
+          <span class="embed__play" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
+          <span class="embed__title">{title}</span>
+        </div>
+      ) : (
+        <a class="embed__facade" href={open} target="_blank" rel="noopener noreferrer" data-embed data-embed-src={src} data-embed-title={title} data-embed-kind={provider}>
+          <span class="embed__play" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
+          <span class="embed__title" aria-hidden="true">{title}</span>
+          <span class="label embed__cta">{t(isYt ? 'base_embed_play_video' : 'base_embed_play', lang)}<span class="sr-only">: {title}, {isYt ? 'YouTube' : 'SoundCloud'} {t('new_tab', lang)}</span></span>
+        </a>
+      )
+    }
+  </div>
+  {
+    !inert && (
+      <figcaption class="embed__note">
+        <span class="label">{privacy}</span>
+        <a class="link" href={open} target="_blank" rel="noopener noreferrer">{openLabel}<span class="sr-only"> {t('new_tab', lang)}</span></a>
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .embed { position: relative; display: grid; gap: var(--space-2xs); }
+  .embed__stage { position: relative; }
+  .embed__facade {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    gap: var(--space-2xs);
+    align-content: end;
+    justify-items: start;
+    min-height: 9rem;
+    padding: var(--space-s);
+    border: var(--stroke) solid var(--chrome-600);
+    background:
+      radial-gradient(90% 90% at 85% 0%, color-mix(in srgb, var(--chrome-300) 16%, transparent), transparent 62%),
+      radial-gradient(60% 60% at 0% 100%, color-mix(in srgb, var(--chrome-500) 14%, transparent), transparent 70%),
+      var(--bg-raised);
+    transition: border-color var(--dur-base) var(--ease);
+  }
+  .embed--youtube .embed__facade { aspect-ratio: 16 / 9; min-height: 0; }
+  .embed__facade--inert { cursor: default; opacity: 0.85; }
+  .embed__facade:focus-visible { border-color: var(--chrome-300); }
+  @media (hover: hover) { a.embed__facade:hover { border-color: var(--chrome-300); } a.embed__facade:hover .embed__play { background: var(--chrome-50); color: var(--bg); } }
+  a.embed__facade:active .embed__play { background: var(--chrome-50); color: var(--bg); }
+  .embed__play {
+    position: absolute;
+    z-index: 1;
+    top: var(--space-s);
+    right: var(--space-s);
+    display: grid;
+    place-items: center;
+    width: var(--tap-lg);
+    height: var(--tap-lg);
+    border-radius: var(--radius-round);
+    color: var(--chrome-50);
+    border: var(--stroke) solid var(--chrome-300);
+    background: var(--bg);
+    transition: background-color var(--dur-base) var(--ease), color var(--dur-fast) var(--ease);
+  }
+  .embed__play svg { width: 45%; height: 45%; margin-left: 8%; }
+  /* Con la insignia de ejemplo arriba a la derecha, el play baja un poco para no taparla */
+  .embed__stage.has-demo-badge .embed__play { top: auto; bottom: var(--space-s); }
+  .embed__title { font-family: var(--font-display); font-weight: 600; font-stretch: var(--stretch-title); font-size: var(--step-1); line-height: var(--lh-title); color: var(--chrome-50); padding-right: var(--tap-lg); overflow-wrap: anywhere; }
+  .embed__cta { color: var(--accent); }
+  .embed__note { display: flex; flex-wrap: wrap; gap: var(--space-3xs) var(--space-s); align-items: baseline; }
+  /* Una vez cargado, el iframe ocupa el lugar de la fachada */
+  :global(.embed__frame) { width: 100%; border: 0; min-height: 9rem; background: var(--bg-raised); }
+  :global(.embed--soundcloud .embed__frame) { height: 10.5rem; }
+  :global(.embed--youtube .embed__frame) { aspect-ratio: 16 / 9; height: auto; }
+</style>

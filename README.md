@@ -1,6 +1,12 @@
 # Sitio de Ailén Cachela
 
-Astro estático, una sola página con anclas, español (`/`) e inglés (`/en/`). Sin cookies ni trackers; los embeds de SoundCloud cargan recién al hacer clic.
+Astro estático, español (`/`) e inglés (`/en/`). La home es una página con anclas; la rama `pro-features` la amplía a un sitio de varias páginas
+(prensa, booking, música, fechas, lab, etc.) sobre una **base común** ya implementada: registro de rutas, `PageLayout`, componentes en
+`src/components/ui/`, datos por dominio, contenido de ejemplo con interruptor y descargables. Ver `src/components/README.md` (cómo se usa la base)
+y `_research/plan-pro.md` (plan, paquetes de trabajo y reglas). Sin cookies ni trackers; los embeds de SoundCloud cargan recién al hacer clic.
+
+**Contenido de ejemplo**: `demo_content` en `src/content/site.yaml` (o `DEMO_CONTENT=0` / `DEMO_CONTENT=1` al construir) muestra u oculta todo lo inventado
+(`demo: true` en los datos), siempre rotulado en pantalla. Verificación de un build: `npm run verify -- <carpeta> [--demo-off]`. PDF con Chrome: `npm run downloads`.
 
 ## Correr
 

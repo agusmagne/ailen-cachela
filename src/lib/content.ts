@@ -2,6 +2,7 @@ import { parse } from 'yaml';
 import { z } from 'astro/zod';
 import raw from '../content/site.yaml?raw';
 import { siteSchema, type SiteContent, type Localized } from './schema';
+import { mergeUi } from './content-loader';
 
 export type Lang = 'es' | 'en';
 export const LANGS: Lang[] = ['es', 'en'];
@@ -11,7 +12,10 @@ function load(): SiteContent {
   if (!result.success) {
     throw new Error(`site.yaml inválido:\n${z.prettifyError(result.error)}`);
   }
-  return result.data;
+  // Textos de interfaz de los paquetes: src/content/ui/<paquete>.yaml (claves con prefijo "<paquete>_").
+  const uiFiles = import.meta.glob('../content/ui/*.yaml', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+  const byName = Object.fromEntries(Object.entries(uiFiles).map(([p, r]) => [p.replace(/^.*\//, '').replace(/\.yaml$/, ''), r]));
+  return { ...result.data, ui: mergeUi(result.data.ui, byName) };
 }
 
 export const site = load();

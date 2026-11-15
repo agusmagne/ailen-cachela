@@ -1,0 +1,28 @@
+---
+import { t, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+import DemoBadge from './DemoBadge.astro';
+/** Aviso global y discreto (va en el pie de todas las páginas). Invisible con el interruptor apagado. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+{
+  demoOn && (
+    <p class="demo-notice" data-demo-notice>
+      <DemoBadge lang={lang} variant="inline" />
+      <span>{t('base_demo_notice', lang)}</span>
+    </p>
+  )
+}
+
+<style>
+  .demo-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+</style>

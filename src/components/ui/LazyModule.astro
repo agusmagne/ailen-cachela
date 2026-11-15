@@ -1,0 +1,22 @@
+---
+/**
+ * Carga diferida de un script al entrar en pantalla. El módulo vive en src/scripts/modules/<name>.ts y exporta
+ * por defecto `(el: HTMLElement, props: any) => void | Promise<void>`; scripts/lazy.ts lo importa recién cuando el
+ * elemento se acerca al viewport (o cuando el navegador está inactivo con `when="idle"`).
+ *   <LazyModule name="lab-sequencer" props={{ bpm: 128 }} class="seq">  ...marcado base, funciona sin JS...  </LazyModule>
+ * Dentro del slot va el contenido que se ve sin JS o mientras carga.
+ */
+interface Props {
+  name: string;
+  props?: Record<string, unknown>;
+  when?: 'visible' | 'idle';
+  as?: string;
+  class?: string;
+}
+const { name, props = {}, when = 'visible', as, class: cls } = Astro.props;
+const Tag = (as ?? 'div') as 'div';
+---
+
+<Tag class={cls} data-lazy={name} data-lazy-when={when} data-lazy-props={JSON.stringify(props)}>
+  <slot />
+</Tag>

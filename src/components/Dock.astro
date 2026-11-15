@@ -1,6 +1,7 @@
 ---
-import { site, t, type Lang } from '../lib/content';
+import { site, t, homePath, type Lang } from '../lib/content';
 import { isVisible } from '../lib/sections';
+import { router } from '../lib/routes';
 import Disc from './Disc.astro';
 
 /**
@@ -9,12 +10,16 @@ import Disc from './Disc.astro';
  * de pantalla, Escuchar pasa a ser un mini reproductor (disco girando + título)
  * que vuelve al reproductor. motion.ts decide cuándo se muestra: se esconde en
  * el hero (que ya tiene las mismas CTA), con el menú abierto y en Contacto/pie.
+ * `page`: en páginas interiores no hay secciones ni reproductor en la página; Escuchar vuelve a la home y
+ * Booking va a la página de booking (si existe) o al email.
  */
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props { lang: Lang; page?: boolean }
+const { lang, page = false } = Astro.props;
 const featured = site.listen.tracks.find((x) => x.id === site.listen.featured);
 const listen = isVisible('escuchar');
 const booking = isVisible('contacto');
+const listenHref = page ? `${homePath(lang)}#escuchar` : '#escuchar';
+const bookingHref = page ? (router.listed('booking') ? router.path('booking', lang) : `mailto:${site.contact.email}`) : '#contacto';
 ---
 
 {
@@ -22,11 +27,11 @@ const booking = isVisible('contacto');
     <nav class="dock" aria-label={t('dock_label', lang)} data-dock data-mode="default">
       <div class="dock__bar">
         {listen && (
-          <a class="btn btn--primary dock__listen" href="#escuchar" data-dock-listen>
+          <a class="btn btn--primary dock__listen" href={listenHref} data-dock-listen>
             {t('hero_cta_listen', lang)} <span class="arrow" data-dir="down" aria-hidden="true">↓</span>
           </a>
         )}
-        {listen && featured && (
+        {!page && listen && featured && (
           <a class="dock__mini" href="#player" data-dock-mini aria-label={`${t('dock_player', lang)}: ${featured.title}`}>
             <Disc class="dock__seal" />
             <span class="dock__text">
@@ -35,7 +40,7 @@ const booking = isVisible('contacto');
             </span>
           </a>
         )}
-        {booking && <a class="btn dock__booking" href="#contacto">{t('hero_cta_booking', lang)}</a>}
+        {booking && <a class="btn dock__booking" href={bookingHref}>{t('hero_cta_booking', lang)}</a>}
       </div>
     </nav>
   )

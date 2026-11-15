@@ -1,0 +1,75 @@
+---
+import { t, type Lang } from '../../lib/content';
+import { demoOn } from '../../lib/demo';
+/**
+ * Marca visual de "contenido de ejemplo". Se usa en CADA ítem inventado (variant "item": etiqueta chica) y
+ * al principio de cada sección o página que lo contenga (variant "section": etiqueta + nota).
+ * No pinta nada si el interruptor global está apagado (los ítems de ejemplo ya no existen en ese caso).
+ */
+interface Props {
+  lang: Lang;
+  variant?: 'item' | 'section' | 'inline';
+  class?: string;
+}
+const { lang, variant = 'item', class: cls } = Astro.props;
+---
+
+{
+  demoOn && (
+    <span class:list={['demo-badge', `demo-badge--${variant}`, cls]} data-demo-badge {...(variant === 'section' ? { role: 'note' } : {})}>
+      <span class="demo-badge__mark" aria-hidden="true"></span>
+      <span class="demo-badge__text">{variant === 'item' ? t('base_demo_badge_short', lang) : t('base_demo_badge', lang)}</span>
+      {variant === 'section' && <span class="demo-badge__note">{t('base_demo_section_note', lang)}</span>}
+    </span>
+  )
+}
+
+<style>
+  .demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    max-width: 100%;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--font-ui);
+    font-weight: var(--font-ui-weight);
+    font-size: var(--step-ui);
+    letter-spacing: var(--tracking-ui);
+    text-transform: var(--case-ui);
+    line-height: 1.4;
+    color: var(--demo-ink);
+    background: var(--bg-raised);
+    border: var(--stroke) dashed var(--demo-line);
+    border-radius: var(--radius-ui);
+    vertical-align: middle;
+  }
+  /* Rombo vacío: la señal de "no real", en el único acento del sitio */
+  .demo-badge__mark {
+    flex: none;
+    width: 0.55em;
+    height: 0.55em;
+    border: var(--stroke) solid var(--accent);
+    transform: rotate(45deg);
+  }
+  .demo-badge--section {
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--space-2xs) var(--space-xs);
+  }
+  .demo-badge__note {
+    flex: 1 1 100%;
+    font-family: var(--font-body);
+    font-weight: var(--font-body-weight);
+    font-size: var(--step--1);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+  }
+  /* En una tarjeta o ficha: flota en la esquina sin empujar el contenido */
+  :global(.has-demo-badge) > .demo-badge--item {
+    position: absolute;
+    top: var(--space-2xs);
+    right: var(--space-2xs);
+    z-index: 3;
+  }
+</style>

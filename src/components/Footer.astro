@@ -1,14 +1,24 @@
 ---
 import { site, t, type Lang } from '../lib/content';
-
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+import { router } from '../lib/routes';
+import { demoOn } from '../lib/demo';
+import SiteIndex from './ui/SiteIndex.astro';
+import DemoNotice from './ui/DemoNotice.astro';
+interface Props {
+  lang: Lang;
+  /** Id de ruta de la página actual (marca aria-current en el índice). */
+  route?: string;
+}
+const { lang, route } = Astro.props;
+const hasIndex = router.index().length > 0;
 const year = new Date().getFullYear(); // se genera en build
 const links = site.links.filter((l) => l.footer && l.url);
 ---
 
 <footer class="footer">
   <div class="footer__edge" aria-hidden="true"></div>
+  {hasIndex && <div class="wrap footer__index"><SiteIndex lang={lang} variant="footer" current={route} /></div>}
+  {demoOn && <div class="wrap footer__demo"><DemoNotice lang={lang} /></div>}
   <div class="wrap footer__inner">
     <p class="footer__rights label">{t('footer_rights', lang, { year, name: site.site.name })}</p>
     <ul class="footer__links">
@@ -31,6 +41,8 @@ const links = site.links.filter((l) => l.footer && l.url);
 <style>
   .footer { position: relative; overflow: hidden; padding-top: var(--space-l); }
   .footer__edge { position: absolute; inset: 0 0 auto 0; height: var(--stroke); background: linear-gradient(90deg, transparent, var(--chrome-600) 20%, var(--chrome-600) 80%, transparent); }
+  .footer__index { margin-bottom: var(--space-l); }
+  .footer__demo { margin-bottom: var(--space-s); }
   .footer__inner { display: flex; flex-wrap: wrap; gap: var(--space-s) var(--space-l); align-items: center; justify-content: space-between; }
   .footer__links { display: flex; flex-wrap: wrap; gap: 0 var(--space-m); }
   .footer__link, .footer__top { display: inline-flex; align-items: center; gap: 0.4em; min-height: var(--tap); font-family: var(--font-ui); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); text-transform: var(--case-ui); color: var(--chrome-200); }

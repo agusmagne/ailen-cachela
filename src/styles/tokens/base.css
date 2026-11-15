@@ -1,0 +1,24 @@
+/* Tokens de la base (los de cada paquete van en src/styles/tokens/<paquete>.css; Base.astro los importa solos).
+   Todo valor nuevo nace como variable acá o en el archivo del paquete: ningún componente escribe colores ni familias a mano. */
+:root {
+  /* ---- Contenido de ejemplo: marca visual elegante, nunca confundible con dato real ---- */
+  --demo-line: var(--chrome-400);
+  --demo-ink: var(--chrome-200);
+  --demo-bg: color-mix(in srgb, var(--chrome-300) 7%, transparent);
+  --demo-stripes: repeating-linear-gradient(135deg, color-mix(in srgb, var(--chrome-300) 9%, transparent) 0 0.4rem, transparent 0.4rem 0.8rem);
+
+  /* ---- Páginas interiores ---- */
+  --page-head-pad: calc(var(--header-h) + var(--space-xl));
+  --card-pad: var(--space-m);
+  --card-border: var(--stroke) solid var(--chrome-700);
+  --card-bg: linear-gradient(160deg, color-mix(in srgb, var(--chrome-800) 70%, var(--bg-raised)), var(--bg));
+  --table-head-bg: var(--chrome-800);
+  --table-row-line: var(--stroke) solid var(--chrome-700);
+
+  /* ---- Papel (PDF y vista de impresión de EPK, riders, one-sheet) ---- */
+  --paper: #ffffff;
+  --paper-ink: var(--void);
+  --paper-muted: var(--chrome-600);
+  --paper-line: var(--chrome-300);
+  --paper-accent: var(--chrome-700);
+}

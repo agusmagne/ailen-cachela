@@ -1,6 +1,8 @@
 // Interacciones del cliente. Todo es mejora progresiva: sin JS el sitio funciona entero.
 // La capa móvil (hoja de menú, dock, carrusel, feedback táctil) vive en mobile.ts.
 import { setupMenu, setupDock, setupCarousels, setupBrand, setupTouchFeedback, syncLangLinks, buzz } from './mobile';
+import { setupTabs, setupEmbeds } from './ui';
+import { setupLazy } from './lazy';
 
 const root = document.documentElement;
 const motionOn = root.classList.contains('js-motion');
@@ -244,4 +246,7 @@ setupFacades();
 setupMarquee();
 setupCopy();
 setupVideos();
+setupTabs();
+setupEmbeds();
+setupLazy();
 (window as unknown as { __motionReady: boolean }).__motionReady = true;

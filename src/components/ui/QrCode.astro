@@ -1,0 +1,27 @@
+---
+import { qrSvg } from '../../lib/downloads/qr';
+/**
+ * Código QR en SVG, generado en build con código propio (nada se envía a un servicio externo). Toma el color del
+ * texto (currentColor) y se ve sobre fondo claro: por defecto lleva un recuadro claro con la zona de silencio.
+ *   <QrCode text="https://ailencachela.com/prensa/" label="QR: página de prensa" size="9rem" />
+ * `label` es el nombre accesible (describir a dónde lleva). `plain` = sin recuadro (para usar sobre papel).
+ */
+interface Props {
+  text: string;
+  label: string;
+  size?: string;
+  ecc?: 'L' | 'M';
+  plain?: boolean;
+  class?: string;
+}
+const { text, label, size = '9rem', ecc = 'M', plain = false, class: cls } = Astro.props;
+const svg = qrSvg(text, { ecc, title: label });
+---
+
+<div class:list={['qr', { 'qr--plain': plain }, cls]} style={`--qr-size:${size}`} set:html={svg} />
+
+<style>
+  .qr { width: var(--qr-size); aspect-ratio: 1; padding: 0.25rem; background: var(--chrome-50); color: var(--void); }
+  .qr--plain { background: transparent; padding: 0; color: var(--paper-ink); }
+  .qr :global(svg) { width: 100%; height: 100%; }
+</style>

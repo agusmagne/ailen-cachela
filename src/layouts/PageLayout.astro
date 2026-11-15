@@ -1,0 +1,97 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Dock from '../components/Dock.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import type { Crumb } from '../components/ui/Breadcrumbs.astro';
+import { site, t, absolute, type Lang } from '../lib/content';
+import { router, type Params } from '../lib/routes';
+import { routeLabel } from '../lib/nav';
+import { demoOn } from '../lib/demo';
+import { crumbsLd, webPageLd, graph } from '../lib/jsonld-page';
+
+/**
+ * Layout de página interior. Una página de paquete se escribe así (y su gemela en inglés cambia solo `lang`):
+ *
+ *   <PageLayout lang="es" route="press" title={t('press_title', 'es')} description={t('press_desc', 'es')}>
+ *     <p slot="lead">Bajada de la página.</p>
+ *     ...contenido (secciones con <SectionHead>)...
+ *   </PageLayout>
+ *
+ * Resuelve solo: <title>, canonical, hreflang es/en/x-default (desde el registro de rutas), Open Graph, JSON-LD
+ * (WebPage + BreadcrumbList + los nodos extra que pases), Nav con el menú principal, migas, numeral, pie con el
+ * índice completo y dock móvil. Páginas con parámetros (release, mix, year...): `params` + `crumbTail`.
+ */
+interface Props {
+  lang: Lang;
+  /** Id de la ruta en src/lib/routes-core.ts */
+  route: string;
+  params?: Params;
+  /** h1 y <title>. */
+  title: string;
+  description: string;
+  kicker?: string;
+  /** Texto de la última miga (por defecto `title`); útil en páginas de detalle. */
+  crumbTail?: string;
+  /** La página es sobre todo contenido de ejemplo: se rotula y no se indexa mientras el interruptor esté encendido. */
+  demo?: boolean;
+  /** La página no tiene contenido visible (estado vacío): noindex. */
+  empty?: boolean;
+  /** Nodos JSON-LD extra (nunca con datos de ejemplo). */
+  jsonLd?: Record<string, unknown>[];
+  /** Ruta del sitio SIN BASE_PATH (ej. /og/prensa.png) de 1200x630. */
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'music.song' | 'music.album' | 'profile';
+  /** Dock inferior móvil (por defecto sí). */
+  dock?: boolean;
+}
+const { lang, route, params, title, description, kicker, crumbTail, demo = false, empty = false, jsonLd = [], ogImage, ogType, dock = true } = Astro.props;
+
+const alternates = router.alternates(route, params);
+const origin = Astro.site ?? new URL('https://ailencachela.com');
+const trail = router.trail(route);
+const crumbs: Crumb[] = trail.map((r, i) => {
+  const last = i === trail.length - 1;
+  const linkable = !last && !r.path.es.includes(':') && router.exists(r.id);
+  return { label: last ? (crumbTail ?? title) : routeLabel(r.id, lang), href: linkable ? router.path(r.id, lang) : undefined };
+});
+const n = router.numeral(route);
+const total = router.main().length;
+const numeral = n ? String(n).padStart(2, '0') : null;
+const url = absolute(alternates[lang], origin);
+const ld = graph(
+  webPageLd({ name: title, description, url, lang }),
+  crumbsLd([{ name: t('base_nav_home', lang), url: absolute(router.home(lang), origin) }, ...crumbs.map((c, i) => ({ name: c.label, url: i === crumbs.length - 1 ? url : absolute(c.href ?? alternates[lang], origin) }))]),
+  ...jsonLd,
+);
+---
+
+<Base
+  lang={lang}
+  title={`${title} | ${site.site.name}`}
+  description={description}
+  alternates={alternates}
+  noindex={empty || (demo && demoOn)}
+  jsonLd={ld}
+  ogImage={ogImage}
+  ogType={ogType}
+>
+  <slot name="head" slot="head" />
+  <Nav lang={lang} route={route} switchTo={alternates[lang === 'es' ? 'en' : 'es']} />
+  <main id="main" class="page" data-page={route}>
+    <PageHead lang={lang} title={title} crumbs={crumbs} kicker={kicker} numeral={numeral} total={numeral ? String(total).padStart(2, '0') : null} demo={demo}>
+      {Astro.slots.has('lead') && <Fragment slot="lead"><slot name="lead" /></Fragment>}
+      {Astro.slots.has('meta') && <Fragment slot="meta"><slot name="meta" /></Fragment>}
+    </PageHead>
+    <div class="wrap page__body">
+      <slot />
+    </div>
+  </main>
+  <Footer lang={lang} route={route} />
+  {dock && <Dock lang={lang} page />}
+</Base>
+
+<style>
+  .page__body { padding-bottom: var(--section-gap); }
+</style>

@@ -1,0 +1,48 @@
+---
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/print.css';
+import { site, t, type Lang } from '../lib/content';
+import { demoOn } from '../lib/demo';
+import archivoUrl from '../assets/fonts/archivo-cachela.woff2?url';
+import martianUrl from '../assets/fonts/martian-mono-cachela.woff2?url';
+import.meta.glob('../styles/tokens/*.css', { eager: true });
+
+/**
+ * Vista de impresión de un documento (A4). Se publica como página real y noindex (p. ej. /prensa/imprimir/) y
+ * scripts/build-pdfs.mjs la convierte a PDF con Chrome headless (ver src/components/README.md, "Descargables").
+ * Sin Nav, Footer, grano ni scripts. Si el interruptor demo está encendido muestra el sello de ejemplo arriba.
+ *   <PrintLayout lang="es" title="EPK" doc="Press kit">  <section class="sheet__page">...</section> </PrintLayout>
+ */
+interface Props {
+  lang: Lang;
+  title: string;
+  /** Nombre corto del documento, arriba a la derecha ("Press kit", "Rider técnico"). */
+  doc: string;
+  /** El documento incluye contenido de ejemplo: agrega el sello visible. */
+  demo?: boolean;
+}
+const { lang, title, doc, demo = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title} | {site.site.name}</title>
+    <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={martianUrl} as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <main class="sheet" data-print>
+      <header class="sheet__head">
+        <span class="sheet__brand">{site.site.name}</span>
+        <span class="sheet__doc">{doc}</span>
+      </header>
+      {demo && demoOn && <p class="sheet__demo-banner"><span class="sheet__demo">{t('base_demo_badge', lang)}</span> {t('base_demo_page_note', lang)}</p>}
+      <slot />
+    </main>
+  </body>
+</html>

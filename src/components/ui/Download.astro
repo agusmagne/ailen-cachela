@@ -1,0 +1,57 @@
+---
+import { t, type Lang } from '../../lib/content';
+import DemoBadge from './DemoBadge.astro';
+/**
+ * Bloque de descarga: tipo de archivo, nombre, peso. `href` apunta a public/ (ya con withBase) o a un
+ * endpoint de src/pages/downloads/. `size` en bytes (formatBytes lo escribe) o ya como texto.
+ * `demo` rotula el archivo como de ejemplo (el contenido lo generó el sitio, no la artista).
+ */
+interface Props {
+  lang: Lang;
+  href: string;
+  label: string;
+  kind: string;
+  size?: number | string;
+  description?: string;
+  filename?: string;
+  demo?: boolean;
+}
+const { lang, href, label, kind, size, description, filename, demo = false } = Astro.props;
+const fmt = (n: number) => (n < 1024 ? `${n} B` : n < 1024 * 1024 ? `${Math.round(n / 1024)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`);
+const sizeText = typeof size === 'number' ? fmt(size) : size;
+---
+
+<div class:list={['dl', { 'has-demo-badge is-demo': demo }]}>
+  {demo && <DemoBadge lang={lang} />}
+  <a class="dl__link" href={href} download={filename ?? ''}>
+    <span class="dl__kind" aria-hidden="true">{kind}</span>
+    <span class="dl__text">
+      <span class="dl__label">{label}</span>
+      <span class="label dl__meta">{sizeText ? t('base_download_size', lang, { kind, size: sizeText }) : kind}</span>
+      {description && <span class="dl__desc">{description}</span>}
+    </span>
+    <span class="dl__cta label"><span class="sr-only">{t('base_download', lang)}: </span><span class="arrow" data-dir="down" aria-hidden="true">↓</span></span>
+  </a>
+</div>
+
+<style>
+  .dl { position: relative; border: var(--card-border); background: var(--card-bg); }
+  .dl__link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-s);
+    min-height: var(--tap-lg);
+    padding: var(--space-xs) var(--space-s);
+    transition: background-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-out);
+  }
+  .dl__link:focus-visible { background: var(--press-bg); outline-offset: -3px; }
+  @media (hover: hover) { .dl__link:hover { background: var(--press-bg); } .dl__link:hover .arrow { transform: translateY(2px); } }
+  .dl__link:active { background: var(--press-bg); transform: scale(var(--press-scale-row)); transition-duration: var(--dur-press); }
+  .dl__kind { display: grid; place-items: center; width: 3rem; height: 3rem; font-family: var(--font-ui); font-weight: var(--font-ui-weight); font-size: var(--step-ui); letter-spacing: var(--tracking-ui); color: var(--chrome-100); border: var(--stroke) solid var(--chrome-500); }
+  .dl__text { display: grid; gap: 0.15rem; min-width: 0; }
+  .dl__label { font-weight: 600; color: var(--chrome-50); overflow-wrap: anywhere; }
+  .dl__desc { font-size: var(--step--1); color: var(--muted); }
+  .dl__cta { color: var(--chrome-100); }
+  .dl .arrow { transition: transform var(--dur-base) var(--ease-out); }
+</style>
